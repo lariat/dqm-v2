@@ -44,6 +44,11 @@ ustof_hits_th1_name = "DataQuality/tof/USTOFHits"
 dstof_hits_th1_name = "DataQuality/tof/DSTOFHits"
 tof_th1_name = "DataQuality/tof/TOF"
 
+# TTree names
+event_record_ttree_name = "DataQuality/artEventRecord"
+event_builder_ttree_name = "DataQuality/EventBuilderTree"
+wut_ttree_name = "DataQuality/wut"
+
 # load ROOT file
 f = ROOT.TFile(args.file)
 
@@ -91,7 +96,7 @@ def histogram_arrays(th1):
     return np.array(bins), np.array(counts, dtype=np.int64)
 
 # get run, sub-run, and time stamp from EventRecord TTree
-event_record_ttree = f.Get("DataQuality/artEventRecord")
+event_record_ttree = f.Get(event_record_ttree_name)
 
 run = 0
 subrun = 0
@@ -122,10 +127,10 @@ if subrun_exists:
     sys.exit(1)
 
 # EventBuilder TTree
-event_builder_ttree = f.Get("DataQuality/EventBuilderTree")
+event_builder_ttree = f.Get(event_builder_ttree_name)
 
 # WUT TTree
-wut_ttree = f.Get("DataQuality/wut")
+wut_ttree = f.Get(wut_ttree_name)
 
 # get number of events, TPC events, and data blocks
 number_events = 0
