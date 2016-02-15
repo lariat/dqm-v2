@@ -133,12 +133,17 @@ event_builder_ttree = f.Get(event_builder_ttree_name)
 wut_ttree = f.Get(wut_ttree_name)
 
 # get number of events, TPC events, and data blocks
+# get timestamps of data blocks
 number_events = 0
 number_tpc_events = 0
 
 number_caen_data_blocks = { board : 0 for board in caen_boards }
 number_tdc_data_blocks = 0
 number_wut_data_blocks = 0
+
+caen_timestamps = { board : [] for board in caen_boards }
+tdc_timestamps = []
+wut_timestamps = []
 
 # loop over EventBuilder TTree
 for branch in event_builder_ttree:
@@ -148,12 +153,16 @@ for branch in event_builder_ttree:
     for board in caen_boards:
         number_caen_data_blocks[board] += getattr(
             branch, "NumberCAENBoard{}Blocks".format(board))
+        caen_timestamps[board].extend(
+            list(getattr(branch, "CAENBoard{}TimeStamps".format(board))))
 
     number_tdc_data_blocks += branch.NumberTDCBlocks
+    tdc_timestamps.extend(list(branch.TDCTimeStamps))
 
 # loop over WUT TTree
 for branch in wut_ttree:
     number_wut_data_blocks += 1
+    wut_timestamps.append(branch.time_header)
 
 # get mean and RMS of pedestal and ADC histograms
 v1740_pedestal_mean, v1740_pedestal_rms, v1740_adc_mean, v1740_adc_rms, \
