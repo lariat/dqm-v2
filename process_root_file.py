@@ -27,15 +27,24 @@ parser = argparse.ArgumentParser(description="Analyze from ROOT file.")
 parser.add_argument('file', type=str, help="path to ROOT file")
 args = parser.parse_args()
 
-# CAEN boards and channels
-v1740_boards = xrange(0, 7+1)
-v1751_boards = xrange(8, 9+1)
-v1740b_boards = xrange(24, 24+1)
+# iterators for CAEN boards and channels
+v1740_boards = range(0, 7+1)
+v1751_boards = range(8, 9+1)
+v1740b_boards = range(24, 24+1)
 caen_boards = list(itertools.chain(v1740_boards, v1751_boards, v1740b_boards))
+non_tpc_caen_boards = sorted(list(set(caen_boards) - set(v1740_boards[:-1])))
 
 v1740_channels = xrange(64)
 v1751_channels = xrange(8)
 v1740b_channels = xrange(64)
+
+#v1740_channel_iter = { board : v1740_channels for board in v1740_boards }
+#v1751_channel_iter = { board : v1751_channels for board in v1751_boards }
+#v1740b_channel_iter = { board : v1740b_channels for board in v1740b_boards }
+
+#caen_channels = v1740_channel_iter.copy()
+#caen_channels.update(v1751_channel_iter)
+#caen_channels.update(v1740b_channel_iter)
 
 # histogram names
 pedestal_th1_name = "DataQuality/pedestal/caen_board_{}_channel_{}_pedestal"
@@ -49,7 +58,7 @@ event_record_ttree_name = "DataQuality/artEventRecord"
 event_builder_ttree_name = "DataQuality/EventBuilderTree"
 wut_ttree_name = "DataQuality/wut"
 
-# numpy histogram config
+# numpy histogram config for timestamps of data blocks
 timestamps_bin_range = (0, 60)
 timestamps_bins = 600
 
@@ -245,6 +254,41 @@ tpc_adc_mean.extend(v1740_adc_mean[7][:32])
 tpc_adc_rms = list(itertools.chain.from_iterable(v1740_adc_rms[:7]))
 tpc_adc_rms.extend(v1740_adc_rms[7][:32])
 
+# get CAEN V1751 ADC histograms
+caen_board_8_adc_histograms = {}
+caen_board_9_adc_histograms = {}
+
+for channel in v1751_channels:
+    # CAEN board 8
+    caen_board_8_pedestal_bins, caen_board_8_pedestal_counts = th1_to_arrays(
+        f.Get("DataQuality/pedestal/caen_board_8_channel_{}_pedestal"
+              .format(channel)))
+
+    caen_board_8_adc_bins, caen_board_8_adc_counts = th1_to_arrays(
+        f.Get("DataQuality/adc/caen_board_8_channel_{}_adc".format(channel)))
+
+    caen_board_8_adc_counts += caen_board_8_pedestal_counts  # add pedestal
+
+    caen_board_8_adc_histograms[channel] = Histogram(
+        "caen_board_8_channel_{}_adc".format(channel))
+    caen_board_8_adc_histograms[channel].histogram_to_db(
+        caen_board_8_adc_bins, caen_board_8_adc_counts)
+
+    # CAEN board 9
+    caen_board_9_pedestal_bins, caen_board_9_pedestal_counts = th1_to_arrays(
+        f.Get("DataQuality/pedestal/caen_board_9_channel_{}_pedestal"
+              .format(channel)))
+
+    caen_board_9_adc_bins, caen_board_9_adc_counts = th1_to_arrays(
+        f.Get("DataQuality/adc/caen_board_9_channel_{}_adc".format(channel)))
+
+    caen_board_9_adc_counts += caen_board_9_pedestal_counts  # add pedestal
+
+    caen_board_9_adc_histograms[channel] = Histogram(
+        "caen_board_9_channel_{}_adc".format(channel))
+    caen_board_9_adc_histograms[channel].histogram_to_db(
+        caen_board_9_adc_bins, caen_board_9_adc_counts)
+
 # get USTOF hits histogram
 ustof_hits_th1 = f.Get(ustof_hits_th1_name)
 ustof_hits_bins, ustof_hits_counts = th1_to_arrays(ustof_hits_th1)
@@ -287,9 +331,89 @@ tof_histogram.histogram_to_db(tof_bins, tof_counts)
 date_time = datetime.fromtimestamp(timestamp)
 
 # instantiate DataQualitySubRun
-dqm_subrun = DataQualitySubRun(
+SubRun = DataQualitySubRun(
     run=run, subrun=subrun, date_time=date_time,
     date_time_added=datetime.now())
+
+# add number of data blocks to SubRum
+for board in caen_boards:
+    setattr(SubRun, "caen_board_{}_data_blocks".format(board),
+            number_caen_data_blocks[board])
+SubRun.mwpc_data_blocks = number_tdc_data_blocks
+SubRun.wut_data_blocks = number_wut_data_blocks
+
+# add TPC pedestal/ADC mean and RMS to SubRun
+SubRun.tpc_pedestal_mean = tpc_pedestal_mean
+SubRun.tpc_pedestal_rms = tpc_pedestal_rms
+SubRun.tpc_adc_mean = tpc_adc_mean
+SubRun.tpc_adc_rms = tpc_adc_rms
+
+# add CAEN pedestal/ADC mean and RMS to SubRun
+SubRun.caen_board_7_pedestal_mean = v1740_pedestal_mean[7][32:]
+SubRun.caen_board_7_pedestal_rms = v1740_pedestal_rms[7][32:]
+SubRun.caen_board_7_adc_mean = v1740_adc_mean[7][32:]
+SubRun.caen_board_7_adc_rms = v1740_adc_rms[7][32:]
+
+for i in xrange(len(v1751_boards)):
+    board = v1751_boards[i]
+    setattr(SubRun, "caen_board_{}_pedestal_mean".format(board),
+            v1751_pedestal_mean[i])
+    setattr(SubRun, "caen_board_{}_pedestal_rms".format(board),
+            v1751_pedestal_rms[i])
+    setattr(SubRun, "caen_board_{}_adc_mean".format(board),
+            v1751_adc_mean[i])
+    setattr(SubRun, "caen_board_{}_adc_rms".format(board),
+            v1751_adc_rms[i])
+
+for i in xrange(len(v1740b_boards)):
+    board = v1740b_boards[i]
+    setattr(SubRun, "caen_board_{}_pedestal_mean".format(board),
+            v1740b_pedestal_mean[i])
+    setattr(SubRun, "caen_board_{}_pedestal_rms".format(board),
+            v1740b_pedestal_rms[i])
+    setattr(SubRun, "caen_board_{}_adc_mean".format(board),
+            v1740b_adc_mean[i])
+    setattr(SubRun, "caen_board_{}_adc_rms".format(board),
+            v1740b_adc_rms[i])
+
+# add CAEN V1751 ADC histograms to SubRun
+for channel in v1751_channels:
+    # CAEN board 8
+    setattr(SubRun,
+        "caen_board_8_channel_{}_adc_histogram_bins".format(channel),
+        caen_board_8_adc_histograms[channel].bins_sparse)
+    setattr(SubRun,
+        "caen_board_8_channel_{}_adc_histogram_counts".format(channel),
+        caen_board_8_adc_histograms[channel].counts_sparse)
+
+    # CAEN board 9
+    setattr(SubRun,
+        "caen_board_9_channel_{}_adc_histogram_bins".format(channel),
+        caen_board_9_adc_histograms[channel].bins_sparse)
+    setattr(SubRun,
+        "caen_board_9_channel_{}_adc_histogram_counts".format(channel),
+        caen_board_9_adc_histograms[channel].counts_sparse)
+
+# add USTOF hits histogram to SubRun
+SubRun.ustof_hits_histogram_bins = ustof_hits_histogram.bins_sparse
+SubRun.ustof_hits_histogram_counts = ustof_hits_histogram.counts_sparse
+SubRun.ustof_hits_histogram_min_bin = ustof_hits_histogram.min_bin
+SubRun.ustof_hits_histogram_max_bin = ustof_hits_histogram.max_bin
+SubRun.ustof_hits_histogram_bin_width = ustof_hits_histogram.bin_width
+
+# add DSTOF hits histogram to SubRun
+SubRun.dstof_hits_histogram_bins = dstof_hits_histogram.bins_sparse
+SubRun.dstof_hits_histogram_counts = dstof_hits_histogram.counts_sparse
+SubRun.dstof_hits_histogram_min_bin = dstof_hits_histogram.min_bin
+SubRun.dstof_hits_histogram_max_bin = dstof_hits_histogram.max_bin
+SubRun.dstof_hits_histogram_bin_width = dstof_hits_histogram.bin_width
+
+# add TOF histogram to SubRun
+SubRun.tof_histogram_bins = tof_histogram.bins_sparse
+SubRun.tof_histogram_counts = tof_histogram.counts_sparse
+SubRun.tof_histogram_min_bin = tof_histogram.min_bin
+SubRun.tof_histogram_max_bin = tof_histogram.max_bin
+SubRun.tof_histogram_bin_width = tof_histogram.bin_width
 
 db_session.close()
 
