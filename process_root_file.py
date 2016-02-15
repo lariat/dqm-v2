@@ -154,15 +154,20 @@ for branch in event_builder_ttree:
         number_caen_data_blocks[board] += getattr(
             branch, "NumberCAENBoard{}Blocks".format(board))
         caen_timestamps[board].extend(
-            list(getattr(branch, "CAENBoard{}TimeStamps".format(board))))
+            list(getattr(branch, "CAENBoard{}TimeStamps".format(board))))  # microseconds
 
     number_tdc_data_blocks += branch.NumberTDCBlocks
-    tdc_timestamps.extend(list(branch.TDCTimeStamps))
+    tdc_timestamps.extend(list(branch.TDCTimeStamps))  # microseconds
 
 # loop over WUT TTree
 for branch in wut_ttree:
     number_wut_data_blocks += 1
-    wut_timestamps.append(branch.time_header)
+    wut_timestamps.append(branch.time_header * 16e-6)  # seconds
+
+# convert timestamps from microseconds to seconds
+for board in caen_boards:
+    caen_timestamps[board] = [ x * 1e-6 for x in caen_timestamps[board] ]  # seconds
+tdc_timestamps = [ x * 1e-6 for x in tdc_timestamps ]  # seconds
 
 # get mean and RMS of pedestal and ADC histograms
 v1740_pedestal_mean, v1740_pedestal_rms, v1740_adc_mean, v1740_adc_rms, \
