@@ -1,25 +1,7 @@
 from sqlalchemy import Column, Integer, Float, String, DateTime
 from sqlalchemy.dialects.postgresql import ARRAY
-#from sqlalchemy.dialects.postgresql import HSTORE, JSON, JSONB
-#from sqlalchemy.dialects import postgresql
-#from sqlalchemy.ext.mutable import Mutable
-#from sqlalchemy.ext.mutable import MutableDict
 
 from dqm.database import Base
-
-#class MutableList(Mutable, list):
-#    def append(self, value):
-#        list.append(self, value)
-#        self.changed()
-#
-#    @classmethod
-#    def coerce(cls, key, value):
-#        if not isinstance(value, MutableList):
-#            if isinstance(value, list):
-#                return MutableList(value)
-#            return Mutable.coerce(key, value)
-#        else:
-#            return value
 
 class DataQualityMixin(object):
     """ Data quality mixin. """
@@ -28,13 +10,6 @@ class DataQualityMixin(object):
     # psql sequence for unique ID
     #/////////////////////////////////////////////////////////
     id = Column(Integer, primary_key=True)
-
-    #/////////////////////////////////////////////////////////
-    # lariatsoft version; vAA_BB_CC
-    #/////////////////////////////////////////////////////////
-    #lariatsoft_version_a = Column(Integer, unique=False)
-    #lariatsoft_version_b = Column(Integer, unique=False)
-    #lariatsoft_version_c = Column(Integer, unique=False)
 
     #/////////////////////////////////////////////////////////
     # date/time
@@ -87,71 +62,25 @@ class DataQualityMixin(object):
     #/////////////////////////////////////////////////////////
     # pedestal/ADC mean and RMS of CAEN boards
     #/////////////////////////////////////////////////////////
-    #caen_board_0_pedestal_mean = Column(ARRAY(Float), unique=False)  # see TPC pedestal
-    #caen_board_1_pedestal_mean = Column(ARRAY(Float), unique=False)  #
-    #caen_board_2_pedestal_mean = Column(ARRAY(Float), unique=False)  #
-    #caen_board_3_pedestal_mean = Column(ARRAY(Float), unique=False)  #
-    #caen_board_4_pedestal_mean = Column(ARRAY(Float), unique=False)  #
-    #caen_board_5_pedestal_mean = Column(ARRAY(Float), unique=False)  #
-    #caen_board_6_pedestal_mean = Column(ARRAY(Float), unique=False)  #
     caen_board_7_pedestal_mean = Column(ARRAY(Float), unique=False)  # V1740, last 32 channels of 64
     caen_board_8_pedestal_mean = Column(ARRAY(Float), unique=False)  # V1751, 8 channels
     caen_board_9_pedestal_mean = Column(ARRAY(Float), unique=False)  # V1751, 8 channels
     caen_board_24_pedestal_mean = Column(ARRAY(Float), unique=False)  # V1740B, 64 channels
 
-    #caen_board_0_pedestal_rms = Column(ARRAY(Float), unique=False)  # see TPC pedestal
-    #caen_board_1_pedestal_rms = Column(ARRAY(Float), unique=False)  #
-    #caen_board_2_pedestal_rms = Column(ARRAY(Float), unique=False)  #
-    #caen_board_3_pedestal_rms = Column(ARRAY(Float), unique=False)  #
-    #caen_board_4_pedestal_rms = Column(ARRAY(Float), unique=False)  #
-    #caen_board_5_pedestal_rms = Column(ARRAY(Float), unique=False)  #
-    #caen_board_6_pedestal_rms = Column(ARRAY(Float), unique=False)  #
     caen_board_7_pedestal_rms = Column(ARRAY(Float), unique=False)  # V1740, last 32 channels of 64
     caen_board_8_pedestal_rms = Column(ARRAY(Float), unique=False)  # V1751, 8 channels
     caen_board_9_pedestal_rms = Column(ARRAY(Float), unique=False)  # V1751, 8 channels
     caen_board_24_pedestal_rms = Column(ARRAY(Float), unique=False)  # V1740B, 64 channels
 
-    #caen_v1740_pedestal_samples_per_channel = Column(Integer, unique=False)
-    #caen_v1740_pedestal_acquisition_windows = Column(Integer, unique=False)
-
-    #caen_v1751_pedestal_samples_per_channel = Column(Integer, unique=False)
-    #caen_v1751_pedestal_acquisition_windows = Column(Integer, unique=False)
-
-    #caen_v1740b_pedestal_samples_per_channel = Column(Integer, unique=False)
-    #caen_v1740b_pedestal_acquisition_windows = Column(Integer, unique=False)
-
-    #caen_board_0_adc_mean = Column(ARRAY(Float), unique=False)   # see TPC adc
-    #caen_board_1_adc_mean = Column(ARRAY(Float), unique=False)   #
-    #caen_board_2_adc_mean = Column(ARRAY(Float), unique=False)   #
-    #caen_board_3_adc_mean = Column(ARRAY(Float), unique=False)   #
-    #caen_board_4_adc_mean = Column(ARRAY(Float), unique=False)   #
-    #caen_board_5_adc_mean = Column(ARRAY(Float), unique=False)   #
-    #caen_board_6_adc_mean = Column(ARRAY(Float), unique=False)   #
     caen_board_7_adc_mean = Column(ARRAY(Float), unique=False)   # V1740, last 32 channels of 64
     caen_board_8_adc_mean = Column(ARRAY(Float), unique=False)   # V1751, 8 channels
     caen_board_9_adc_mean = Column(ARRAY(Float), unique=False)   # V1751, 8 channels
     caen_board_24_adc_mean = Column(ARRAY(Float), unique=False)  # V1740B, 64 channels
 
-    #caen_board_0_adc_rms = Column(ARRAY(Float), unique=False)  # see TPC adc
-    #caen_board_1_adc_rms = Column(ARRAY(Float), unique=False)  #
-    #caen_board_2_adc_rms = Column(ARRAY(Float), unique=False)  #
-    #caen_board_3_adc_rms = Column(ARRAY(Float), unique=False)  #
-    #caen_board_4_adc_rms = Column(ARRAY(Float), unique=False)  #
-    #caen_board_5_adc_rms = Column(ARRAY(Float), unique=False)  #
-    #caen_board_6_adc_rms = Column(ARRAY(Float), unique=False)  #
     caen_board_7_adc_rms = Column(ARRAY(Float), unique=False)   # V1740, last 32 channels of 64
     caen_board_8_adc_rms = Column(ARRAY(Float), unique=False)   # V1751, 8 channels
     caen_board_9_adc_rms = Column(ARRAY(Float), unique=False)   # V1751, 8 channels
     caen_board_24_adc_rms = Column(ARRAY(Float), unique=False)  # V1740B, 64 channels
-
-    #caen_v1740_adc_samples_per_channel = Column(Integer, unique=False)
-    #caen_v1740_adc_acquisition_windows = Column(Integer, unique=False)
-
-    #caen_v1751_adc_samples_per_channel = Column(Integer, unique=False)
-    #caen_v1751_adc_acquisition_windows = Column(Integer, unique=False)
-
-    #caen_v1740b_adc_samples_per_channel = Column(Integer, unique=False)
-    #caen_v1740b_adc_acquisition_windows = Column(Integer, unique=False)
 
     #/////////////////////////////////////////////////////////
     # histogram of pedestal/ADC values in CAEN V1751 boards
