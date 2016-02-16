@@ -500,8 +500,41 @@ elif run_exists:
     try:
         Run = DataQualityRun.query.filter_by(run=run).one()
 
+        #/////////////////////////////////////////////////////
+        # add pedestal/ADC mean and RMS of TPC wires/channels
+        # to Run from SubRun; we want the most recent values
+        #/////////////////////////////////////////////////////
+        Run.tpc_pedestal_mean = SubRun.tpc_pedestal_mean
+        Run.tpc_pedestal_rms = SubRun.tpc_pedestal_rms
+        Run.tpc_adc_mean = SubRun.tpc_adc_mean
+        Run.tpc_adc_rms = SubRun.tpc_adc_rms
+
+        #/////////////////////////////////////////////////////
+        # add pedestal/ADC mean and RMS of CAEN boards to Run
+        # from SubRun; we want the most recent values
+        #/////////////////////////////////////////////////////
+        Run.caen_board_7_pedestal_mean = SubRun.caen_board_7_pedestal_mean
+        Run.caen_board_8_pedestal_mean = SubRun.caen_board_8_pedestal_mean
+        Run.caen_board_9_pedestal_mean = SubRun.caen_board_9_pedestal_mean
+        Run.caen_board_24_pedestal_mean = SubRun.caen_board_24_pedestal_mean
+
+        Run.caen_board_7_pedestal_rms = SubRun.caen_board_7_pedestal_rms
+        Run.caen_board_8_pedestal_rms = SubRun.caen_board_8_pedestal_rms
+        Run.caen_board_9_pedestal_rms = SubRun.caen_board_9_pedestal_rms
+        Run.caen_board_24_pedestal_rms = SubRun.caen_board_24_pedestal_rms
+
+        Run.caen_board_7_adc_mean = SubRun.caen_board_7_adc_mean
+        Run.caen_board_8_adc_mean = SubRun.caen_board_8_adc_mean
+        Run.caen_board_9_adc_mean = SubRun.caen_board_9_adc_mean
+        Run.caen_board_24_adc_mean = SubRun.caen_board_24_adc_mean
+
+        Run.caen_board_7_adc_rms = SubRun.caen_board_7_adc_rms
+        Run.caen_board_8_adc_rms = SubRun.caen_board_8_adc_rms
+        Run.caen_board_9_adc_rms = SubRun.caen_board_9_adc_rms
+        Run.caen_board_24_adc_rms = SubRun.caen_board_24_adc_rms
+
         #/////////////////////////////////////////////////////////////
-        # add number of data blocks to Run
+        # update number of data blocks in Run
         #/////////////////////////////////////////////////////////////
         for board in caen_boards:
             attribute = "caen_board_{}_data_blocks".format(board)
@@ -521,8 +554,7 @@ elif run_exists:
                                           Run.tof_histogram_max_bin,
                                           Run.tof_histogram_bin_width)
 
-        run_tof_histogram.histogram_to_db(
-            run_tof_histogram.bins,
+        run_tof_histogram.histogram_to_db(run_tof_histogram.bins,
             run_tof_histogram.counts + tof_histogram.counts)
 
         Run.tof_histogram_bins = run_tof_histogram.bins_sparse
