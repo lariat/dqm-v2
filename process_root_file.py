@@ -424,6 +424,15 @@ for channel in v1751_channels:
     setattr(SubRun,
         "caen_board_8_channel_{}_adc_histogram_counts".format(channel),
         caen_board_8_adc_histograms[channel].counts_sparse)
+    setattr(SubRun,
+        "caen_board_8_channel_{}_adc_histogram_min_bin".format(channel),
+        caen_board_8_adc_histograms[channel].min_bin)
+    setattr(SubRun,
+        "caen_board_8_channel_{}_adc_histogram_max_bin".format(channel),
+        caen_board_8_adc_histograms[channel].max_bin)
+    setattr(SubRun,
+        "caen_board_8_channel_{}_adc_histogram_bin_width".format(channel),
+        caen_board_8_adc_histograms[channel].bin_width)
 
     # CAEN board 9
     setattr(SubRun,
@@ -432,6 +441,15 @@ for channel in v1751_channels:
     setattr(SubRun,
         "caen_board_9_channel_{}_adc_histogram_counts".format(channel),
         caen_board_9_adc_histograms[channel].counts_sparse)
+    setattr(SubRun,
+        "caen_board_9_channel_{}_adc_histogram_min_bin".format(channel),
+        caen_board_9_adc_histograms[channel].min_bin)
+    setattr(SubRun,
+        "caen_board_9_channel_{}_adc_histogram_max_bin".format(channel),
+        caen_board_9_adc_histograms[channel].max_bin)
+    setattr(SubRun,
+        "caen_board_9_channel_{}_adc_histogram_bin_width".format(channel),
+        caen_board_9_adc_histograms[channel].bin_width)
 
 #/////////////////////////////////////////////////////////////
 # add USTOF hits histogram to SubRun
@@ -542,6 +560,77 @@ elif run_exists:
                     number_caen_data_blocks[board])
         Run.mwpc_data_blocks += number_tdc_data_blocks
         Run.wut_data_blocks += number_wut_data_blocks
+
+        #/////////////////////////////////////////////////////
+        # update CAEN V1751 ADC histograms to Run
+        #/////////////////////////////////////////////////////
+        run_caen_board_8_adc_histograms = {}
+        run_caen_board_9_adc_histograms = {}
+
+        for channel in v1751_channels:
+            # CAEN board 8
+            run_caen_board_8_adc_histograms[channel] = Histogram(
+                "caen_board_8_channel_{}_adc".format(channel))
+
+            run_caen_board_8_adc_histograms[channel].db_to_histogram(
+                getattr(Run, "caen_board_8_channel_{}_adc_histogram_bins".format(channel)),
+                getattr(Run, "caen_board_8_channel_{}_adc_histogram_counts".format(channel)),
+                getattr(Run, "caen_board_8_channel_{}_adc_histogram_min_bin".format(channel)),
+                getattr(Run, "caen_board_8_channel_{}_adc_histogram_max_bin".format(channel)),
+                getattr(Run, "caen_board_8_channel_{}_adc_histogram_bin_width".format(channel)))
+
+            run_caen_board_8_adc_histograms[channel].histogram_to_db(
+                run_caen_board_8_adc_histograms[channel].bins,
+                run_caen_board_8_adc_histograms[channel].counts + \
+                caen_board_8_adc_histograms[channel].counts)
+
+            setattr(Run,
+                "caen_board_8_channel_{}_adc_histogram_bins".format(channel),
+                run_caen_board_8_adc_histograms[channel].bins_sparse)
+            setattr(Run,
+                "caen_board_8_channel_{}_adc_histogram_counts".format(channel),
+                run_caen_board_8_adc_histograms[channel].counts_sparse)
+            setattr(Run,
+                "caen_board_8_channel_{}_adc_histogram_min_bin".format(channel),
+                run_caen_board_8_adc_histograms[channel].min_bin)
+            setattr(Run,
+                "caen_board_8_channel_{}_adc_histogram_max_bin".format(channel),
+                run_caen_board_8_adc_histograms[channel].max_bin)
+            setattr(Run,
+                "caen_board_8_channel_{}_adc_histogram_bin_width".format(channel),
+                run_caen_board_8_adc_histograms[channel].bin_width)
+
+            # CAEN board 9
+            run_caen_board_9_adc_histograms[channel] = Histogram(
+                "caen_board_9_channel_{}_adc".format(channel))
+
+            run_caen_board_9_adc_histograms[channel].db_to_histogram(
+                getattr(Run, "caen_board_9_channel_{}_adc_histogram_bins".format(channel)),
+                getattr(Run, "caen_board_9_channel_{}_adc_histogram_counts".format(channel)),
+                getattr(Run, "caen_board_9_channel_{}_adc_histogram_min_bin".format(channel)),
+                getattr(Run, "caen_board_9_channel_{}_adc_histogram_max_bin".format(channel)),
+                getattr(Run, "caen_board_9_channel_{}_adc_histogram_bin_width".format(channel)))
+
+            run_caen_board_9_adc_histograms[channel].histogram_to_db(
+                run_caen_board_9_adc_histograms[channel].bins,
+                run_caen_board_9_adc_histograms[channel].counts + \
+                caen_board_9_adc_histograms[channel].counts)
+
+            setattr(Run,
+                "caen_board_9_channel_{}_adc_histogram_bins".format(channel),
+                run_caen_board_9_adc_histograms[channel].bins_sparse)
+            setattr(Run,
+                "caen_board_9_channel_{}_adc_histogram_counts".format(channel),
+                run_caen_board_9_adc_histograms[channel].counts_sparse)
+            setattr(Run,
+                "caen_board_9_channel_{}_adc_histogram_min_bin".format(channel),
+                run_caen_board_9_adc_histograms[channel].min_bin)
+            setattr(Run,
+                "caen_board_9_channel_{}_adc_histogram_max_bin".format(channel),
+                run_caen_board_9_adc_histograms[channel].max_bin)
+            setattr(Run,
+                "caen_board_9_channel_{}_adc_histogram_bin_width".format(channel),
+                run_caen_board_9_adc_histograms[channel].bin_width)
 
         #/////////////////////////////////////////////////////
         # update USTOF hits histogram in Run
