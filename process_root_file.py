@@ -50,14 +50,6 @@ v1740_channels = xrange(64)
 v1751_channels = xrange(8)
 v1740b_channels = xrange(64)
 
-#v1740_channel_iter = { board : v1740_channels for board in v1740_boards }
-#v1751_channel_iter = { board : v1751_channels for board in v1751_boards }
-#v1740b_channel_iter = { board : v1740b_channels for board in v1740b_boards }
-
-#caen_channels = v1740_channel_iter.copy()
-#caen_channels.update(v1751_channel_iter)
-#caen_channels.update(v1740b_channel_iter)
-
 #/////////////////////////////////////////////////////////////
 # histogram names
 #/////////////////////////////////////////////////////////////
@@ -147,8 +139,6 @@ for branch in event_record_ttree:
 
 if not event_record_read:
     print "EventRecord TTree not read!"
-
-#count = DataQualitySubRun.query.filter_by(run=run, subrun=subrun).count()
 
 #/////////////////////////////////////////////////////////////
 # check if subrun exists in database
@@ -287,13 +277,6 @@ v1740b_pedestal_mean, v1740b_pedestal_rms, v1740b_adc_mean, v1740b_adc_rms, \
 v1740b_pedestal_integral, v1740b_adc_integral \
     = get_mean_and_rms(v1740b_boards, v1740b_channels)
 
-#print v1740_pedestal_integral
-#print v1740_adc_integral
-#print v1751_pedestal_integral
-#print v1751_adc_integral
-#print v1740b_pedestal_integral
-#print v1740b_adc_integral
-
 #/////////////////////////////////////////////////////////////
 # TPC pedestal/ADC mean and RMS
 #/////////////////////////////////////////////////////////////
@@ -369,26 +352,6 @@ tof_th1 = f.Get(tof_th1_name)
 tof_bins, tof_counts = th1_to_arrays(tof_th1)
 tof_histogram = Histogram("tof")
 tof_histogram.histogram_to_db(tof_bins, tof_counts)
-
-#print tof_histogram.bins_sparse
-#print tof_histogram.counts_sparse
-
-#print np.array(v1740_pedestal_mean).shape
-#print np.array(v1740_pedestal_rms).shape
-#print np.array(v1751_pedestal_mean).shape
-#print np.array(v1751_pedestal_rms).shape
-#print np.array(v1740b_pedestal_mean).shape
-#print np.array(v1740b_pedestal_rms).shape
-
-#print np.array(v1740_adc_mean).shape
-#print np.array(v1740_adc_rms).shape
-#print np.array(v1751_adc_mean).shape
-#print np.array(v1751_adc_rms).shape
-#print np.array(v1740b_adc_mean).shape
-#print np.array(v1740b_adc_rms).shape
-
-#print np.array(v1751_adc_mean)
-#print np.array(v1751_adc_rms)
 
 #/////////////////////////////////////////////////////////////
 # convert time stamp to date time
@@ -501,6 +464,9 @@ SubRun.tof_histogram_bin_width = tof_histogram.bin_width
 #/////////////////////////////////////////////////////////////
 db_session.add(SubRun)
 
+#/////////////////////////////////////////////////////////////
+# attempt to commit changes and additions to database
+#/////////////////////////////////////////////////////////////
 try:
     db_session.commit()
 except IntegrityError as e:
