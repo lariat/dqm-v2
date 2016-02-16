@@ -483,10 +483,10 @@ if not run_exists:
     Run.__dict__.update(subrun_dict)
 
     # add current subrun number to list
-    Run.subrun = [ subrun ]
+    Run.subruns = [ subrun ]
 
 #/////////////////////////////////////////////////////////////
-# if run does exist in database, update it
+# if run exists in database, update it
 #/////////////////////////////////////////////////////////////
 elif not run_exists:
     result = DataQualityRun.query.filter_by(run=run)
