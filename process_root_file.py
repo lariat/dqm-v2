@@ -459,10 +459,43 @@ SubRun.tof_histogram_min_bin = tof_histogram.min_bin
 SubRun.tof_histogram_max_bin = tof_histogram.max_bin
 SubRun.tof_histogram_bin_width = tof_histogram.bin_width
 
+# TODO: Add MWPC hits with DBSCAN filtering.
+
+#/////////////////////////////////////////////////////////////
+# if run does not exist in database, create it
+#/////////////////////////////////////////////////////////////
+if not run_exists:
+
+    # instantiate DataQualityRun
+    Run = DataQualityRun(
+        run=run, date_time=date_time, date_time_added=datetime.now())
+
+    # use existing data in the current SubRun
+    subrun_dict = dict(SubRun.__dict__)  # copy SubRun dictionary to new dictionary
+    subrun_dict.pop('_sa_instance_state', None)  # remove SubRun state object
+    subrun_dict.pop('run', None)  # this is already in Run
+    subrun_dict.pop('subrun', None)  # subrun is a list in Run
+    subrun_dict.pop('date_time', None)  # don't mess with datetime
+    subrun_dict.pop('date_time_added', None)  # don't mess with datetime
+    subrun_dict.pop('date_time_updated', None)  # don't mess with datetime
+
+    # add existing data from current SubRun to Run
+    Run.__dict__.update(subrun_dict)
+
+    # add current subrun number to list
+    Run.subrun = [ subrun ]
+
+#/////////////////////////////////////////////////////////////
+# if run does exist in database, update it
+#/////////////////////////////////////////////////////////////
+elif not run_exists:
+    result = DataQualityRun.query.filter_by(run=run)
+
 #/////////////////////////////////////////////////////////////
 # add SubRun to session
 #/////////////////////////////////////////////////////////////
 db_session.add(SubRun)
+db_session.add(Run)
 
 #/////////////////////////////////////////////////////////////
 # attempt to commit changes and additions to database
@@ -477,8 +510,6 @@ except SQLAlchemyError as e:
     print str(e)
 
 db_session.remove()
-
-#db_session.close()
 
 print hp.heap()
 
