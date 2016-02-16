@@ -13,6 +13,7 @@ from datetime import datetime
 import numpy as np
 from sqlalchemy.sql import exists
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
+from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 import ROOT
 #import root_numpy as rnp
@@ -489,7 +490,49 @@ if not run_exists:
 # if run exists in database, update it
 #/////////////////////////////////////////////////////////////
 elif run_exists:
-    result = DataQualityRun.query.filter_by(run=run)
+
+    try:
+        Run = DataQualityRun.query.filter_by(run=run).one()
+
+        #/////////////////////////////////////////////////////
+        # update TOF histogram in Run
+        #/////////////////////////////////////////////////////
+        run_tof_histogram = Histogram("run_tof")
+
+        run_tof_histogram.db_to_histogram(Run.tof_histogram_bins,
+                                          Run.tof_histogram_counts,
+                                          Run.tof_histogram_min_bin,
+                                          Run.tof_histogram_max_bin,
+                                          Run.tof_histogram_bin_width)
+
+        run_tof_histogram.histogram_to_db(
+            run_tof_histogram.bins,
+            run_tof_histogram.counts + tof_histogram.counts)
+
+        Run.tof_histogram_bins = run_tof_histogram.bins_sparse
+        Run.tof_histogram_counts = run_tof_histogram.counts_sparse
+        Run.tof_histogram_min_bin = run_tof_histogram.min_bin
+        Run.tof_histogram_max_bin = run_tof_histogram.max_bin
+        Run.tof_histogram_bin_width = run_tof_histogram.bin_width
+
+        #/////////////////////////////////////////////////////
+        # update subruns list in Run
+        #/////////////////////////////////////////////////////
+        run_subruns = list(Run.subruns)
+        run_subruns.append(subrun)
+        Run.subruns = run_subruns
+
+        #/////////////////////////////////////////////////////
+        # update datetime
+        #/////////////////////////////////////////////////////
+        Run.date_time_updated = datetime.now()
+
+    except MultipleResultsFound as e:
+        print str(e)
+    except NoResultFound as e:
+        print str(e)
+    except:
+        pass
 
 #/////////////////////////////////////////////////////////////
 # add SubRun to session
