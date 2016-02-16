@@ -10,4 +10,4 @@ if not app.debug:
     import logging
     app.logger.addHandler(logging.StreamHandler())
 
-#from dqm import views
+from dqm import views
