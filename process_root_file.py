@@ -706,6 +706,8 @@ elif run_exists:
         #/////////////////////////////////////////////////////
         Run.date_time_updated = datetime.now()
 
+        # TODO: Add MWPC hits with DBSCAN filtering.
+
         # OK to add run to database
         run_ok = True
 
