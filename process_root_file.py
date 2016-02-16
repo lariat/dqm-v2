@@ -474,7 +474,7 @@ if not run_exists:
     subrun_dict = dict(SubRun.__dict__)  # copy SubRun dictionary to new dictionary
     subrun_dict.pop('_sa_instance_state', None)  # remove SubRun state object
     subrun_dict.pop('run', None)  # this is already in Run
-    subrun_dict.pop('subrun', None)  # subrun is a list in Run
+    subrun_dict.pop('subrun', None)  # there is a subruns list in Run
     subrun_dict.pop('date_time', None)  # don't mess with datetime
     subrun_dict.pop('date_time_added', None)  # don't mess with datetime
     subrun_dict.pop('date_time_updated', None)  # don't mess with datetime
