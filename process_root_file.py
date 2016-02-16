@@ -544,6 +544,48 @@ elif run_exists:
         Run.wut_data_blocks += number_wut_data_blocks
 
         #/////////////////////////////////////////////////////
+        # update USTOF hits histogram in Run
+        #/////////////////////////////////////////////////////
+        run_ustof_hits_histogram = Histogram("run_ustof_hits")
+
+        run_ustof_hits_histogram.db_to_histogram(
+            Run.ustof_hits_histogram_bins,
+            Run.ustof_hits_histogram_counts,
+            Run.ustof_hits_histogram_min_bin,
+            Run.ustof_hits_histogram_max_bin,
+            Run.ustof_hits_histogram_bin_width)
+
+        run_ustof_hits_histogram.histogram_to_db(run_ustof_hits_histogram.bins,
+            run_ustof_hits_histogram.counts + ustof_hits_histogram.counts)
+
+        Run.ustof_hits_histogram_bins = run_ustof_hits_histogram.bins_sparse
+        Run.ustof_hits_histogram_counts = run_ustof_hits_histogram.counts_sparse
+        Run.ustof_hits_histogram_min_bin = run_ustof_hits_histogram.min_bin
+        Run.ustof_hits_histogram_max_bin = run_ustof_hits_histogram.max_bin
+        Run.ustof_hits_histogram_bin_width = run_ustof_hits_histogram.bin_width
+
+        #/////////////////////////////////////////////////////
+        # update DSTOF hits histogram in Run
+        #/////////////////////////////////////////////////////
+        run_dstof_hits_histogram = Histogram("run_dstof_hits")
+
+        run_dstof_hits_histogram.db_to_histogram(
+            Run.dstof_hits_histogram_bins,
+            Run.dstof_hits_histogram_counts,
+            Run.dstof_hits_histogram_min_bin,
+            Run.dstof_hits_histogram_max_bin,
+            Run.dstof_hits_histogram_bin_width)
+
+        run_dstof_hits_histogram.histogram_to_db(run_dstof_hits_histogram.bins,
+            run_dstof_hits_histogram.counts + dstof_hits_histogram.counts)
+
+        Run.dstof_hits_histogram_bins = run_dstof_hits_histogram.bins_sparse
+        Run.dstof_hits_histogram_counts = run_dstof_hits_histogram.counts_sparse
+        Run.dstof_hits_histogram_min_bin = run_dstof_hits_histogram.min_bin
+        Run.dstof_hits_histogram_max_bin = run_dstof_hits_histogram.max_bin
+        Run.dstof_hits_histogram_bin_width = run_dstof_hits_histogram.bin_width
+
+        #/////////////////////////////////////////////////////
         # update TOF histogram in Run
         #/////////////////////////////////////////////////////
         run_tof_histogram = Histogram("run_tof")
