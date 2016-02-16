@@ -72,18 +72,18 @@ class DataQualityMixin(object):
     caen_board_9_pedestal_rms = Column(ARRAY(Float), unique=False)  # V1751, 8 channels
     caen_board_24_pedestal_rms = Column(ARRAY(Float), unique=False)  # V1740B, 64 channels
 
-    caen_board_7_adc_mean = Column(ARRAY(Float), unique=False)   # V1740, last 32 channels of 64
-    caen_board_8_adc_mean = Column(ARRAY(Float), unique=False)   # V1751, 8 channels
-    caen_board_9_adc_mean = Column(ARRAY(Float), unique=False)   # V1751, 8 channels
+    caen_board_7_adc_mean = Column(ARRAY(Float), unique=False)  # V1740, last 32 channels of 64
+    caen_board_8_adc_mean = Column(ARRAY(Float), unique=False)  # V1751, 8 channels
+    caen_board_9_adc_mean = Column(ARRAY(Float), unique=False)  # V1751, 8 channels
     caen_board_24_adc_mean = Column(ARRAY(Float), unique=False)  # V1740B, 64 channels
 
-    caen_board_7_adc_rms = Column(ARRAY(Float), unique=False)   # V1740, last 32 channels of 64
-    caen_board_8_adc_rms = Column(ARRAY(Float), unique=False)   # V1751, 8 channels
-    caen_board_9_adc_rms = Column(ARRAY(Float), unique=False)   # V1751, 8 channels
+    caen_board_7_adc_rms = Column(ARRAY(Float), unique=False)  # V1740, last 32 channels of 64
+    caen_board_8_adc_rms = Column(ARRAY(Float), unique=False)  # V1751, 8 channels
+    caen_board_9_adc_rms = Column(ARRAY(Float), unique=False)  # V1751, 8 channels
     caen_board_24_adc_rms = Column(ARRAY(Float), unique=False)  # V1740B, 64 channels
 
     #/////////////////////////////////////////////////////////
-    # histogram of pedestal/ADC values in CAEN V1751 boards
+    # histogram of pedestal/ADC values of CAEN V1751 boards
     #/////////////////////////////////////////////////////////
     caen_board_8_channel_0_adc_histogram_bins = Column(ARRAY(Integer), unique=False)
     caen_board_8_channel_1_adc_histogram_bins = Column(ARRAY(Integer), unique=False)

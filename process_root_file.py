@@ -1,3 +1,9 @@
+#/////////////////////////////////////////////////////////////
+# Name:      process_root_file.py
+# Date:      14 February 2016
+# Author:    Everybody is an author!
+#/////////////////////////////////////////////////////////////
+
 import os
 import sys
 import argparse
@@ -19,15 +25,21 @@ from classes import Histogram
 from dqm.database import db_session
 from dqm.models import DataQualityRun, DataQualitySubRun
 
+#/////////////////////////////////////////////////////////////
 # heapy
+#/////////////////////////////////////////////////////////////
 hp = hpy()
 
+#/////////////////////////////////////////////////////////////
 # argparse
+#/////////////////////////////////////////////////////////////
 parser = argparse.ArgumentParser(description="Analyze from ROOT file.")
 parser.add_argument('file', type=str, help="path to ROOT file")
 args = parser.parse_args()
 
+#/////////////////////////////////////////////////////////////
 # iterators for CAEN boards and channels
+#/////////////////////////////////////////////////////////////
 v1740_boards = range(0, 7+1)
 v1751_boards = range(8, 9+1)
 v1740b_boards = range(24, 24+1)
@@ -46,23 +58,31 @@ v1740b_channels = xrange(64)
 #caen_channels.update(v1751_channel_iter)
 #caen_channels.update(v1740b_channel_iter)
 
+#/////////////////////////////////////////////////////////////
 # histogram names
+#/////////////////////////////////////////////////////////////
 pedestal_th1_name = "DataQuality/pedestal/caen_board_{}_channel_{}_pedestal"
 adc_th1_name = "DataQuality/adc/caen_board_{}_channel_{}_adc"
 ustof_hits_th1_name = "DataQuality/tof/USTOFHits"
 dstof_hits_th1_name = "DataQuality/tof/DSTOFHits"
 tof_th1_name = "DataQuality/tof/TOF"
 
+#/////////////////////////////////////////////////////////////
 # TTree names
+#/////////////////////////////////////////////////////////////
 event_record_ttree_name = "DataQuality/artEventRecord"
 event_builder_ttree_name = "DataQuality/EventBuilderTree"
 wut_ttree_name = "DataQuality/wut"
 
+#/////////////////////////////////////////////////////////////
 # numpy histogram config for timestamps of data blocks
+#/////////////////////////////////////////////////////////////
 timestamps_bin_range = (0, 60)
 timestamps_bins = 600
 
+#/////////////////////////////////////////////////////////////
 # load ROOT file
+#/////////////////////////////////////////////////////////////
 f = ROOT.TFile(args.file)
 
 def get_mean_and_rms(boards, channels):
@@ -108,7 +128,9 @@ def th1_to_arrays(th1):
         counts.append(th1.GetBinContent(bin_index))
     return np.array(bins), np.array(counts, dtype=np.int64)
 
+#/////////////////////////////////////////////////////////////
 # get run, sub-run, and time stamp from EventRecord TTree
+#/////////////////////////////////////////////////////////////
 event_record_ttree = f.Get(event_record_ttree_name)
 
 run = 0
@@ -126,18 +148,33 @@ for branch in event_record_ttree:
 if not event_record_read:
     print "EventRecord TTree not read!"
 
-count = DataQualitySubRun.query.filter_by(run=run, subrun=subrun).count()
+#count = DataQualitySubRun.query.filter_by(run=run, subrun=subrun).count()
 
+#/////////////////////////////////////////////////////////////
 # check if subrun exists in database
+#/////////////////////////////////////////////////////////////
 subrun_exists = db_session.query(exists()
                                  .where(DataQualitySubRun.run == run)
                                  .where(DataQualitySubRun.subrun == subrun)
                                 ).scalar()
 
+# TODO: Check DataQualityRun to see if subrun had been added.
+
+#/////////////////////////////////////////////////////////////
 # if subrun exists in database, exit
+#/////////////////////////////////////////////////////////////
 if subrun_exists:
+    print "Run {}, SubRun {} already exists in table!".format(run, subrun)
+    print "Exiting..."
     db_session.close()  # close transaction
     sys.exit(1)
+
+#/////////////////////////////////////////////////////////////
+# check if run exists in database
+#/////////////////////////////////////////////////////////////
+run_exists = db_session.query(exists()
+                              .where(DataQualityRun.run == run)
+                             ).scalar()
 
 # EventBuilder TTree
 event_builder_ttree = f.Get(event_builder_ttree_name)
@@ -145,8 +182,10 @@ event_builder_ttree = f.Get(event_builder_ttree_name)
 # WUT TTree
 wut_ttree = f.Get(wut_ttree_name)
 
+#/////////////////////////////////////////////////////////////
 # get number of events, TPC events, and data blocks
 # get timestamps of data blocks
+#/////////////////////////////////////////////////////////////
 number_events = 0
 number_tpc_events = 0
 
@@ -177,12 +216,16 @@ for branch in wut_ttree:
     number_wut_data_blocks += 1
     wut_timestamps.append(branch.time_header * 16e-6)  # seconds
 
+#/////////////////////////////////////////////////////////////
 # convert timestamps of data blocks from microseconds to seconds
+#/////////////////////////////////////////////////////////////
 for board in caen_boards:
     caen_timestamps[board] = [ x * 1e-6 for x in caen_timestamps[board] ]  # seconds
 tdc_timestamps = [ x * 1e-6 for x in tdc_timestamps ]  # seconds
 
+#/////////////////////////////////////////////////////////////
 # histograms for timestamps of data blocks
+#/////////////////////////////////////////////////////////////
 caen_timestamps_counts = { board : [] for board in caen_boards }
 caen_timestamps_bins = { board : [] for board in caen_boards }
 caen_timestamps_histograms = {
@@ -201,27 +244,37 @@ for board in caen_boards:
     caen_timestamps_histograms[board].histogram_to_db(
         caen_timestamps_bins[board], caen_timestamps_counts[board])
 
+#/////////////////////////////////////////////////////////////
 # numpy histogram for TDC timestamps
+#/////////////////////////////////////////////////////////////
 tdc_timestamps_counts, tdc_timestamps_bins = np.histogram(
     tdc_timestamps, bins=timestamps_bins, range=timestamps_bin_range)
 tdc_timestamps_bins = tdc_timestamps_bins[:-1]  # get rid of "overflow" bin
 
+#/////////////////////////////////////////////////////////////
 # use Histogram class for TDC timestamps
+#/////////////////////////////////////////////////////////////
 tdc_timestamps_histogram = Histogram("tdc_timestamps")
 tdc_timestamps_histogram.histogram_to_db(tdc_timestamps_bins,
                                          tdc_timestamps_counts)
 
+#/////////////////////////////////////////////////////////////
 # numpy histogram for WUT timestamps
+#/////////////////////////////////////////////////////////////
 wut_timestamps_counts, wut_timestamps_bins = np.histogram(
     wut_timestamps, bins=timestamps_bins, range=timestamps_bin_range)
 wut_timestamps_bins = wut_timestamps_bins[:-1]  # get rid of "overflow" bin
 
+#/////////////////////////////////////////////////////////////
 # use Histogram class for WUT timestamps
+#/////////////////////////////////////////////////////////////
 wut_timestamps_histogram = Histogram("wut_timestamps")
 wut_timestamps_histogram.histogram_to_db(wut_timestamps_bins,
                                          wut_timestamps_counts)
 
+#/////////////////////////////////////////////////////////////
 # get mean and RMS of pedestal and ADC histograms
+#/////////////////////////////////////////////////////////////
 v1740_pedestal_mean, v1740_pedestal_rms, v1740_adc_mean, v1740_adc_rms, \
 v1740_pedestal_integral, v1740_adc_integral \
     = get_mean_and_rms(v1740_boards, v1740_channels)
@@ -241,7 +294,9 @@ v1740b_pedestal_integral, v1740b_adc_integral \
 #print v1740b_pedestal_integral
 #print v1740b_adc_integral
 
+#/////////////////////////////////////////////////////////////
 # TPC pedestal/ADC mean and RMS
+#/////////////////////////////////////////////////////////////
 tpc_pedestal_mean = list(itertools.chain.from_iterable(v1740_pedestal_mean[:7]))
 tpc_pedestal_mean.extend(v1740_pedestal_mean[7][:32])
 
@@ -254,7 +309,9 @@ tpc_adc_mean.extend(v1740_adc_mean[7][:32])
 tpc_adc_rms = list(itertools.chain.from_iterable(v1740_adc_rms[:7]))
 tpc_adc_rms.extend(v1740_adc_rms[7][:32])
 
+#/////////////////////////////////////////////////////////////
 # get CAEN V1751 ADC histograms
+#/////////////////////////////////////////////////////////////
 caen_board_8_adc_histograms = {}
 caen_board_9_adc_histograms = {}
 
@@ -289,19 +346,25 @@ for channel in v1751_channels:
     caen_board_9_adc_histograms[channel].histogram_to_db(
         caen_board_9_adc_bins, caen_board_9_adc_counts)
 
+#/////////////////////////////////////////////////////////////
 # get USTOF hits histogram
+#/////////////////////////////////////////////////////////////
 ustof_hits_th1 = f.Get(ustof_hits_th1_name)
 ustof_hits_bins, ustof_hits_counts = th1_to_arrays(ustof_hits_th1)
 ustof_hits_histogram = Histogram("ustof_hits")
 ustof_hits_histogram.histogram_to_db(ustof_hits_bins, ustof_hits_counts)
 
+#/////////////////////////////////////////////////////////////
 # get DSTOF hits histogram
+#/////////////////////////////////////////////////////////////
 dstof_hits_th1 = f.Get(dstof_hits_th1_name)
 dstof_hits_bins, dstof_hits_counts = th1_to_arrays(dstof_hits_th1)
 dstof_hits_histogram = Histogram("dstof_hits")
 dstof_hits_histogram.histogram_to_db(dstof_hits_bins, dstof_hits_counts)
 
+#/////////////////////////////////////////////////////////////
 # get TOF histogram
+#/////////////////////////////////////////////////////////////
 tof_th1 = f.Get(tof_th1_name)
 tof_bins, tof_counts = th1_to_arrays(tof_th1)
 tof_histogram = Histogram("tof")
@@ -327,28 +390,38 @@ tof_histogram.histogram_to_db(tof_bins, tof_counts)
 #print np.array(v1751_adc_mean)
 #print np.array(v1751_adc_rms)
 
+#/////////////////////////////////////////////////////////////
 # convert time stamp to date time
+#/////////////////////////////////////////////////////////////
 date_time = datetime.fromtimestamp(timestamp)
 
+#/////////////////////////////////////////////////////////////
 # instantiate DataQualitySubRun
+#/////////////////////////////////////////////////////////////
 SubRun = DataQualitySubRun(
     run=run, subrun=subrun, date_time=date_time,
     date_time_added=datetime.now())
 
+#/////////////////////////////////////////////////////////////
 # add number of data blocks to SubRum
+#/////////////////////////////////////////////////////////////
 for board in caen_boards:
     setattr(SubRun, "caen_board_{}_data_blocks".format(board),
             number_caen_data_blocks[board])
 SubRun.mwpc_data_blocks = number_tdc_data_blocks
 SubRun.wut_data_blocks = number_wut_data_blocks
 
+#/////////////////////////////////////////////////////////////
 # add TPC pedestal/ADC mean and RMS to SubRun
+#/////////////////////////////////////////////////////////////
 SubRun.tpc_pedestal_mean = tpc_pedestal_mean
 SubRun.tpc_pedestal_rms = tpc_pedestal_rms
 SubRun.tpc_adc_mean = tpc_adc_mean
 SubRun.tpc_adc_rms = tpc_adc_rms
 
+#/////////////////////////////////////////////////////////////
 # add CAEN pedestal/ADC mean and RMS to SubRun
+#/////////////////////////////////////////////////////////////
 SubRun.caen_board_7_pedestal_mean = v1740_pedestal_mean[7][32:]
 SubRun.caen_board_7_pedestal_rms = v1740_pedestal_rms[7][32:]
 SubRun.caen_board_7_adc_mean = v1740_adc_mean[7][32:]
@@ -376,7 +449,9 @@ for i in xrange(len(v1740b_boards)):
     setattr(SubRun, "caen_board_{}_adc_rms".format(board),
             v1740b_adc_rms[i])
 
+#/////////////////////////////////////////////////////////////
 # add CAEN V1751 ADC histograms to SubRun
+#/////////////////////////////////////////////////////////////
 for channel in v1751_channels:
     # CAEN board 8
     setattr(SubRun,
@@ -394,28 +469,50 @@ for channel in v1751_channels:
         "caen_board_9_channel_{}_adc_histogram_counts".format(channel),
         caen_board_9_adc_histograms[channel].counts_sparse)
 
+#/////////////////////////////////////////////////////////////
 # add USTOF hits histogram to SubRun
+#/////////////////////////////////////////////////////////////
 SubRun.ustof_hits_histogram_bins = ustof_hits_histogram.bins_sparse
 SubRun.ustof_hits_histogram_counts = ustof_hits_histogram.counts_sparse
 SubRun.ustof_hits_histogram_min_bin = ustof_hits_histogram.min_bin
 SubRun.ustof_hits_histogram_max_bin = ustof_hits_histogram.max_bin
 SubRun.ustof_hits_histogram_bin_width = ustof_hits_histogram.bin_width
 
+#/////////////////////////////////////////////////////////////
 # add DSTOF hits histogram to SubRun
+#/////////////////////////////////////////////////////////////
 SubRun.dstof_hits_histogram_bins = dstof_hits_histogram.bins_sparse
 SubRun.dstof_hits_histogram_counts = dstof_hits_histogram.counts_sparse
 SubRun.dstof_hits_histogram_min_bin = dstof_hits_histogram.min_bin
 SubRun.dstof_hits_histogram_max_bin = dstof_hits_histogram.max_bin
 SubRun.dstof_hits_histogram_bin_width = dstof_hits_histogram.bin_width
 
+#/////////////////////////////////////////////////////////////
 # add TOF histogram to SubRun
+#/////////////////////////////////////////////////////////////
 SubRun.tof_histogram_bins = tof_histogram.bins_sparse
 SubRun.tof_histogram_counts = tof_histogram.counts_sparse
 SubRun.tof_histogram_min_bin = tof_histogram.min_bin
 SubRun.tof_histogram_max_bin = tof_histogram.max_bin
 SubRun.tof_histogram_bin_width = tof_histogram.bin_width
 
-db_session.close()
+#/////////////////////////////////////////////////////////////
+# add SubRun to session
+#/////////////////////////////////////////////////////////////
+db_session.add(SubRun)
+
+try:
+    db_session.commit()
+except IntegrityError as e:
+    db_session.rollback()
+    print str(e)
+except SQLAlchemyError as e:
+    db_session.rollback()
+    print str(e)
+
+db_session.remove()
+
+#db_session.close()
 
 print hp.heap()
 
