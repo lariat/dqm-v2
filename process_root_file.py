@@ -367,7 +367,7 @@ SubRun = DataQualitySubRun(
     date_time_added=datetime.now())
 
 #/////////////////////////////////////////////////////////////
-# add number of data blocks to SubRum
+# add number of data blocks to SubRun
 #/////////////////////////////////////////////////////////////
 for board in caen_boards:
     setattr(SubRun, "caen_board_{}_data_blocks".format(board),
@@ -462,6 +462,9 @@ SubRun.tof_histogram_bin_width = tof_histogram.bin_width
 
 # TODO: Add MWPC hits with DBSCAN filtering.
 
+# add run to database only if this is true
+run_ok = False
+
 #/////////////////////////////////////////////////////////////
 # if run does not exist in database, create it
 #/////////////////////////////////////////////////////////////
@@ -486,6 +489,9 @@ if not run_exists:
     # add current subrun number to list
     Run.subruns = [ subrun ]
 
+    # OK to add run to database
+    run_ok = True
+
 #/////////////////////////////////////////////////////////////
 # if run exists in database, update it
 #/////////////////////////////////////////////////////////////
@@ -493,6 +499,16 @@ elif run_exists:
 
     try:
         Run = DataQualityRun.query.filter_by(run=run).one()
+
+        #/////////////////////////////////////////////////////////////
+        # add number of data blocks to Run
+        #/////////////////////////////////////////////////////////////
+        for board in caen_boards:
+            attribute = "caen_board_{}_data_blocks".format(board)
+            setattr(Run, attribute, getattr(Run, attribute) + \
+                    number_caen_data_blocks[board])
+        Run.mwpc_data_blocks += number_tdc_data_blocks
+        Run.wut_data_blocks += number_wut_data_blocks
 
         #/////////////////////////////////////////////////////
         # update TOF histogram in Run
@@ -527,6 +543,9 @@ elif run_exists:
         #/////////////////////////////////////////////////////
         Run.date_time_updated = datetime.now()
 
+        # OK to add run to database
+        run_ok = True
+
     except MultipleResultsFound as e:
         print str(e)
     except NoResultFound as e:
@@ -538,7 +557,12 @@ elif run_exists:
 # add SubRun to session
 #/////////////////////////////////////////////////////////////
 db_session.add(SubRun)
-db_session.add(Run)
+
+#/////////////////////////////////////////////////////////////
+# add Run to session
+#/////////////////////////////////////////////////////////////
+if run_ok:
+    db_session.add(Run)
 
 #/////////////////////////////////////////////////////////////
 # attempt to commit changes and additions to database
