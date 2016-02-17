@@ -52,9 +52,12 @@ def fetch():
     if not r and sr:
         return "Run number not specified!"
 
+    if r == "latest" or sr == "latest":
+        latest_run, latest_subrun = latest_run_subrun()
+
     if r:
         if r == "latest":
-            run = latest_run_subrun()[0]
+            run = latest_run
         else:
             try:
                 run = int(r)
@@ -63,7 +66,7 @@ def fetch():
 
     if sr:
         if sr == "latest":
-            run, subrun = latest_run_subrun()
+            subrun = latest_subrun
         else:
             try:
                 subrun = int(sr)
@@ -72,11 +75,17 @@ def fetch():
 
     if r and not sr:
         Run = fetch_run(run)
+        if isinstance(Run, DataQualityRun):
+            print Run.date_time_updated
         return "Run: {}".format(run)
+        return Run
 
     if r and sr:
         SubRun = fetch_subrun(run, subrun)
+        if isinstance(SubRun, DataQualitySubRun):
+            print SubRun.date_time
         return "Run: {}; sub-run: {}".format(run, subrun)
+        return SubRun
 
 @app.route('/')
 @app.route('/home')
