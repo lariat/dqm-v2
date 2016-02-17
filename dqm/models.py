@@ -187,17 +187,33 @@ class DataQualityMixin(object):
     # histograms of MWPC hits channel occupancy; 64 channels per TDC
     #/////////////////////////////////////////////////////////
     # good hits
-    mwpc_good_hits_channel_histogram = Column(ARRAY(Integer), unique=False)
+    mwpc_good_hits_channel_histogram_bins = Column(ARRAY(Float), unique=False)
+    mwpc_good_hits_channel_histogram_counts = Column(ARRAY(Integer), unique=False)
+    mwpc_good_hits_channel_histogram_min_bin = Column(Float, unique=False)
+    mwpc_good_hits_channel_histogram_max_bin = Column(Float, unique=False)
+    mwpc_good_hits_channel_histogram_bin_width = Column(Float, unique=False)
     # bad hits
-    mwpc_bad_hits_channel_histogram = Column(ARRAY(Integer), unique=False)
+    mwpc_bad_hits_channel_histogram_bins = Column(ARRAY(Float), unique=False)
+    mwpc_bad_hits_channel_histogram_counts = Column(ARRAY(Integer), unique=False)
+    mwpc_bad_hits_channel_histogram_min_bin = Column(Float, unique=False)
+    mwpc_bad_hits_channel_histogram_max_bin = Column(Float, unique=False)
+    mwpc_bad_hits_channel_histogram_bin_width = Column(Float, unique=False)
 
     #/////////////////////////////////////////////////////////
     # histograms of MWPC hits timing occupancy; 1024 time bins per TDC
     #/////////////////////////////////////////////////////////
     # good hits
-    mwpc_good_hits_timing_histogram = Column(ARRAY(Integer), unique=False)
+    mwpc_good_hits_timing_histogram_bins = Column(ARRAY(Float), unique=False)
+    mwpc_good_hits_timing_histogram_counts = Column(ARRAY(Integer), unique=False)
+    mwpc_good_hits_timing_histogram_min_bin = Column(Float, unique=False)
+    mwpc_good_hits_timing_histogram_max_bin = Column(Float, unique=False)
+    mwpc_good_hits_timing_histogram_bin_width = Column(Float, unique=False)
     # bad hits
-    mwpc_bad_hits_timing_histogram = Column(ARRAY(Integer), unique=False)
+    mwpc_bad_hits_timing_histogram_bins = Column(ARRAY(Float), unique=False)
+    mwpc_bad_hits_timing_histogram_counts = Column(ARRAY(Integer), unique=False)
+    mwpc_bad_hits_timing_histogram_min_bin = Column(Float, unique=False)
+    mwpc_bad_hits_timing_histogram_max_bin = Column(Float, unique=False)
+    mwpc_bad_hits_timing_histogram_bin_width = Column(Float, unique=False)
 
     #/////////////////////////////////////////////////////////
     # histograms of USTOF/DSTOF hits
