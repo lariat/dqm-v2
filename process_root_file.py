@@ -735,7 +735,8 @@ if run_ok:
 # update Latest with latest run and sub-run
 #/////////////////////////////////////////////////////////////
 if not args.backlog:
-    Latest = DataQualityLatest.query.one()
+    Latest = DataQualityLatest.query.order_by(
+        DataQualityLatest.date_time_updated.desc()).first()
     Latest.run = run
     Latest.subrun = subrun
     Latest.date_time_updated = datetime.now()
