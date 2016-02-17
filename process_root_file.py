@@ -809,6 +809,183 @@ elif run_exists:
         Run.tof_histogram_max_bin = run_tof_histogram.max_bin
         Run.tof_histogram_bin_width = run_tof_histogram.bin_width
 
+        #
+
+        #run_caen_board_8_adc_histograms = {}
+
+        #for channel in v1751_channels:
+        #    # CAEN board 8
+        #    run_caen_board_8_adc_histograms[channel] = Histogram(
+        #        "caen_board_8_channel_{}_adc".format(channel))
+
+        #    run_caen_board_8_adc_histograms[channel].db_to_histogram(
+        #        getattr(Run, "caen_board_8_channel_{}_adc_histogram_bins".format(channel)),
+        #        getattr(Run, "caen_board_8_channel_{}_adc_histogram_counts".format(channel)),
+        #        getattr(Run, "caen_board_8_channel_{}_adc_histogram_min_bin".format(channel)),
+        #        getattr(Run, "caen_board_8_channel_{}_adc_histogram_max_bin".format(channel)),
+        #        getattr(Run, "caen_board_8_channel_{}_adc_histogram_bin_width".format(channel)))
+
+        #    run_caen_board_8_adc_histograms[channel].histogram_to_db(
+        #        run_caen_board_8_adc_histograms[channel].bins,
+        #        run_caen_board_8_adc_histograms[channel].counts + \
+        #        caen_board_8_adc_histograms[channel].counts)
+
+        #    setattr(Run,
+        #        "caen_board_8_channel_{}_adc_histogram_bins".format(channel),
+        #        run_caen_board_8_adc_histograms[channel].bins_sparse)
+        #    setattr(Run,
+        #        "caen_board_8_channel_{}_adc_histogram_counts".format(channel),
+        #        run_caen_board_8_adc_histograms[channel].counts_sparse)
+        #    setattr(Run,
+        #        "caen_board_8_channel_{}_adc_histogram_min_bin".format(channel),
+        #        run_caen_board_8_adc_histograms[channel].min_bin)
+        #    setattr(Run,
+        #        "caen_board_8_channel_{}_adc_histogram_max_bin".format(channel),
+        #        run_caen_board_8_adc_histograms[channel].max_bin)
+        #    setattr(Run,
+        #        "caen_board_8_channel_{}_adc_histogram_bin_width".format(channel),
+        #        run_caen_board_8_adc_histograms[channel].bin_width)
+
+        #
+
+        #/////////////////////////////////////////////////////////////
+        # update MWPC TDC hits histograms in SubRun
+        #/////////////////////////////////////////////////////////////
+        run_mwpc_good_hits_channel_histograms = {}
+        run_mwpc_bad_hits_channel_histograms = {}
+        run_mwpc_good_hits_timing_histograms = {}
+        run_mwpc_bad_hits_timing_histograms = {}
+
+        for tdc in mwpc_tdc_numbers:
+
+            # channel occupancy for good hits
+            run_mwpc_good_hits_channel_histograms[tdc] = Histogram(
+                "mwpc_tdc_{}_good_hits_channel_histogram".format(tdc))
+
+            run_mwpc_good_hits_channel_histograms[tdc].db_to_histogram(
+                getattr(Run, "mwpc_tdc_{}_good_hits_channel_histogram_bins".format(tdc)),
+                getattr(Run, "mwpc_tdc_{}_good_hits_channel_histogram_counts".format(tdc)),
+                getattr(Run, "mwpc_tdc_{}_good_hits_channel_histogram_min_bin".format(tdc)),
+                getattr(Run, "mwpc_tdc_{}_good_hits_channel_histogram_max_bin".format(tdc)),
+                getattr(Run, "mwpc_tdc_{}_good_hits_channel_histogram_bin_width".format(tdc)))
+
+            run_mwpc_good_hits_channel_histograms[tdc].histogram_to_db(
+                run_mwpc_good_hits_channel_histograms[tdc].bins,
+                run_mwpc_good_hits_channel_histograms[tdc].counts + \
+                mwpc_good_hits_channel_histograms[tdc].counts)
+
+            setattr(Run,
+                "mwpc_tdc_{}_good_hits_channel_histogram_bins".format(tdc),
+                run_mwpc_good_hits_channel_histograms[tdc].bins_sparse)
+            setattr(Run,
+                "mwpc_tdc_{}_good_hits_channel_histogram_counts".format(tdc),
+                run_mwpc_good_hits_channel_histograms[tdc].counts_sparse)
+            setattr(Run,
+                "mwpc_tdc_{}_good_hits_channel_histogram_min_bin".format(tdc),
+                run_mwpc_good_hits_channel_histograms[tdc].min_bin)
+            setattr(Run,
+                "mwpc_tdc_{}_good_hits_channel_histogram_max_bin".format(tdc),
+                run_mwpc_good_hits_channel_histograms[tdc].max_bin)
+            setattr(Run,
+                "mwpc_tdc_{}_good_hits_channel_histogram_bin_width".format(tdc),
+                run_mwpc_good_hits_channel_histograms[tdc].bin_width)
+
+            # channel occupancy for bad hits
+            run_mwpc_bad_hits_channel_histograms[tdc] = Histogram(
+                "mwpc_tdc_{}_bad_hits_channel_histogram".format(tdc))
+
+            run_mwpc_bad_hits_channel_histograms[tdc].db_to_histogram(
+                getattr(Run, "mwpc_tdc_{}_bad_hits_channel_histogram_bins".format(tdc)),
+                getattr(Run, "mwpc_tdc_{}_bad_hits_channel_histogram_counts".format(tdc)),
+                getattr(Run, "mwpc_tdc_{}_bad_hits_channel_histogram_min_bin".format(tdc)),
+                getattr(Run, "mwpc_tdc_{}_bad_hits_channel_histogram_max_bin".format(tdc)),
+                getattr(Run, "mwpc_tdc_{}_bad_hits_channel_histogram_bin_width".format(tdc)))
+
+            run_mwpc_bad_hits_channel_histograms[tdc].histogram_to_db(
+                run_mwpc_bad_hits_channel_histograms[tdc].bins,
+                run_mwpc_bad_hits_channel_histograms[tdc].counts + \
+                mwpc_bad_hits_channel_histograms[tdc].counts)
+
+            setattr(Run,
+                "mwpc_tdc_{}_bad_hits_channel_histogram_bins".format(tdc),
+                run_mwpc_bad_hits_channel_histograms[tdc].bins_sparse)
+            setattr(Run,
+                "mwpc_tdc_{}_bad_hits_channel_histogram_counts".format(tdc),
+                run_mwpc_bad_hits_channel_histograms[tdc].counts_sparse)
+            setattr(Run,
+                "mwpc_tdc_{}_bad_hits_channel_histogram_min_bin".format(tdc),
+                run_mwpc_bad_hits_channel_histograms[tdc].min_bin)
+            setattr(Run,
+                "mwpc_tdc_{}_bad_hits_channel_histogram_max_bin".format(tdc),
+                run_mwpc_bad_hits_channel_histograms[tdc].max_bin)
+            setattr(Run,
+                "mwpc_tdc_{}_bad_hits_channel_histogram_bin_width".format(tdc),
+                run_mwpc_bad_hits_channel_histograms[tdc].bin_width)
+
+            # timing occupancy for good hits
+            run_mwpc_good_hits_timing_histograms[tdc] = Histogram(
+                "mwpc_tdc_{}_good_hits_timing_histogram".format(tdc))
+
+            run_mwpc_good_hits_timing_histograms[tdc].db_to_histogram(
+                getattr(Run, "mwpc_tdc_{}_good_hits_timing_histogram_bins".format(tdc)),
+                getattr(Run, "mwpc_tdc_{}_good_hits_timing_histogram_counts".format(tdc)),
+                getattr(Run, "mwpc_tdc_{}_good_hits_timing_histogram_min_bin".format(tdc)),
+                getattr(Run, "mwpc_tdc_{}_good_hits_timing_histogram_max_bin".format(tdc)),
+                getattr(Run, "mwpc_tdc_{}_good_hits_timing_histogram_bin_width".format(tdc)))
+
+            run_mwpc_good_hits_timing_histograms[tdc].histogram_to_db(
+                run_mwpc_good_hits_timing_histograms[tdc].bins,
+                run_mwpc_good_hits_timing_histograms[tdc].counts + \
+                mwpc_good_hits_timing_histograms[tdc].counts)
+
+            setattr(Run,
+                "mwpc_tdc_{}_good_hits_timing_histogram_bins".format(tdc),
+                run_mwpc_good_hits_timing_histograms[tdc].bins_sparse)
+            setattr(Run,
+                "mwpc_tdc_{}_good_hits_timing_histogram_counts".format(tdc),
+                run_mwpc_good_hits_timing_histograms[tdc].counts_sparse)
+            setattr(Run,
+                "mwpc_tdc_{}_good_hits_timing_histogram_min_bin".format(tdc),
+                run_mwpc_good_hits_timing_histograms[tdc].min_bin)
+            setattr(Run,
+                "mwpc_tdc_{}_good_hits_timing_histogram_max_bin".format(tdc),
+                run_mwpc_good_hits_timing_histograms[tdc].max_bin)
+            setattr(Run,
+                "mwpc_tdc_{}_good_hits_timing_histogram_bin_width".format(tdc),
+                run_mwpc_good_hits_timing_histograms[tdc].bin_width)
+
+            # timing occupancy for bad hits
+            run_mwpc_bad_hits_timing_histograms[tdc] = Histogram(
+                "mwpc_tdc_{}_bad_hits_timing_histogram".format(tdc))
+
+            run_mwpc_bad_hits_timing_histograms[tdc].db_to_histogram(
+                getattr(Run, "mwpc_tdc_{}_bad_hits_timing_histogram_bins".format(tdc)),
+                getattr(Run, "mwpc_tdc_{}_bad_hits_timing_histogram_counts".format(tdc)),
+                getattr(Run, "mwpc_tdc_{}_bad_hits_timing_histogram_min_bin".format(tdc)),
+                getattr(Run, "mwpc_tdc_{}_bad_hits_timing_histogram_max_bin".format(tdc)),
+                getattr(Run, "mwpc_tdc_{}_bad_hits_timing_histogram_bin_width".format(tdc)))
+
+            run_mwpc_bad_hits_timing_histograms[tdc].histogram_to_db(
+                run_mwpc_bad_hits_timing_histograms[tdc].bins,
+                run_mwpc_bad_hits_timing_histograms[tdc].counts + \
+                mwpc_bad_hits_timing_histograms[tdc].counts)
+
+            setattr(Run,
+                "mwpc_tdc_{}_bad_hits_timing_histogram_bins".format(tdc),
+                run_mwpc_bad_hits_timing_histograms[tdc].bins_sparse)
+            setattr(Run,
+                "mwpc_tdc_{}_bad_hits_timing_histogram_counts".format(tdc),
+                run_mwpc_bad_hits_timing_histograms[tdc].counts_sparse)
+            setattr(Run,
+                "mwpc_tdc_{}_bad_hits_timing_histogram_min_bin".format(tdc),
+                run_mwpc_bad_hits_timing_histograms[tdc].min_bin)
+            setattr(Run,
+                "mwpc_tdc_{}_bad_hits_timing_histogram_max_bin".format(tdc),
+                run_mwpc_bad_hits_timing_histograms[tdc].max_bin)
+            setattr(Run,
+                "mwpc_tdc_{}_bad_hits_timing_histogram_bin_width".format(tdc),
+                run_mwpc_bad_hits_timing_histograms[tdc].bin_width)
+
         #/////////////////////////////////////////////////////
         # update subruns list in Run
         #/////////////////////////////////////////////////////
@@ -820,8 +997,6 @@ elif run_exists:
         # update datetime
         #/////////////////////////////////////////////////////
         Run.date_time_updated = datetime.now()
-
-        # TODO: Add MWPC hits with DBSCAN filtering.
 
         # OK to add run to database
         run_ok = True
