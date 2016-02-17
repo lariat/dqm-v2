@@ -224,7 +224,7 @@ class DataQualityMixin(object):
     mwpc_momentum_histogram_counts = Column(ARRAY(Integer), unique=False)
 
 class DataQualitySubRun(DataQualityMixin, Base):
-    """ Data quality table for subruns. """
+    """ Data quality table for sub-runs. """
 
     # table name
     __tablename__ = 'subruns'
@@ -233,7 +233,9 @@ class DataQualitySubRun(DataQualityMixin, Base):
     # psql sequence for unique ID
     #id = Column(Integer, primary_key=True)
 
-    # subrun number
+    #/////////////////////////////////////////////////////////
+    # sub-run number
+    #/////////////////////////////////////////////////////////
     subrun = Column(Integer, unique=False)
 
     def __init__(self, run, subrun, date_time, date_time_added):
@@ -244,7 +246,7 @@ class DataQualitySubRun(DataQualityMixin, Base):
         self.date_time_updated = date_time_added
 
     def __repr__(self):
-        return '<DataQualitySubRun %r>' % (self.date_time)
+        return '<DataQualitySubRun %r>' % (self.id)
 
 class DataQualityRun(DataQualityMixin, Base):
     """ Data quality table for runs. """
@@ -256,7 +258,9 @@ class DataQualityRun(DataQualityMixin, Base):
     # psql sequence for unique ID
     #id = Column(Integer, primary_key=True)
 
-    # list of subruns added to this run
+    #/////////////////////////////////////////////////////////
+    # list of sub-runs added to this run
+    #/////////////////////////////////////////////////////////
     subruns = Column(ARRAY(Integer), unique=False)
 
     def __init__(self, run, date_time, date_time_added):
@@ -266,5 +270,33 @@ class DataQualityRun(DataQualityMixin, Base):
         self.date_time_updated = date_time_added
 
     def __repr__(self):
-        return '<DataQualityRun %r>' % (self.date_time)
+        return '<DataQualityRun %r>' % (self.id)
+
+class DataQualityLatest(Base):
+    """ Data quality table for the latest run/sub-run. """
+
+    # table name
+    __tablename__ = 'latest'
+    __table_args__ = {'schema' : 'dqm'}
+
+    #/////////////////////////////////////////////////////////
+    # psql sequence for unique ID
+    #/////////////////////////////////////////////////////////
+    id = Column(Integer, primary_key=True)
+
+    #/////////////////////////////////////////////////////////
+    # run, sub-run, and datetime
+    #/////////////////////////////////////////////////////////
+    run = Column(Integer, unique=False)
+    subrun = Column(Integer, unique=False)
+    date_time_updated = Column(
+        DateTime(timezone=False), unique=False, nullable=False)
+
+    def __init__(self, run, subrun, date_time_updated):
+        self.run = run
+        self.subrun = subrun
+        self.date_time_updated = date_time_updated
+
+    def __repr__(self):
+        return '<DataQualityLatest %r>' % (self.id)
 

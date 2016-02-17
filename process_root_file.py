@@ -24,7 +24,7 @@ import log
 from classes import Histogram
 
 from dqm.database import db_session
-from dqm.models import DataQualityRun, DataQualitySubRun
+from dqm.models import DataQualityRun, DataQualitySubRun, DataQualityLatest
 
 #/////////////////////////////////////////////////////////////
 # heapy
@@ -36,6 +36,8 @@ hp = hpy()
 #/////////////////////////////////////////////////////////////
 parser = argparse.ArgumentParser(description="Analyze from ROOT file.")
 parser.add_argument('file', type=str, help="path to ROOT file")
+parser.add_argument('--backlog', dest='backlog', action='store_true',
+    help="backlog mode, prevents updating the DataQualityLatest table")
 args = parser.parse_args()
 
 #/////////////////////////////////////////////////////////////
@@ -728,6 +730,16 @@ db_session.add(SubRun)
 #/////////////////////////////////////////////////////////////
 if run_ok:
     db_session.add(Run)
+
+#/////////////////////////////////////////////////////////////
+# update Latest with latest run and sub-run
+#/////////////////////////////////////////////////////////////
+if not args.backlog:
+    Latest = DataQualityLatest.query.one()
+    Latest.run = run
+    Latest.subrun = subrun
+    Latest.date_time_updated = datetime.now()
+    db_session.add(Latest)
 
 #/////////////////////////////////////////////////////////////
 # attempt to commit changes and additions to database
