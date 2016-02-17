@@ -26,6 +26,8 @@ from classes import Histogram
 from dqm.database import db_session
 from dqm.models import DataQualityRun, DataQualitySubRun, DataQualityLatest
 
+import mwpc
+
 #/////////////////////////////////////////////////////////////
 # heapy
 #/////////////////////////////////////////////////////////////
@@ -52,6 +54,13 @@ non_tpc_caen_boards = sorted(list(set(caen_boards) - set(v1740_boards[:-1])))
 v1740_channels = xrange(64)
 v1751_channels = xrange(8)
 v1740b_channels = xrange(64)
+
+#/////////////////////////////////////////////////////////////
+# iterators for MWPC TDCs
+#/////////////////////////////////////////////////////////////
+mwpc_tdc_numbers = range(1, 16+1)
+mwpc_tdc_channels = xrange(64)
+mwpc_tdc_clock_ticks = xrange(1024)
 
 #/////////////////////////////////////////////////////////////
 # histogram names
@@ -357,9 +366,27 @@ tof_histogram = Histogram("tof")
 tof_histogram.histogram_to_db(tof_bins, tof_counts)
 
 #/////////////////////////////////////////////////////////////
+# get MWPC histograms
+#/////////////////////////////////////////////////////////////
+good_hits, bad_hits = mwpc.get_hits(args.file)
+
+mwpc_good_hits_channel_histograms = mwpc.hits_histograms(
+    good_hits, 0, mwpc_tdc_numbers, mwpc_tdc_channels)
+mwpc_bad_hits_channel_histograms = mwpc.hits_histograms(
+    bad_hits, 0, mwpc_tdc_numbers, mwpc_tdc_channels)
+mwpc_good_hits_timing_histograms = mwpc.hits_histograms(
+    good_hits, 1, mwpc_tdc_numbers, mwpc_tdc_clock_ticks)
+mwpc_bad_hits_timing_histograms = mwpc.hits_histograms(
+    bad_hits, 1, mwpc_tdc_numbers, mwpc_tdc_clock_ticks)
+
+#/////////////////////////////////////////////////////////////
 # convert time stamp to date time
 #/////////////////////////////////////////////////////////////
 date_time = datetime.fromtimestamp(timestamp)
+
+#------------------------------------------------------------------------------
+# ADD TO dqm.subruns TABLE
+#------------------------------------------------------------------------------
 
 #/////////////////////////////////////////////////////////////
 # instantiate DataQualitySubRun
@@ -486,7 +513,81 @@ SubRun.tof_histogram_min_bin = tof_histogram.min_bin
 SubRun.tof_histogram_max_bin = tof_histogram.max_bin
 SubRun.tof_histogram_bin_width = tof_histogram.bin_width
 
-# TODO: Add MWPC hits with DBSCAN filtering.
+#/////////////////////////////////////////////////////////////
+# add MWPC TDC hits histograms to SubRun
+#/////////////////////////////////////////////////////////////
+for tdc in mwpc_tdc_numbers:
+    # channel occupancy for good hits
+    setattr(SubRun,
+        "mwpc_tdc_{}_good_hits_channel_histogram_bins".format(tdc),
+        mwpc_good_hits_channel_histograms[tdc].bins_sparse)
+    setattr(SubRun,
+        "mwpc_tdc_{}_good_hits_channel_histogram_counts".format(tdc),
+        mwpc_good_hits_channel_histograms[tdc].counts_sparse)
+    setattr(SubRun,
+        "mwpc_tdc_{}_good_hits_channel_histogram_min_bin".format(tdc),
+        mwpc_good_hits_channel_histograms[tdc].min_bin)
+    setattr(SubRun,
+        "mwpc_tdc_{}_good_hits_channel_histogram_max_bin".format(tdc),
+        mwpc_good_hits_channel_histograms[tdc].max_bin)
+    setattr(SubRun,
+        "mwpc_tdc_{}_good_hits_channel_histogram_bin_width".format(tdc),
+        mwpc_good_hits_channel_histograms[tdc].bin_width)
+
+    # channel occupancy for bad hits
+    setattr(SubRun,
+        "mwpc_tdc_{}_bad_hits_channel_histogram_bins".format(tdc),
+        mwpc_bad_hits_channel_histograms[tdc].bins_sparse)
+    setattr(SubRun,
+        "mwpc_tdc_{}_bad_hits_channel_histogram_counts".format(tdc),
+        mwpc_bad_hits_channel_histograms[tdc].counts_sparse)
+    setattr(SubRun,
+        "mwpc_tdc_{}_bad_hits_channel_histogram_min_bin".format(tdc),
+        mwpc_bad_hits_channel_histograms[tdc].min_bin)
+    setattr(SubRun,
+        "mwpc_tdc_{}_bad_hits_channel_histogram_max_bin".format(tdc),
+        mwpc_bad_hits_channel_histograms[tdc].max_bin)
+    setattr(SubRun,
+        "mwpc_tdc_{}_bad_hits_channel_histogram_bin_width".format(tdc),
+        mwpc_bad_hits_channel_histograms[tdc].bin_width)
+
+    # timing occupancy for good hits
+    setattr(SubRun,
+        "mwpc_tdc_{}_good_hits_timing_histogram_bins".format(tdc),
+        mwpc_good_hits_timing_histograms[tdc].bins_sparse)
+    setattr(SubRun,
+        "mwpc_tdc_{}_good_hits_timing_histogram_counts".format(tdc),
+        mwpc_good_hits_timing_histograms[tdc].counts_sparse)
+    setattr(SubRun,
+        "mwpc_tdc_{}_good_hits_timing_histogram_min_bin".format(tdc),
+        mwpc_good_hits_timing_histograms[tdc].min_bin)
+    setattr(SubRun,
+        "mwpc_tdc_{}_good_hits_timing_histogram_max_bin".format(tdc),
+        mwpc_good_hits_timing_histograms[tdc].max_bin)
+    setattr(SubRun,
+        "mwpc_tdc_{}_good_hits_timing_histogram_bin_width".format(tdc),
+        mwpc_good_hits_timing_histograms[tdc].bin_width)
+
+    # timing occupancy for bad hits
+    setattr(SubRun,
+        "mwpc_tdc_{}_bad_hits_timing_histogram_bins".format(tdc),
+        mwpc_bad_hits_timing_histograms[tdc].bins_sparse)
+    setattr(SubRun,
+        "mwpc_tdc_{}_bad_hits_timing_histogram_counts".format(tdc),
+        mwpc_bad_hits_timing_histograms[tdc].counts_sparse)
+    setattr(SubRun,
+        "mwpc_tdc_{}_bad_hits_timing_histogram_min_bin".format(tdc),
+        mwpc_bad_hits_timing_histograms[tdc].min_bin)
+    setattr(SubRun,
+        "mwpc_tdc_{}_bad_hits_timing_histogram_max_bin".format(tdc),
+        mwpc_bad_hits_timing_histograms[tdc].max_bin)
+    setattr(SubRun,
+        "mwpc_tdc_{}_bad_hits_timing_histogram_bin_width".format(tdc),
+        mwpc_bad_hits_timing_histograms[tdc].bin_width)
+
+#------------------------------------------------------------------------------
+# ADD TO dqm.runs TABLE
+#------------------------------------------------------------------------------
 
 # add run to database only if this is true
 run_ok = False
