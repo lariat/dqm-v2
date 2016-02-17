@@ -27,6 +27,12 @@ class DataQualityMixin(object):
     run = Column(Integer, unique=False)
 
     #/////////////////////////////////////////////////////////
+    # number of events
+    #/////////////////////////////////////////////////////////
+    number_events = Column(Integer, unique=False)
+    number_tpc_events = Column(Integer, unique=False)
+
+    #/////////////////////////////////////////////////////////
     # number of data blocks
     #/////////////////////////////////////////////////////////
     #caen_data_blocks = Column(ARRAY(Integer), unique=False)

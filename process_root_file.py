@@ -369,6 +369,12 @@ SubRun = DataQualitySubRun(
     date_time_added=datetime.now())
 
 #/////////////////////////////////////////////////////////////
+# add number of events to SubRun
+#/////////////////////////////////////////////////////////////
+SubRun.number_events = number_events
+SubRun.number_tpc_events = number_tpc_events
+
+#/////////////////////////////////////////////////////////////
 # add number of data blocks to SubRun
 #/////////////////////////////////////////////////////////////
 for board in caen_boards:
@@ -552,6 +558,12 @@ elif run_exists:
         Run.caen_board_8_adc_rms = SubRun.caen_board_8_adc_rms
         Run.caen_board_9_adc_rms = SubRun.caen_board_9_adc_rms
         Run.caen_board_24_adc_rms = SubRun.caen_board_24_adc_rms
+
+        #/////////////////////////////////////////////////////////////
+        # update number of events in Run
+        #/////////////////////////////////////////////////////////////
+        Run.number_events += number_events
+        Run.number_tpc_events += number_tpc_events
 
         #/////////////////////////////////////////////////////////////
         # update number of data blocks in Run
