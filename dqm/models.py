@@ -220,8 +220,11 @@ class DataQualityMixin(object):
     #/////////////////////////////////////////////////////////
     # histogram of momenta reconstructed from MWPC
     #/////////////////////////////////////////////////////////
-    mwpc_momentum_histogram_bins = Column(ARRAY(Float), unique=False)
-    mwpc_momentum_histogram_counts = Column(ARRAY(Integer), unique=False)
+    mwpc_momenta_histogram_bins = Column(ARRAY(Float), unique=False)
+    mwpc_momenta_histogram_counts = Column(ARRAY(Integer), unique=False)
+    mwpc_momenta_histogram_min_bin = Column(Float, unique=False)
+    mwpc_momenta_histogram_max_bin = Column(Float, unique=False)
+    mwpc_momenta_histogram_bin_width = Column(Float, unique=False)
 
 class DataQualitySubRun(DataQualityMixin, Base):
     """ Data quality table for sub-runs. """
