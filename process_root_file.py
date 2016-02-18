@@ -25,6 +25,7 @@ from classes import Histogram
 
 from dqm.database import db_session
 from dqm.models import DataQualityRun, DataQualitySubRun, DataQualityLatest
+import dqm.allowed as allowed
 
 import mwpc
 
@@ -45,22 +46,22 @@ args = parser.parse_args()
 #/////////////////////////////////////////////////////////////
 # iterators for CAEN boards and channels
 #/////////////////////////////////////////////////////////////
-v1740_boards = range(0, 7+1)
-v1751_boards = range(8, 9+1)
-v1740b_boards = range(24, 24+1)
-caen_boards = list(itertools.chain(v1740_boards, v1751_boards, v1740b_boards))
-non_tpc_caen_boards = sorted(list(set(caen_boards) - set(v1740_boards[:-1])))
+v1740_boards = allowed.v1740_boards
+v1751_boards = allowed.v1751_boards
+v1740b_boards = allowed.v1740b_boards
+caen_boards = allowed.caen_boards
+non_tpc_caen_boards = allowed.non_tpc_caen_boards
 
-v1740_channels = xrange(64)
-v1751_channels = xrange(8)
-v1740b_channels = xrange(64)
+v1740_channels = allowed.v1740_channels
+v1751_channels = allowed.v1751_channels
+v1740b_channels = allowed.v1740b_channels
 
 #/////////////////////////////////////////////////////////////
 # iterators for MWPC TDCs
 #/////////////////////////////////////////////////////////////
-mwpc_tdc_numbers = range(1, 16+1)
-mwpc_tdc_channels = xrange(64)
-mwpc_tdc_clock_ticks = xrange(1024)
+mwpc_tdc_numbers = allowed.mwpc_tdc_numbers
+mwpc_tdc_channels = allowed.mwpc_tdc_channels
+mwpc_tdc_clock_ticks = allowed.mwpc_tdc_clock_ticks
 
 #/////////////////////////////////////////////////////////////
 # histogram names
