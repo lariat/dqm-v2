@@ -19,7 +19,7 @@ def hits_histograms(hits_array, col, tdc_numbers, x_range):
             histogram_counts = np.zeros(number_bins, dtype=np.int64)
             histogram_bins = np.arange(
                 x_range[0], x_range[-1] + bin_width, bin_width)
-        histograms[tdc_index] = Histogram("mwpc_tdc_{}_{}".format(tdc, name))
-        histograms[tdc_index].histogram_to_db(
+        histograms[tdc] = Histogram("mwpc_tdc_{}_{}".format(tdc, name))
+        histograms[tdc].histogram_to_db(
             histogram_bins, histogram_counts)
     return histograms
