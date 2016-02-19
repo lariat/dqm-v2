@@ -24,17 +24,19 @@ mwpc_tdc_clock_ticks = range(1024)
 # request args for Flask
 #/////////////////////////////////////////////////////////////
 request_args = {
+    #'run'                      : None,
+    #'subrun'                   : None,
     'number_events'            : None,
     'number_tpc_events'        : None,
     'number_data_blocks'       : {
         'device' : {
             'caen' : {
                 'board' : caen_boards
-                } 
+                },
             'mwpc' : None,
             'wut'  : None,
             }
-        }
+        },
     'tpc_pedestal_mean_rms'    : None,
     'tpc_adc_mean_rms'         : None,
     'caen_pedestal_mean_rms'   : None,
@@ -52,4 +54,4 @@ request_args = {
         },
     'mwpc_momenta_histogram'   : None,
     }
-
+ 
