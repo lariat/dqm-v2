@@ -1,2 +1,2 @@
-from cluster import *
-from histograms import *
+from .cluster import *
+from .histograms import *
