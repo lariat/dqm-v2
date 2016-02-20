@@ -50,19 +50,47 @@ class Histogram:
 
         self.counts = np.array(bins_counts_[:, 1], dtype=np.int64)
 
+    def __add__(self, other):
+
+        histogram = Histogram("NULL")
+
+        if not isinstance(other, Histogram):
+            print "Can only add Histogram with another Histogram."
+            return histogram
+
+        if ((self.bins != other.bins).all() or
+            self.counts.shape != other.counts.shape):
+            print "Mismatched binning!"
+            return histogram
+
+        counts = self.counts + other.counts
+        bins = self.bins
+
+        histogram.name = self.name + " + " + other.name
+        histogram.histogram_to_db(bins, counts)
+
+        return histogram
+
 if __name__ == '__main__':
 
     x = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
     y = np.array([0, 1, 0, 3, 4, 4, 3, 2, 1, 0])
+    z = np.roll(y, 2)
 
     x_sparse = x[y != 0]
     y_sparse = y[y != 0]
 
-    h1 = Histogram('fdsa')
+    h1 = Histogram('h1')
     h1.histogram_to_db(x, y)
 
-    h2 = Histogram('asdf')
+    h2 = Histogram('h2')
     h2.db_to_histogram(x_sparse, y_sparse, x[0], x[-1], x[1]-x[0])
+
+    h3 = Histogram('h3')
+    h3.histogram_to_db(x, z)
+
+    h4 = h1 + h3
+    h5 = h1 + h2 + h3 + h4
 
     print
     print x
@@ -84,4 +112,37 @@ if __name__ == '__main__':
     print
     print h2.bins_sparse
     print h2.counts_sparse
+
+    print
+    print h3.bins
+    print h3.counts
+    print
+    print h3.bins_sparse
+    print h3.counts_sparse
+
+    print
+    print h4.bins
+    print h4.counts
+    print
+    print h4.bins_sparse
+    print h4.counts_sparse
+
+    print
+    print h5.bins
+    print h5.counts
+    print
+    print h5.bins_sparse
+    print h5.counts_sparse
+
+    print
+    print h1.counts, "+"
+    print h3.counts, "="
+    print h4.counts
+
+    print
+    print h1.counts, "+"
+    print h2.counts, "+"
+    print h3.counts, "+"
+    print h4.counts, "="
+    print h5.counts
 
