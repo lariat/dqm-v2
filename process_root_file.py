@@ -760,8 +760,7 @@ elif run_exists:
             Run.ustof_hits_histogram_max_bin,
             Run.ustof_hits_histogram_bin_width)
 
-        run_ustof_hits_histogram.histogram_to_db(run_ustof_hits_histogram.bins,
-            run_ustof_hits_histogram.counts + ustof_hits_histogram.counts)
+        run_ustof_hits_histogram += ustof_hits_histogram
 
         Run.ustof_hits_histogram_bins = run_ustof_hits_histogram.bins_sparse
         Run.ustof_hits_histogram_counts = run_ustof_hits_histogram.counts_sparse
@@ -781,8 +780,7 @@ elif run_exists:
             Run.dstof_hits_histogram_max_bin,
             Run.dstof_hits_histogram_bin_width)
 
-        run_dstof_hits_histogram.histogram_to_db(run_dstof_hits_histogram.bins,
-            run_dstof_hits_histogram.counts + dstof_hits_histogram.counts)
+        run_dstof_hits_histogram += dstof_hits_histogram
 
         Run.dstof_hits_histogram_bins = run_dstof_hits_histogram.bins_sparse
         Run.dstof_hits_histogram_counts = run_dstof_hits_histogram.counts_sparse
@@ -801,8 +799,7 @@ elif run_exists:
                                           Run.tof_histogram_max_bin,
                                           Run.tof_histogram_bin_width)
 
-        run_tof_histogram.histogram_to_db(run_tof_histogram.bins,
-            run_tof_histogram.counts + tof_histogram.counts)
+        run_tof_histogram += tof_histogram
 
         Run.tof_histogram_bins = run_tof_histogram.bins_sparse
         Run.tof_histogram_counts = run_tof_histogram.counts_sparse
@@ -870,10 +867,8 @@ elif run_exists:
                 getattr(Run, "mwpc_tdc_{}_good_hits_channel_histogram_max_bin".format(tdc)),
                 getattr(Run, "mwpc_tdc_{}_good_hits_channel_histogram_bin_width".format(tdc)))
 
-            run_mwpc_good_hits_channel_histograms[tdc].histogram_to_db(
-                run_mwpc_good_hits_channel_histograms[tdc].bins,
-                run_mwpc_good_hits_channel_histograms[tdc].counts + \
-                mwpc_good_hits_channel_histograms[tdc].counts)
+            run_mwpc_good_hits_channel_histograms[tdc] += \
+                mwpc_good_hits_channel_histograms[tdc]
 
             setattr(Run,
                 "mwpc_tdc_{}_good_hits_channel_histogram_bins".format(tdc),
@@ -902,10 +897,8 @@ elif run_exists:
                 getattr(Run, "mwpc_tdc_{}_bad_hits_channel_histogram_max_bin".format(tdc)),
                 getattr(Run, "mwpc_tdc_{}_bad_hits_channel_histogram_bin_width".format(tdc)))
 
-            run_mwpc_bad_hits_channel_histograms[tdc].histogram_to_db(
-                run_mwpc_bad_hits_channel_histograms[tdc].bins,
-                run_mwpc_bad_hits_channel_histograms[tdc].counts + \
-                mwpc_bad_hits_channel_histograms[tdc].counts)
+            run_mwpc_bad_hits_channel_histograms[tdc] += \
+                mwpc_bad_hits_channel_histograms[tdc]
 
             setattr(Run,
                 "mwpc_tdc_{}_bad_hits_channel_histogram_bins".format(tdc),
@@ -934,10 +927,8 @@ elif run_exists:
                 getattr(Run, "mwpc_tdc_{}_good_hits_timing_histogram_max_bin".format(tdc)),
                 getattr(Run, "mwpc_tdc_{}_good_hits_timing_histogram_bin_width".format(tdc)))
 
-            run_mwpc_good_hits_timing_histograms[tdc].histogram_to_db(
-                run_mwpc_good_hits_timing_histograms[tdc].bins,
-                run_mwpc_good_hits_timing_histograms[tdc].counts + \
-                mwpc_good_hits_timing_histograms[tdc].counts)
+            run_mwpc_good_hits_timing_histograms[tdc] += \
+                mwpc_good_hits_timing_histograms[tdc]
 
             setattr(Run,
                 "mwpc_tdc_{}_good_hits_timing_histogram_bins".format(tdc),
@@ -966,10 +957,8 @@ elif run_exists:
                 getattr(Run, "mwpc_tdc_{}_bad_hits_timing_histogram_max_bin".format(tdc)),
                 getattr(Run, "mwpc_tdc_{}_bad_hits_timing_histogram_bin_width".format(tdc)))
 
-            run_mwpc_bad_hits_timing_histograms[tdc].histogram_to_db(
-                run_mwpc_bad_hits_timing_histograms[tdc].bins,
-                run_mwpc_bad_hits_timing_histograms[tdc].counts + \
-                mwpc_bad_hits_timing_histograms[tdc].counts)
+            run_mwpc_bad_hits_timing_histograms[tdc] += \
+                mwpc_bad_hits_timing_histograms[tdc]
 
             setattr(Run,
                 "mwpc_tdc_{}_bad_hits_timing_histogram_bins".format(tdc),
