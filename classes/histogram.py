@@ -92,6 +92,9 @@ if __name__ == '__main__':
     h4 = h1 + h3
     h5 = h1 + h2 + h3 + h4
 
+    h6 = h1
+    h6 += h3
+
     print
     print x
     print y
@@ -145,4 +148,9 @@ if __name__ == '__main__':
     print h3.counts, "+"
     print h4.counts, "="
     print h5.counts
+
+    print
+    print h1.counts, "+"
+    print h3.counts, "="
+    print h6.counts
 
