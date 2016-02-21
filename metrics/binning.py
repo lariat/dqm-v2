@@ -34,7 +34,7 @@ def date_time_bins(reference_date_time, bin_width=60, number_bins=960):
         date_time - timedelta(seconds=(bin_width * i))
         for i in xrange(number_bins)
         ]
-    return date_time_bins
+    return sorted(date_time_bins)
 
 if __name__ == '__main__':
 
