@@ -16,8 +16,19 @@ def round_time(date_time=None, round_to=60):
     rounding = seconds // round_to * round_to               # round down
     return date_time + timedelta(0, rounding-seconds, -date_time.microsecond)
 
-def date_time_bins(start_date_time, number_bins, bin_width=60):
-    date_time = round_time(start_date_time, bin_width)
+def date_time_bins(reference_date_time, bin_width=60, number_bins=960):
+    """
+    Generate bins for time-series data.
+
+        reference_date_time: datetime.datetime obect used as
+                             a reference point.
+        number_bins:         Number of bins to generate.
+        bin_width:           Width of each bin in seconds.
+
+    Starting from the reference datetime, create `number_bins`
+    bins in steps of `bin_width`, going backwards in time.
+    """
+    date_time = round_time(reference_date_time, bin_width)
     time_delta = timedelta(seconds=bin_width)
     date_time_bins = [
         date_time - timedelta(seconds=(bin_width * i))
@@ -29,27 +40,11 @@ if __name__ == '__main__':
 
     date_time = datetime.now()
 
-    x = date_time_bins(date_time, 100, 60)
-    y = date_time_bins(date_time, 100, -60)
+    x = date_time_bins(date_time, 60, 960)
+    y = date_time_bins(date_time, -60, 960)
 
     print date_time, round_time(date_time)
 
-    for i in xrange(60):
+    for i in xrange(960):
         print x[i], y[i]
-
-    u = datetime.now()
-    v = datetime.now() - timedelta(minutes=0, seconds=10, microseconds=0)
-
-    print
-    print "Testing..."
-    print
-    print u, v
-
-    u = round_time(u)
-    v = round_time(v)
-
-    print
-    print u, v
-    print
-    print u == v
 
