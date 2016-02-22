@@ -687,3 +687,38 @@ class DataQualityLatest(Base):
     def __repr__(self):
         return '<DataQualityLatest %r>' % (self.id)
 
+class FileProcessing(Base):
+    """ Table for the file-processing queue. """
+
+    # table name
+    __tablename__ = 'file_processing'
+    __table_args__ = {'schema' : 'dqm'}
+
+    #/////////////////////////////////////////////////////////
+    # run, sub-run, and datetime
+    #/////////////////////////////////////////////////////////
+    run = Column(Integer, unique=False)
+    subrun = Column(Integer, unique=False)
+    date_time_added = Column(
+        DateTime(timezone=False), unique=False, nullable=False)
+
+    #/////////////////////////////////////////////////////////
+    # psql sequence for unique ID
+    #/////////////////////////////////////////////////////////
+    id = Column(Integer, primary_key=True)
+
+    def __init__(self, run, subrun, date_time_added):
+        self.run = run
+        self.subrun = subrun
+        self.date_time_added = date_time_added
+
+    #/////////////////////////////////////////////////////////
+    # file paths
+    #/////////////////////////////////////////////////////////
+
+    dropbox_file_path = Column(String, unique=False)
+    pnfs_file_path = Column(String, unique=False)
+
+    def __repr__(self):
+        return '<FileProcessing %r>' % (self.id)
+
