@@ -12,27 +12,21 @@ from datetime import datetime, timedelta
 
 import numpy as np
 from sqlalchemy import and_
-from sqlalchemy.sql import exists
-from sqlalchemy.exc import SQLAlchemyError, IntegrityError
-from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
-
 from redis import Redis
 
-from guppy import hpy
-
 from dqm.database import db_session
-from dqm.models import DataQualityRun, DataQualitySubRun, DataQualityLatest
+from dqm.models import DataQualitySubRun
 import dqm.allowed as allowed
 
 from metrics.binning import round_time, date_time_bins
 
 import log
-from classes import Histogram
 
 bin_width = 60  # seconds
 number_bins = 960
 
 key_prefix = 'dqm/metric/1min/'
+tpc_pedestal_mean_reference_key = 'dqm/pedestal-reference/pedestal_mean'
 
 parameters = [
     'run',
@@ -109,12 +103,30 @@ for parameter_base, channel_indices in array_parameters_base.iteritems():
         parameter = parameter_base + '_channel_' + str(channel)
         array_parameters.append(parameter)
 
+tpc_pedestal_deviation_parameters = [
+    'tpc_pedestal_deviation_channel_' + str(channel)
+    for channel in allowed.tpc_channels
+    ]
+
 def update():
     date_time = datetime(2016, 2, 18, 22, 30, 00)
     #date_time = datetime(2016, 2, 18, 21, 45, 0)
 
     # http://stackoverflow.com/questions/8542723/change-datetime-to-unix-time-stamp-in-python
     timestamp = date_time.strftime('%s')
+
+    #/////////////////////////////////////////////////////////
+    # redis client instance
+    #/////////////////////////////////////////////////////////
+    redis = Redis()
+
+    # check if the TPC pedestal mean reference exists
+    tpc_pedestal_reference_exists = redis.exists(
+        tpc_pedestal_mean_reference_key)
+
+    if tpc_pedestal_reference_exists:
+        tpc_pedestal_mean_reference = redis.lrange(
+            tpc_pedestal_mean_reference_key, 0, -1)
 
     #/////////////////////////////////////////////////////////
     # query PostgreSQL database
@@ -129,8 +141,6 @@ def update():
     #/////////////////////////////////////////////////////////
     time_bins = date_time_bins(date_time, bin_width, number_bins)
 
-    metrics_dict = { time_bin : None for time_bin in time_bins }
-
     parameters_dict = {}
     for parameter in parameters:
         parameters_dict[parameter] = { time_bin : 0 for time_bin in time_bins }
@@ -139,6 +149,11 @@ def update():
     for parameter in array_parameters:
         array_parameters_dict[parameter] = {
             time_bin : 0 for time_bin in time_bins }
+
+    tpc_pedestal_deviation_dict = {}
+    for parameter in tpc_pedestal_deviation_parameters:
+        tpc_pedestal_deviation_dict[parameter] = {
+            time_bin : None for time_bin in time_bins }
 
     #/////////////////////////////////////////////////////////
     # place the results into the appropriate time bin
@@ -155,14 +170,26 @@ def update():
         for parameter_base, channel_indices in \
             array_parameters_base.iteritems():
             array = getattr(result, parameter_base)
-            for channel_index in channel_indices:
-                channel = channel_index + \
-                    array_parameters_channel_offset[parameter_base]
-                parameter = parameter_base + '_channel_' + str(channel)
-                array_parameters_dict[parameter][time_bin] = \
-                    array[channel_index]
 
-        metrics_dict[time_bin] = result
+            for channel_index in channel_indices:
+
+                channel = channel_index + \
+                          array_parameters_channel_offset[parameter_base]
+
+                parameter = parameter_base + '_channel_' + str(channel)
+                value = array[channel_index]
+                array_parameters_dict[parameter][time_bin] = value
+
+                if (parameter_base == 'tpc_pedestal_mean' and
+                    tpc_pedestal_reference_exists):
+
+                    parameter = 'tpc_pedestal_deviation_channel_' + \
+                                str(channel)
+
+                    if value > 0:
+                        tpc_pedestal_deviation_dict[parameter][time_bin] = \
+                            value - \
+                            float(tpc_pedestal_mean_reference[channel_index])
 
     #/////////////////////////////////////////////////////////
     # sort according to datetime
@@ -182,10 +209,13 @@ def update():
                        array_parameters_dict[parameter].values()))
             ]
 
-    #/////////////////////////////////////////////////////////
-    # redis client instance
-    #/////////////////////////////////////////////////////////
-    redis = Redis()
+    tpc_pedestal_deviation_parameter_values = {}
+    for parameter in tpc_pedestal_deviation_parameters:
+        tpc_pedestal_deviation_parameter_values[parameter] = [
+            x for (y, x) in
+            sorted(zip(tpc_pedestal_deviation_dict[parameter].keys(),
+                       tpc_pedestal_deviation_dict[parameter].values()))
+            ]
 
     # send commands in a pipeline to save on round-trip time
     p = redis.pipeline()
@@ -202,6 +232,15 @@ def update():
         parameter_key = key_prefix + parameter
         p.delete(parameter_key)
         p.rpush(parameter_key, *array_parameter_values[parameter])
+    p.execute()
+
+    # send commands in a pipeline to save on round-trip time
+    p = redis.pipeline()
+    for parameter in tpc_pedestal_deviation_parameters:
+        parameter_key = key_prefix + parameter
+        p.delete(parameter_key)
+        p.rpush(parameter_key,
+                *tpc_pedestal_deviation_parameter_values[parameter])
     p.execute()
 
 if __name__ == '__main__':
