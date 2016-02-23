@@ -76,6 +76,6 @@ if __name__ == '__main__':
     p.set(key_prefix + 'timestamp', timestamp)
     p.set(key_prefix + 'run', run)
     p.delete(pedestal_mean_key)
-    p.rpush(pedestal_mean_key, pedestal_mean)
+    p.rpush(pedestal_mean_key, *pedestal_mean)
     p.execute()
 
