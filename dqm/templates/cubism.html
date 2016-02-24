@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>DQM &mdash; Cubism</title>
+    <link href="/static/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="screen">
+    <link href="/static/lib/d3-tip/css/d3-tip.min.css" rel="stylesheet" type="text/css" media="screen">
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" media="screen">
+    <style>
+
+        body {
+          font-family: "Helvetica Neue", Helvetica, sans-serif;
+          margin: 30px auto;
+          width: 960px;
+          position: relative;
+        }
+
+        header {
+          padding: 6px 0;
+        }
+
+        .group {
+          margin-bottom: 1em;
+        }
+
+        .axis {
+          font: 10px sans-serif;
+          position: fixed;
+          pointer-events: none;
+          z-index: 2;
+        }
+
+        .axis text {
+          -webkit-transition: fill-opacity 250ms linear;
+        }
+
+        .axis path {
+          display: none;
+        }
+
+        .axis line {
+          stroke: #000;
+          shape-rendering: crispEdges;
+        }
+
+        .axis.top {
+          background-image: linear-gradient(top, #fff 0%, rgba(255, 255, 255, 0) 100%);
+          background-image: -o-linear-gradient(top, #fff 0%, rgba(255, 255, 255, 0) 100%);
+          background-image: -moz-linear-gradient(top, #fff 0%, rgba(255, 255, 255, 0) 100%);
+          background-image: -webkit-linear-gradient(top, #fff 0%, rgba(255, 255, 255 ,0) 100%);
+          background-image: -ms-linear-gradient(top, #fff 0%, rgba(255, 255, 255, 0) 100%);
+          /* top: 0px; */
+          top: 50px;
+          padding: 0 0 24px 0;
+        }
+
+        .axis.bottom {
+          background-image: linear-gradient(bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
+          background-image: -o-linear-gradient(bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
+          background-image: -moz-linear-gradient(bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
+          background-image: -webkit-linear-gradient(bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
+          background-image: -ms-linear-gradient(bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
+          bottom: 0px;
+          padding: 24px 0 0 0;
+        }
+
+        .horizon {
+          border-bottom: solid 1px #000;
+          overflow: hidden;
+          position: relative;
+        }
+
+        .horizon {
+          border-top: solid 1px #000;
+          border-bottom: solid 1px #000;
+        }
+
+        .horizon + .horizon {
+          border-top: none;
+        }
+
+        .horizon canvas {
+          display: block;
+        }
+
+        .horizon .title,
+        .horizon .value {
+          bottom: 0;
+          line-height: 30px;
+          margin: 0 6px;
+          position: absolute;
+          text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
+          white-space: nowrap;
+        }
+
+        .horizon .title {
+          left: 0;
+        }
+
+        .horizon .value {
+          right: 0;
+        }
+
+        .line {
+          background: #000;
+          opacity: .2;
+          z-index: 2;
+        }
+
+        /*
+        .rule {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 1px;
+          pointer-events: none;
+        }
+        */
+
+    </style>
+  </head>
+  <body>
+
+    <!-- navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">DQM</a>
+        </div>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container"></div>
+
+    <div id="graph" style="min-height: 650px"></div>
+
+    <script src="/static/lib/jquery/js/jquery.min.js"></script>
+    <script src="/static/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/lib/d3/js/d3.min.js"></script>
+    <script src="/static/lib/d3-tip/js/d3-tip.min.js"></script>
+    <script src="/static/lib/cubism/js/cubism.min.js"></script>
+
+    <script>
+    function metric(name) {
+      return context.metric(function(start, stop, step, callback) {
+        d3.json('/random', function(data) {
+                  if (!data) return callback(new Error('Unable to load data!'));
+                  return callback(null, data.values);
+                });
+      }, name);
+    }
+    </script>
+
+    <script>
+    // Replace this with context.graphite and graphite.metric!
+    function random(x) {
+      var value = 0,
+          values = [],
+          i = 0,
+          last;
+      return context.metric(function(start, stop, step, callback) {
+        start = +start, stop = +stop;
+        if (isNaN(last)) last = start;
+        while (last < stop) {
+          last += step;
+          value = Math.max(-10, Math.min(10, value + .8 * Math.random() - .4 + .2 * Math.cos(i += x * .2)));
+          values.push(value);
+        }
+        callback(null, values = values.slice((start - stop) / step));
+      }, x);
+    }
+    </script>
+
+    <script>
+    var context = cubism.context()
+        .serverDelay(0)
+        .clientDelay(0)
+        .step(1e3)
+        .size(960);
+
+    d3.select("#graph").call(function(div) {
+
+      div.append("div")
+          .attr("class", "rule")
+          .call(context.rule());
+
+      div.selectAll(".axis")
+          .data(["top", "bottom"])
+        .enter().append("div")
+          .attr("class", function(d) { return d + " axis"; })
+          .each(function(d) { d3.select(this).call(context.axis().ticks(12).orient(d)); });
+
+      div.selectAll(".horizon")
+          //.data(d3.range(0+1, 12+1).map(random))
+          .data(d3.range(1, 2).map(metric))
+        .enter().insert("div", ".bottom")
+          .attr("class", "horizon")
+        .call(context.horizon()
+          .height(30)
+          .extent([-20, 20])
+          .format(d3.format(".1f")));
+
+    });
+
+    // on mousemove, reposition the chart values to match the rule
+    context.on("focus", function(i) {
+      d3.selectAll(".value").style("right", i == null ? null : context.size() - i + "px");
+    });
+    </script>
+
+  </body>
+</html>

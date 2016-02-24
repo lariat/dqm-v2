@@ -1,0 +1,55 @@
+{% set navigation_bar = [
+    ('/', 'home', 'Home'),
+] -%}
+
+{% set active_page = active_page|default('home') -%}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    {% if title %}
+    <title>DQM &mdash; {{ title }}</title>
+    {% else %}
+    <title>LArIAT near-real-time DQM</title>
+    {% endif %}
+    <link href="{{ url_for('static', filename='lib/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" media="screen">
+    <link href="{{ url_for('static', filename='lib/d3-tip/css/d3-tip.min.css') }}" rel="stylesheet" type="text/css" media="screen">
+    <link href="{{ url_for('static', filename='lib/metricsgraphics/css/metricsgraphics.css') }}" rel="stylesheet" type="text/css" media="screen">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css" media="screen">
+  </head>
+  <body>
+
+    <!-- navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">DQM</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            {% for href, id, caption in navigation_bar %}
+            <li{% if id == active_page %} class="active" {% endif %}><a href="{{ href|e }}">{{ caption|e }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+
+        </div><!--/.nav-collapse -->
+
+      </div>
+    </nav>
+
+    {% block content %}{% endblock %}
+
+{% include 'footer.html' %}
+
+  </body>
+</html>

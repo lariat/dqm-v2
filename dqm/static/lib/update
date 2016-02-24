@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# update D3.js
+curl -o d3/js/d3.js https://raw.githubusercontent.com/mbostock/d3/master/d3.js
+curl -o d3/js/d3.min.js https://raw.githubusercontent.com/mbostock/d3/master/d3.min.js
+curl -o d3/js/d3.tip.js https://raw.githubusercontent.com/Caged/d3-tip/master/index.js
+
+# update Cubism.js
+curl -o cubism/js/cubism.js https://raw.githubusercontent.com/square/cubism/master/cubism.v1.js
+curl -o cubism/js/cubism.min.js https://raw.githubusercontent.com/square/cubism/master/cubism.v1.min.js
+
+# update MetricsGraphics.js
+curl -o metricsgraphics/css/metricsgraphics.css https://raw.githubusercontent.com/mozilla/metrics-graphics/master/dist/metricsgraphics.css
+curl -o metricsgraphics/js/metricsgraphics.js https://raw.githubusercontent.com/mozilla/metrics-graphics/master/dist/metricsgraphics.js
+curl -o metricsgraphics/js/metricsgraphics.min.js https://raw.githubusercontent.com/mozilla/metrics-graphics/master/dist/metricsgraphics.min.js
