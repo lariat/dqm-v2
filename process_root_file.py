@@ -68,6 +68,9 @@ mwpc_tdc_clock_ticks = allowed.mwpc_tdc_clock_ticks
 #/////////////////////////////////////////////////////////////
 pedestal_th1_name = "DataQuality/pedestal/caen_board_{}_channel_{}_pedestal"
 adc_th1_name = "DataQuality/adc/caen_board_{}_channel_{}_adc"
+caen_timestamps_th1_name = "DataQuality/timestamps/caen_board_{}_timestamps"
+mwpc_tdc_timestamps_th1_name = "DataQuality/timestamps/mwpc_tdc_timestamps"
+wut_timestamps_th1_name = "DataQuality/timestamps/wut_timestamps"
 ustof_hits_th1_name = "DataQuality/tof/USTOFHits"
 dstof_hits_th1_name = "DataQuality/tof/DSTOFHits"
 tof_th1_name = "DataQuality/tof/TOF"
@@ -127,9 +130,11 @@ def th1_to_arrays(th1):
     """ Get arrays from histogram. """
     bins = []
     counts = []
-    number_bins = th1.GetNbinsX()
+    number_bins = th1.GetSize()
     for bin_index in xrange(number_bins):
-        bins.append(th1.GetBin(bin_index))
+        if th1.IsBinUnderflow(bin_index) or th1.IsBinOverflow(bin_index):
+            continue
+        bins.append(th1.GetBinLowEdge(bin_index))
         counts.append(th1.GetBinContent(bin_index))
     return np.array(bins), np.array(counts, dtype=np.int64)
 
@@ -196,10 +201,6 @@ number_caen_data_blocks = { board : 0 for board in caen_boards }
 number_tdc_data_blocks = 0
 number_wut_data_blocks = 0
 
-caen_timestamps = { board : [] for board in caen_boards }
-mwpc_tdc_timestamps = []
-wut_timestamps = []
-
 # loop over EventBuilder TTree
 for branch in event_builder_ttree:
     number_events += 1
@@ -208,26 +209,15 @@ for branch in event_builder_ttree:
     for board in caen_boards:
         number_caen_data_blocks[board] += getattr(
             branch, "NumberCAENBoard{}Blocks".format(board))
-        caen_timestamps[board].extend(
-            list(getattr(branch, "CAENBoard{}TimeStamps".format(board))))  # microseconds
 
     number_tdc_data_blocks += branch.NumberTDCBlocks
-    mwpc_tdc_timestamps.extend(list(branch.TDCTimeStamps))  # microseconds
 
 # loop over WUT TTree
 for branch in wut_ttree:
     number_wut_data_blocks += 1
-    wut_timestamps.append(branch.time_header * 16e-6)  # seconds
 
 #/////////////////////////////////////////////////////////////
-# convert timestamps of data blocks from microseconds to seconds
-#/////////////////////////////////////////////////////////////
-for board in caen_boards:
-    caen_timestamps[board] = [ x * 1e-6 for x in caen_timestamps[board] ]  # seconds
-mwpc_tdc_timestamps = [ x * 1e-6 for x in mwpc_tdc_timestamps ]  # seconds
-
-#/////////////////////////////////////////////////////////////
-# histograms for timestamps of data blocks
+# get histograms for timestamps of data blocks
 #/////////////////////////////////////////////////////////////
 caen_timestamps_counts = { board : [] for board in caen_boards }
 caen_timestamps_bins = { board : [] for board in caen_boards }
@@ -236,44 +226,32 @@ caen_timestamps_histograms = {
     for board in caen_boards }
 
 for board in caen_boards:
-    # numpy histogram for CAEN timestamps
-    caen_timestamps_counts[board], caen_timestamps_bins[board] = np.histogram(
-        caen_timestamps[board],
-        bins=timestamps_bins,
-        range=timestamps_bin_range)
-    caen_timestamps_bins[board] = caen_timestamps_bins[board][:-1]  # get rid of "overflow" bin
+    # get histogram for CAEN timestamps
+    caen_timestamps_bins[board], caen_timestamps_counts[board] = th1_to_arrays(
+        f.Get(caen_timestamps_th1_name.format(board)))
 
     # use Histogram class for CAEN timestamps
     caen_timestamps_histograms[board].histogram_to_db(
         caen_timestamps_bins[board], caen_timestamps_counts[board])
 
 #/////////////////////////////////////////////////////////////
-# numpy histogram for TDC timestamps
+# get MWPC TDC timestamps
 #/////////////////////////////////////////////////////////////
-mwpc_tdc_timestamps_counts, mwpc_tdc_timestamps_bins = np.histogram(
-    mwpc_tdc_timestamps, bins=timestamps_bins, range=timestamps_bin_range)
-mwpc_tdc_timestamps_bins = mwpc_tdc_timestamps_bins[:-1]  # get rid of "overflow" bin
-
-#/////////////////////////////////////////////////////////////
-# use Histogram class for TDC timestamps
-#/////////////////////////////////////////////////////////////
+mwpc_tdc_timestamps_th1 = f.Get(mwpc_tdc_timestamps_th1_name)
+mwpc_tdc_timestamps_bins, mwpc_tdc_timestamps_counts = th1_to_arrays(
+    mwpc_tdc_timestamps_th1)
 mwpc_tdc_timestamps_histogram = Histogram("mwpc_tdc_timestamps")
-mwpc_tdc_timestamps_histogram.histogram_to_db(mwpc_tdc_timestamps_bins,
-                                              mwpc_tdc_timestamps_counts)
+mwpc_tdc_timestamps_histogram.histogram_to_db(
+    mwpc_tdc_timestamps_bins, mwpc_tdc_timestamps_counts)
 
 #/////////////////////////////////////////////////////////////
-# numpy histogram for WUT timestamps
+# get WUT timestamps
 #/////////////////////////////////////////////////////////////
-wut_timestamps_counts, wut_timestamps_bins = np.histogram(
-    wut_timestamps, bins=timestamps_bins, range=timestamps_bin_range)
-wut_timestamps_bins = wut_timestamps_bins[:-1]  # get rid of "overflow" bin
-
-#/////////////////////////////////////////////////////////////
-# use Histogram class for WUT timestamps
-#/////////////////////////////////////////////////////////////
+wut_timestamps_th1 = f.Get(wut_timestamps_th1_name)
+wut_timestamps_bins, wut_timestamps_counts = th1_to_arrays(wut_timestamps_th1)
 wut_timestamps_histogram = Histogram("wut_timestamps")
-wut_timestamps_histogram.histogram_to_db(wut_timestamps_bins,
-                                         wut_timestamps_counts)
+wut_timestamps_histogram.histogram_to_db(
+    wut_timestamps_bins, wut_timestamps_counts)
 
 #/////////////////////////////////////////////////////////////
 # get mean and RMS of pedestal and ADC histograms
