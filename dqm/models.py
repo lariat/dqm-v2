@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, Float, String, DateTime
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.dialects.postgresql import ARRAY, BOOLEAN
 
 from dqm.database import Base
 
@@ -775,17 +775,17 @@ class FileProcessing(Base):
     __table_args__ = {'schema' : 'dqm'}
 
     #/////////////////////////////////////////////////////////
+    # psql sequence for unique ID
+    #/////////////////////////////////////////////////////////
+    id = Column(Integer, primary_key=True)
+
+    #/////////////////////////////////////////////////////////
     # run, sub-run, and datetime
     #/////////////////////////////////////////////////////////
     run = Column(Integer, unique=False)
     subrun = Column(Integer, unique=False)
     date_time_added = Column(
         DateTime(timezone=False), unique=False, nullable=False)
-
-    #/////////////////////////////////////////////////////////
-    # psql sequence for unique ID
-    #/////////////////////////////////////////////////////////
-    id = Column(Integer, primary_key=True)
 
     def __init__(self, run, subrun, date_time_added):
         self.run = run
@@ -795,9 +795,14 @@ class FileProcessing(Base):
     #/////////////////////////////////////////////////////////
     # file paths
     #/////////////////////////////////////////////////////////
-
     dropbox_file_path = Column(String, unique=False)
     pnfs_file_path = Column(String, unique=False)
+
+    #/////////////////////////////////////////////////////////
+    # miscellaneous
+    #/////////////////////////////////////////////////////////
+    number_attempts = Column(Integer, unique=False)
+    process_id = Column(Integer, unique=False)
 
     def __repr__(self):
         return '<FileProcessing %r>' % (self.id)
