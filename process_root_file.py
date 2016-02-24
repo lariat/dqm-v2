@@ -83,7 +83,7 @@ wut_ttree_name = "DataQuality/wut"
 # numpy histogram config for timestamps of data blocks
 #/////////////////////////////////////////////////////////////
 timestamps_bin_range = (0, 60)
-timestamps_bins = 600
+timestamps_bins = 120
 
 #/////////////////////////////////////////////////////////////
 # load ROOT file
@@ -197,7 +197,7 @@ number_tdc_data_blocks = 0
 number_wut_data_blocks = 0
 
 caen_timestamps = { board : [] for board in caen_boards }
-tdc_timestamps = []
+mwpc_tdc_timestamps = []
 wut_timestamps = []
 
 # loop over EventBuilder TTree
@@ -212,7 +212,7 @@ for branch in event_builder_ttree:
             list(getattr(branch, "CAENBoard{}TimeStamps".format(board))))  # microseconds
 
     number_tdc_data_blocks += branch.NumberTDCBlocks
-    tdc_timestamps.extend(list(branch.TDCTimeStamps))  # microseconds
+    mwpc_tdc_timestamps.extend(list(branch.TDCTimeStamps))  # microseconds
 
 # loop over WUT TTree
 for branch in wut_ttree:
@@ -224,7 +224,7 @@ for branch in wut_ttree:
 #/////////////////////////////////////////////////////////////
 for board in caen_boards:
     caen_timestamps[board] = [ x * 1e-6 for x in caen_timestamps[board] ]  # seconds
-tdc_timestamps = [ x * 1e-6 for x in tdc_timestamps ]  # seconds
+mwpc_tdc_timestamps = [ x * 1e-6 for x in mwpc_tdc_timestamps ]  # seconds
 
 #/////////////////////////////////////////////////////////////
 # histograms for timestamps of data blocks
@@ -250,16 +250,16 @@ for board in caen_boards:
 #/////////////////////////////////////////////////////////////
 # numpy histogram for TDC timestamps
 #/////////////////////////////////////////////////////////////
-tdc_timestamps_counts, tdc_timestamps_bins = np.histogram(
-    tdc_timestamps, bins=timestamps_bins, range=timestamps_bin_range)
-tdc_timestamps_bins = tdc_timestamps_bins[:-1]  # get rid of "overflow" bin
+mwpc_tdc_timestamps_counts, mwpc_tdc_timestamps_bins = np.histogram(
+    mwpc_tdc_timestamps, bins=timestamps_bins, range=timestamps_bin_range)
+mwpc_tdc_timestamps_bins = mwpc_tdc_timestamps_bins[:-1]  # get rid of "overflow" bin
 
 #/////////////////////////////////////////////////////////////
 # use Histogram class for TDC timestamps
 #/////////////////////////////////////////////////////////////
-tdc_timestamps_histogram = Histogram("tdc_timestamps")
-tdc_timestamps_histogram.histogram_to_db(tdc_timestamps_bins,
-                                         tdc_timestamps_counts)
+mwpc_tdc_timestamps_histogram = Histogram("mwpc_tdc_timestamps")
+mwpc_tdc_timestamps_histogram.histogram_to_db(mwpc_tdc_timestamps_bins,
+                                              mwpc_tdc_timestamps_counts)
 
 #/////////////////////////////////////////////////////////////
 # numpy histogram for WUT timestamps
@@ -417,6 +417,38 @@ for board in caen_boards:
             number_caen_data_blocks[board])
 SubRun.mwpc_data_blocks = number_tdc_data_blocks
 SubRun.wut_data_blocks = number_wut_data_blocks
+
+#/////////////////////////////////////////////////////////////
+# add histograms of data block timestamps to SubRun
+#/////////////////////////////////////////////////////////////
+for board in caen_boards:
+    setattr(SubRun,
+        "caen_board_{}_timestamps_histogram_bins".format(channel),
+        caen_timestamps_histograms[channel].bins_sparse)
+    setattr(SubRun,
+        "caen_board_{}_timestamps_histogram_counts".format(channel),
+        caen_timestamps_histograms[channel].counts_sparse)
+    setattr(SubRun,
+        "caen_board_{}_timestamps_histogram_min_bin".format(channel),
+        caen_timestamps_histograms[channel].min_bin)
+    setattr(SubRun,
+        "caen_board_{}_timestamps_histogram_max_bin".format(channel),
+        caen_timestamps_histograms[channel].max_bin)
+    setattr(SubRun,
+        "caen_board_{}_timestamps_histogram_bin_width".format(channel),
+        caen_timestamps_histograms[channel].bin_width)
+
+SubRun.mwpc_tdc_timestamps_histogram_bins = mwpc_tdc_timestamps_histogram.bins_sparse
+SubRun.mwpc_tdc_timestamps_histogram_counts = mwpc_tdc_timestamps_histogram.counts_sparse
+SubRun.mwpc_tdc_timestamps_histogram_min_bin = mwpc_tdc_timestamps_histogram.min_bin
+SubRun.mwpc_tdc_timestamps_histogram_max_bin = mwpc_tdc_timestamps_histogram.max_bin
+SubRun.mwpc_tdc_timestamps_histogram_bin_width = mwpc_tdc_timestamps_histogram.bin_width
+
+SubRun.wut_timestamps_histogram_bins = wut_timestamps_histogram.bins_sparse
+SubRun.wut_timestamps_histogram_counts = wut_timestamps_histogram.counts_sparse
+SubRun.wut_timestamps_histogram_min_bin = wut_timestamps_histogram.min_bin
+SubRun.wut_timestamps_histogram_max_bin = wut_timestamps_histogram.max_bin
+SubRun.wut_timestamps_histogram_bin_width = wut_timestamps_histogram.bin_width
 
 #/////////////////////////////////////////////////////////////
 # add TPC pedestal/ADC mean and RMS to SubRun
@@ -684,6 +716,78 @@ elif run_exists:
                     number_caen_data_blocks[board])
         Run.mwpc_data_blocks += number_tdc_data_blocks
         Run.wut_data_blocks += number_wut_data_blocks
+
+        #/////////////////////////////////////////////////////////////
+        # update histograms of data block timestamps in Run
+        #/////////////////////////////////////////////////////////////
+        # CAEN timestamps
+        for board in caen_boards:
+            run_caen_timestamps_histograms[channel] = Histogram(
+                "caen_board_{}_timestamps".format(channel))
+
+            run_caen_timestamps_histograms[channel].db_to_histogram(
+                getattr(Run, "caen_board_{}_timestamps_histogram_bins".format(channel)),
+                getattr(Run, "caen_board_{}_timestamps_histogram_counts".format(channel)),
+                getattr(Run, "caen_board_{}_timestamps_histogram_min_bin".format(channel)),
+                getattr(Run, "caen_board_{}_timestamps_histogram_max_bin".format(channel)),
+                getattr(Run, "caen_board_{}_timestamps_histogram_bin_width".format(channel)))
+
+            run_caen_timestamps_histograms[channel].histogram_to_db(
+                run_caen_timestamps_histograms[channel].bins,
+                run_caen_timestamps_histograms[channel].counts + \
+                caen_timestamps_histograms[channel].counts)
+
+            setattr(Run,
+                "caen_board_{}_timestamps_histogram_bins".format(channel),
+                run_caen_timestamps_histograms[channel].bins_sparse)
+            setattr(Run,
+                "caen_board_{}_timestamps_histogram_counts".format(channel),
+                run_caen_timestamps_histograms[channel].counts_sparse)
+            setattr(Run,
+                "caen_board_{}_timestamps_histogram_min_bin".format(channel),
+                run_caen_timestamps_histograms[channel].min_bin)
+            setattr(Run,
+                "caen_board_{}_timestamps_histogram_max_bin".format(channel),
+                run_caen_timestamps_histograms[channel].max_bin)
+            setattr(Run,
+                "caen_board_{}_timestamps_histogram_bin_width".format(channel),
+                run_caen_timestamps_histograms[channel].bin_width)
+
+        # MWPC TDC timestamps
+        run_mwpc_tdc_timestamps_histogram = Histogram("run_mwpc_tdc_timestamps")
+
+        run_mwpc_tdc_timestamps_histogram.db_to_histogram(
+            Run.mwpc_tdc_timestamps_histogram_bins,
+            Run.mwpc_tdc_timestamps_histogram_counts,
+            Run.mwpc_tdc_timestamps_histogram_min_bin,
+            Run.mwpc_tdc_timestamps_histogram_max_bin,
+            Run.mwpc_tdc_timestamps_histogram_bin_width)
+
+        run_mwpc_tdc_timestamps_histogram += mwpc_tdc_timestamps_histogram
+
+        Run.mwpc_tdc_timestamps_histogram_bins = run_mwpc_tdc_timestamps_histogram.bins_sparse
+        Run.mwpc_tdc_timestamps_histogram_counts = run_mwpc_tdc_timestamps_histogram.counts_sparse
+        Run.mwpc_tdc_timestamps_histogram_min_bin = run_mwpc_tdc_timestamps_histogram.min_bin
+        Run.mwpc_tdc_timestamps_histogram_max_bin = run_mwpc_tdc_timestamps_histogram.max_bin
+        Run.mwpc_tdc_timestamps_histogram_bin_width = run_mwpc_tdc_timestamps_histogram.bin_width
+
+        # WUT timestamps
+        run_wut_histogram = Histogram("run_wut")
+
+        run_wut_histogram.db_to_histogram(
+            Run.wut_histogram_bins,
+            Run.wut_histogram_counts,
+            Run.wut_histogram_min_bin,
+            Run.wut_histogram_max_bin,
+            Run.wut_histogram_bin_width)
+
+        run_wut_histogram += wut_histogram
+
+        Run.wut_histogram_bins = run_wut_histogram.bins_sparse
+        Run.wut_histogram_counts = run_wut_histogram.counts_sparse
+        Run.wut_histogram_min_bin = run_wut_histogram.min_bin
+        Run.wut_histogram_max_bin = run_wut_histogram.max_bin
+        Run.wut_histogram_bin_width = run_wut_histogram.bin_width
 
         #/////////////////////////////////////////////////////
         # update CAEN V1751 ADC histograms to Run
