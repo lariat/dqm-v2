@@ -35,7 +35,6 @@ class DataQualityMixin(object):
     #/////////////////////////////////////////////////////////
     # number of data blocks
     #/////////////////////////////////////////////////////////
-    #caen_data_blocks = Column(ARRAY(Integer), unique=False)
     caen_board_0_data_blocks = Column(Integer, unique=False)
     caen_board_1_data_blocks = Column(Integer, unique=False)
     caen_board_2_data_blocks = Column(Integer, unique=False)
@@ -182,6 +181,87 @@ class DataQualityMixin(object):
     caen_board_9_channel_5_adc_histogram_bin_width = Column(Integer, unique=False)
     caen_board_9_channel_6_adc_histogram_bin_width = Column(Integer, unique=False)
     caen_board_9_channel_7_adc_histogram_bin_width = Column(Integer, unique=False)
+
+    #/////////////////////////////////////////////////////////
+    # histograms of data block timestamps
+    #/////////////////////////////////////////////////////////
+    caen_board_0_timestamps_histogram_bins = Column(ARRAY(Float), unique=False)
+    caen_board_0_timestamps_histogram_counts = Column(ARRAY(Integer), unique=False)
+    caen_board_0_timestamps_histogram_min_bin = Column(Float, unique=False)
+    caen_board_0_timestamps_histogram_max_bin = Column(Float, unique=False)
+    caen_board_0_timestamps_histogram_bin_width = Column(Float, unique=False)
+
+    caen_board_1_timestamps_histogram_bins = Column(ARRAY(Float), unique=False)
+    caen_board_1_timestamps_histogram_counts = Column(ARRAY(Integer), unique=False)
+    caen_board_1_timestamps_histogram_min_bin = Column(Float, unique=False)
+    caen_board_1_timestamps_histogram_max_bin = Column(Float, unique=False)
+    caen_board_1_timestamps_histogram_bin_width = Column(Float, unique=False)
+
+    caen_board_2_timestamps_histogram_bins = Column(ARRAY(Float), unique=False)
+    caen_board_2_timestamps_histogram_counts = Column(ARRAY(Integer), unique=False)
+    caen_board_2_timestamps_histogram_min_bin = Column(Float, unique=False)
+    caen_board_2_timestamps_histogram_max_bin = Column(Float, unique=False)
+    caen_board_2_timestamps_histogram_bin_width = Column(Float, unique=False)
+
+    caen_board_3_timestamps_histogram_bins = Column(ARRAY(Float), unique=False)
+    caen_board_3_timestamps_histogram_counts = Column(ARRAY(Integer), unique=False)
+    caen_board_3_timestamps_histogram_min_bin = Column(Float, unique=False)
+    caen_board_3_timestamps_histogram_max_bin = Column(Float, unique=False)
+    caen_board_3_timestamps_histogram_bin_width = Column(Float, unique=False)
+
+    caen_board_4_timestamps_histogram_bins = Column(ARRAY(Float), unique=False)
+    caen_board_4_timestamps_histogram_counts = Column(ARRAY(Integer), unique=False)
+    caen_board_4_timestamps_histogram_min_bin = Column(Float, unique=False)
+    caen_board_4_timestamps_histogram_max_bin = Column(Float, unique=False)
+    caen_board_4_timestamps_histogram_bin_width = Column(Float, unique=False)
+
+    caen_board_5_timestamps_histogram_bins = Column(ARRAY(Float), unique=False)
+    caen_board_5_timestamps_histogram_counts = Column(ARRAY(Integer), unique=False)
+    caen_board_5_timestamps_histogram_min_bin = Column(Float, unique=False)
+    caen_board_5_timestamps_histogram_max_bin = Column(Float, unique=False)
+    caen_board_5_timestamps_histogram_bin_width = Column(Float, unique=False)
+
+    caen_board_6_timestamps_histogram_bins = Column(ARRAY(Float), unique=False)
+    caen_board_6_timestamps_histogram_counts = Column(ARRAY(Integer), unique=False)
+    caen_board_6_timestamps_histogram_min_bin = Column(Float, unique=False)
+    caen_board_6_timestamps_histogram_max_bin = Column(Float, unique=False)
+    caen_board_6_timestamps_histogram_bin_width = Column(Float, unique=False)
+
+    caen_board_7_timestamps_histogram_bins = Column(ARRAY(Float), unique=False)
+    caen_board_7_timestamps_histogram_counts = Column(ARRAY(Integer), unique=False)
+    caen_board_7_timestamps_histogram_min_bin = Column(Float, unique=False)
+    caen_board_7_timestamps_histogram_max_bin = Column(Float, unique=False)
+    caen_board_7_timestamps_histogram_bin_width = Column(Float, unique=False)
+
+    caen_board_8_timestamps_histogram_bins = Column(ARRAY(Float), unique=False)
+    caen_board_8_timestamps_histogram_counts = Column(ARRAY(Integer), unique=False)
+    caen_board_8_timestamps_histogram_min_bin = Column(Float, unique=False)
+    caen_board_8_timestamps_histogram_max_bin = Column(Float, unique=False)
+    caen_board_8_timestamps_histogram_bin_width = Column(Float, unique=False)
+
+    caen_board_9_timestamps_histogram_bins = Column(ARRAY(Float), unique=False)
+    caen_board_9_timestamps_histogram_counts = Column(ARRAY(Integer), unique=False)
+    caen_board_9_timestamps_histogram_min_bin = Column(Float, unique=False)
+    caen_board_9_timestamps_histogram_max_bin = Column(Float, unique=False)
+    caen_board_9_timestamps_histogram_bin_width = Column(Float, unique=False)
+
+    caen_board_24_timestamps_histogram_bins = Column(ARRAY(Float), unique=False)
+    caen_board_24_timestamps_histogram_counts = Column(ARRAY(Integer), unique=False)
+    caen_board_24_timestamps_histogram_min_bin = Column(Float, unique=False)
+    caen_board_24_timestamps_histogram_max_bin = Column(Float, unique=False)
+    caen_board_24_timestamps_histogram_bin_width = Column(Float, unique=False)
+
+    mwpc_tdc_timestamps_histogram_bins = Column(ARRAY(Float), unique=False)
+    mwpc_tdc_timestamps_histogram_counts = Column(ARRAY(Integer), unique=False)
+    mwpc_tdc_timestamps_histogram_min_bin = Column(Float, unique=False)
+    mwpc_tdc_timestamps_histogram_max_bin = Column(Float, unique=False)
+    mwpc_tdc_timestamps_histogram_bin_width = Column(Float, unique=False)
+
+    wut_timestamps_histogram_bins = Column(ARRAY(Float), unique=False)
+    wut_timestamps_histogram_counts = Column(ARRAY(Integer), unique=False)
+    wut_timestamps_histogram_min_bin = Column(Float, unique=False)
+    wut_timestamps_histogram_max_bin = Column(Float, unique=False)
+    wut_timestamps_histogram_bin_width = Column(Float, unique=False)
 
     #/////////////////////////////////////////////////////////
     # histograms of MWPC hits channel occupancy; 64 channels per TDC
