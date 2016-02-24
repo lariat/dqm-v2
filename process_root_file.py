@@ -423,20 +423,20 @@ SubRun.wut_data_blocks = number_wut_data_blocks
 #/////////////////////////////////////////////////////////////
 for board in caen_boards:
     setattr(SubRun,
-        "caen_board_{}_timestamps_histogram_bins".format(channel),
-        caen_timestamps_histograms[channel].bins_sparse)
+        "caen_board_{}_timestamps_histogram_bins".format(board),
+        caen_timestamps_histograms[board].bins_sparse)
     setattr(SubRun,
-        "caen_board_{}_timestamps_histogram_counts".format(channel),
-        caen_timestamps_histograms[channel].counts_sparse)
+        "caen_board_{}_timestamps_histogram_counts".format(board),
+        caen_timestamps_histograms[board].counts_sparse)
     setattr(SubRun,
-        "caen_board_{}_timestamps_histogram_min_bin".format(channel),
-        caen_timestamps_histograms[channel].min_bin)
+        "caen_board_{}_timestamps_histogram_min_bin".format(board),
+        caen_timestamps_histograms[board].min_bin)
     setattr(SubRun,
-        "caen_board_{}_timestamps_histogram_max_bin".format(channel),
-        caen_timestamps_histograms[channel].max_bin)
+        "caen_board_{}_timestamps_histogram_max_bin".format(board),
+        caen_timestamps_histograms[board].max_bin)
     setattr(SubRun,
-        "caen_board_{}_timestamps_histogram_bin_width".format(channel),
-        caen_timestamps_histograms[channel].bin_width)
+        "caen_board_{}_timestamps_histogram_bin_width".format(board),
+        caen_timestamps_histograms[board].bin_width)
 
 SubRun.mwpc_tdc_timestamps_histogram_bins = mwpc_tdc_timestamps_histogram.bins_sparse
 SubRun.mwpc_tdc_timestamps_histogram_counts = mwpc_tdc_timestamps_histogram.counts_sparse
@@ -722,36 +722,36 @@ elif run_exists:
         #/////////////////////////////////////////////////////////////
         # CAEN timestamps
         for board in caen_boards:
-            run_caen_timestamps_histograms[channel] = Histogram(
-                "caen_board_{}_timestamps".format(channel))
+            run_caen_timestamps_histograms[board] = Histogram(
+                "caen_board_{}_timestamps".format(board))
 
-            run_caen_timestamps_histograms[channel].db_to_histogram(
-                getattr(Run, "caen_board_{}_timestamps_histogram_bins".format(channel)),
-                getattr(Run, "caen_board_{}_timestamps_histogram_counts".format(channel)),
-                getattr(Run, "caen_board_{}_timestamps_histogram_min_bin".format(channel)),
-                getattr(Run, "caen_board_{}_timestamps_histogram_max_bin".format(channel)),
-                getattr(Run, "caen_board_{}_timestamps_histogram_bin_width".format(channel)))
+            run_caen_timestamps_histograms[board].db_to_histogram(
+                getattr(Run, "caen_board_{}_timestamps_histogram_bins".format(board)),
+                getattr(Run, "caen_board_{}_timestamps_histogram_counts".format(board)),
+                getattr(Run, "caen_board_{}_timestamps_histogram_min_bin".format(board)),
+                getattr(Run, "caen_board_{}_timestamps_histogram_max_bin".format(board)),
+                getattr(Run, "caen_board_{}_timestamps_histogram_bin_width".format(board)))
 
-            run_caen_timestamps_histograms[channel].histogram_to_db(
-                run_caen_timestamps_histograms[channel].bins,
-                run_caen_timestamps_histograms[channel].counts + \
-                caen_timestamps_histograms[channel].counts)
+            run_caen_timestamps_histograms[board].histogram_to_db(
+                run_caen_timestamps_histograms[board].bins,
+                run_caen_timestamps_histograms[board].counts + \
+                caen_timestamps_histograms[board].counts)
 
             setattr(Run,
-                "caen_board_{}_timestamps_histogram_bins".format(channel),
-                run_caen_timestamps_histograms[channel].bins_sparse)
+                "caen_board_{}_timestamps_histogram_bins".format(board),
+                run_caen_timestamps_histograms[board].bins_sparse)
             setattr(Run,
-                "caen_board_{}_timestamps_histogram_counts".format(channel),
-                run_caen_timestamps_histograms[channel].counts_sparse)
+                "caen_board_{}_timestamps_histogram_counts".format(board),
+                run_caen_timestamps_histograms[board].counts_sparse)
             setattr(Run,
-                "caen_board_{}_timestamps_histogram_min_bin".format(channel),
-                run_caen_timestamps_histograms[channel].min_bin)
+                "caen_board_{}_timestamps_histogram_min_bin".format(board),
+                run_caen_timestamps_histograms[board].min_bin)
             setattr(Run,
-                "caen_board_{}_timestamps_histogram_max_bin".format(channel),
-                run_caen_timestamps_histograms[channel].max_bin)
+                "caen_board_{}_timestamps_histogram_max_bin".format(board),
+                run_caen_timestamps_histograms[board].max_bin)
             setattr(Run,
-                "caen_board_{}_timestamps_histogram_bin_width".format(channel),
-                run_caen_timestamps_histograms[channel].bin_width)
+                "caen_board_{}_timestamps_histogram_bin_width".format(board),
+                run_caen_timestamps_histograms[board].bin_width)
 
         # MWPC TDC timestamps
         run_mwpc_tdc_timestamps_histogram = Histogram("run_mwpc_tdc_timestamps")
