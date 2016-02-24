@@ -699,6 +699,8 @@ elif run_exists:
         # update histograms of data block timestamps in Run
         #/////////////////////////////////////////////////////////////
         # CAEN timestamps
+        run_caen_timestamps_histograms = {}
+
         for board in caen_boards:
             run_caen_timestamps_histograms[board] = Histogram(
                 "caen_board_{}_timestamps".format(board))
@@ -710,10 +712,7 @@ elif run_exists:
                 getattr(Run, "caen_board_{}_timestamps_histogram_max_bin".format(board)),
                 getattr(Run, "caen_board_{}_timestamps_histogram_bin_width".format(board)))
 
-            run_caen_timestamps_histograms[board].histogram_to_db(
-                run_caen_timestamps_histograms[board].bins,
-                run_caen_timestamps_histograms[board].counts + \
-                caen_timestamps_histograms[board].counts)
+            run_caen_timestamps_histograms[board] += caen_timestamps_histograms[board]
 
             setattr(Run,
                 "caen_board_{}_timestamps_histogram_bins".format(board),
@@ -750,22 +749,22 @@ elif run_exists:
         Run.mwpc_tdc_timestamps_histogram_bin_width = run_mwpc_tdc_timestamps_histogram.bin_width
 
         # WUT timestamps
-        run_wut_histogram = Histogram("run_wut")
+        run_wut_timestamps_histogram = Histogram("run_wut_timestamps")
 
-        run_wut_histogram.db_to_histogram(
-            Run.wut_histogram_bins,
-            Run.wut_histogram_counts,
-            Run.wut_histogram_min_bin,
-            Run.wut_histogram_max_bin,
-            Run.wut_histogram_bin_width)
+        run_wut_timestamps_histogram.db_to_histogram(
+            Run.wut_timestamps_histogram_bins,
+            Run.wut_timestamps_histogram_counts,
+            Run.wut_timestamps_histogram_min_bin,
+            Run.wut_timestamps_histogram_max_bin,
+            Run.wut_timestamps_histogram_bin_width)
 
-        run_wut_histogram += wut_histogram
+        run_wut_timestamps_histogram += wut_timestamps_histogram
 
-        Run.wut_histogram_bins = run_wut_histogram.bins_sparse
-        Run.wut_histogram_counts = run_wut_histogram.counts_sparse
-        Run.wut_histogram_min_bin = run_wut_histogram.min_bin
-        Run.wut_histogram_max_bin = run_wut_histogram.max_bin
-        Run.wut_histogram_bin_width = run_wut_histogram.bin_width
+        Run.wut_timestamps_histogram_bins = run_wut_timestamps_histogram.bins_sparse
+        Run.wut_timestamps_histogram_counts = run_wut_timestamps_histogram.counts_sparse
+        Run.wut_timestamps_histogram_min_bin = run_wut_timestamps_histogram.min_bin
+        Run.wut_timestamps_histogram_max_bin = run_wut_timestamps_histogram.max_bin
+        Run.wut_timestamps_histogram_bin_width = run_wut_timestamps_histogram.bin_width
 
         #/////////////////////////////////////////////////////
         # update CAEN V1751 ADC histograms to Run
@@ -785,10 +784,7 @@ elif run_exists:
                 getattr(Run, "caen_board_8_channel_{}_adc_histogram_max_bin".format(channel)),
                 getattr(Run, "caen_board_8_channel_{}_adc_histogram_bin_width".format(channel)))
 
-            run_caen_board_8_adc_histograms[channel].histogram_to_db(
-                run_caen_board_8_adc_histograms[channel].bins,
-                run_caen_board_8_adc_histograms[channel].counts + \
-                caen_board_8_adc_histograms[channel].counts)
+            run_caen_board_8_adc_histograms[channel] += caen_board_8_adc_histograms[channel]
 
             setattr(Run,
                 "caen_board_8_channel_{}_adc_histogram_bins".format(channel),
@@ -817,10 +813,7 @@ elif run_exists:
                 getattr(Run, "caen_board_9_channel_{}_adc_histogram_max_bin".format(channel)),
                 getattr(Run, "caen_board_9_channel_{}_adc_histogram_bin_width".format(channel)))
 
-            run_caen_board_9_adc_histograms[channel].histogram_to_db(
-                run_caen_board_9_adc_histograms[channel].bins,
-                run_caen_board_9_adc_histograms[channel].counts + \
-                caen_board_9_adc_histograms[channel].counts)
+            run_caen_board_9_adc_histograms[channel] += caen_board_9_adc_histograms[channel]
 
             setattr(Run,
                 "caen_board_9_channel_{}_adc_histogram_bins".format(channel),
@@ -896,45 +889,6 @@ elif run_exists:
         Run.tof_histogram_min_bin = run_tof_histogram.min_bin
         Run.tof_histogram_max_bin = run_tof_histogram.max_bin
         Run.tof_histogram_bin_width = run_tof_histogram.bin_width
-
-        #
-
-        #run_caen_board_8_adc_histograms = {}
-
-        #for channel in v1751_channels:
-        #    # CAEN board 8
-        #    run_caen_board_8_adc_histograms[channel] = Histogram(
-        #        "caen_board_8_channel_{}_adc".format(channel))
-
-        #    run_caen_board_8_adc_histograms[channel].db_to_histogram(
-        #        getattr(Run, "caen_board_8_channel_{}_adc_histogram_bins".format(channel)),
-        #        getattr(Run, "caen_board_8_channel_{}_adc_histogram_counts".format(channel)),
-        #        getattr(Run, "caen_board_8_channel_{}_adc_histogram_min_bin".format(channel)),
-        #        getattr(Run, "caen_board_8_channel_{}_adc_histogram_max_bin".format(channel)),
-        #        getattr(Run, "caen_board_8_channel_{}_adc_histogram_bin_width".format(channel)))
-
-        #    run_caen_board_8_adc_histograms[channel].histogram_to_db(
-        #        run_caen_board_8_adc_histograms[channel].bins,
-        #        run_caen_board_8_adc_histograms[channel].counts + \
-        #        caen_board_8_adc_histograms[channel].counts)
-
-        #    setattr(Run,
-        #        "caen_board_8_channel_{}_adc_histogram_bins".format(channel),
-        #        run_caen_board_8_adc_histograms[channel].bins_sparse)
-        #    setattr(Run,
-        #        "caen_board_8_channel_{}_adc_histogram_counts".format(channel),
-        #        run_caen_board_8_adc_histograms[channel].counts_sparse)
-        #    setattr(Run,
-        #        "caen_board_8_channel_{}_adc_histogram_min_bin".format(channel),
-        #        run_caen_board_8_adc_histograms[channel].min_bin)
-        #    setattr(Run,
-        #        "caen_board_8_channel_{}_adc_histogram_max_bin".format(channel),
-        #        run_caen_board_8_adc_histograms[channel].max_bin)
-        #    setattr(Run,
-        #        "caen_board_8_channel_{}_adc_histogram_bin_width".format(channel),
-        #        run_caen_board_8_adc_histograms[channel].bin_width)
-
-        #
 
         #/////////////////////////////////////////////////////////////
         # update MWPC TDC hits histograms in SubRun
@@ -1086,8 +1040,6 @@ elif run_exists:
         print str(e)
     except NoResultFound as e:
         print str(e)
-    except:
-        pass
 
 #/////////////////////////////////////////////////////////////
 # add SubRun to session
