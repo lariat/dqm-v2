@@ -138,12 +138,15 @@ def json_latest_runs():
         .order_by(DataQualityRun.date_time.desc())
     results = query.limit(limit)
 
-    values = []
+    json_results = []
 
     for result in results:
-        values.append(result.run)
+        json_results.append({
+            'run'     : result.run,
+            'subruns' : result.subruns,
+            })
 
-    return jsonify(values=values)
+    return jsonify(results=json_results)
 
 @app.route('/histograms')
 def histograms():
