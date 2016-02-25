@@ -98,7 +98,6 @@ def json():
     query = request.args.get('query', None)
 
     run, subrun = check_run_subrun(run, subrun)
-
     db_row_object = None
 
     if run and subrun:
@@ -112,12 +111,22 @@ def json():
     db_row_object_dict = dict(db_row_object.__dict__) 
     db_row_object_dict.pop('_sa_instance_state', None)
 
-    if not query in db_row_object_dict:
-        return "NULL"
+    query = str(query)
+    parameter_list = query.split(' ')
 
-    values = db_row_object_dict[query]
+    print parameter_list
 
-    return jsonify(values=values)
+    # check to see if the parameters exists
+    for parameter in parameter_list:
+        if parameter not in db_row_object_dict:
+            return "NULL"
+
+    json_data = {}
+    
+    for parameter in parameter_list:
+        json_data[parameter] = db_row_object_dict[parameter]
+
+    return jsonify(json_data)
 
 @app.route('/json/latest-runs')
 def json_latest_runs():
@@ -134,9 +143,9 @@ def json_latest_runs():
         limit = 100
 
     # query PostgreSQL database for the lastest runs
-    query = db_session.query(DataQualityRun) \
+    db_query = db_session.query(DataQualityRun) \
         .order_by(DataQualityRun.date_time.desc())
-    results = query.limit(limit)
+    results = db_query.limit(limit)
 
     json_results = []
 
@@ -151,7 +160,7 @@ def json_latest_runs():
 @app.route('/histograms')
 def histograms():
 
-    # /histograms?names=caen_board_0_timestamps+caen_board_1_timestamps&run=latest&subrun=3
+    # /histograms?query=caen_board_0_timestamps+caen_board_1_timestamps&run=latest&subrun=3
 
     run = request.args.get('run', None)
     subrun = request.args.get('subrun', None)
@@ -173,26 +182,26 @@ def histograms():
     parameters = [
         s for s in db_row_object_dict if '_histogram' in s ]
 
-    names = str(request.args.get('names', None))
-    name_list = names.split(' ')
+    query = str(request.args.get('query', None))
+    parameter_list = query.split(' ')
 
-    # check to see of the histogram exists
-    for name in name_list:
-        if not any(name in s for s in parameters):
+    # check to see if the histogram exists
+    for parameter in parameter_list:
+        if not any(parameter in s for s in parameters):
             return "NULL"
 
     json_data = {}
 
     # fill json_data with histogram data
-    for name in name_list:
-        histogram = Histogram(name)
+    for parameter in parameter_list:
+        histogram = Histogram(parameter)
         histogram.db_to_histogram(
-             getattr(db_row_object, name + "_histogram_bins"),
-             getattr(db_row_object, name + "_histogram_counts"),
-             getattr(db_row_object, name + "_histogram_min_bin"),
-             getattr(db_row_object, name + "_histogram_max_bin"),
-             getattr(db_row_object, name + "_histogram_bin_width"))
-        json_data[name] = {
+             getattr(db_row_object, parameter + "_histogram_bins"),
+             getattr(db_row_object, parameter + "_histogram_counts"),
+             getattr(db_row_object, parameter + "_histogram_min_bin"),
+             getattr(db_row_object, parameter + "_histogram_max_bin"),
+             getattr(db_row_object, parameter + "_histogram_bin_width"))
+        json_data[parameter] = {
             'bins'   : histogram.bins.tolist(),
             'counts' : histogram.counts.tolist(),
             'min_bin' : histogram.min_bin,
@@ -208,7 +217,6 @@ def metric():
     parameter = request.args.get('parameter', None)
 
     key_prefix = 'dqm/metric/1min/'
-
     key = key_prefix + parameter
 
     if redis.exists(key):
