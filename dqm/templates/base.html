@@ -1,5 +1,11 @@
 {% set navigation_bar = [
     ('/', 'home', 'Home'),
+    ('/metrics', 'metrics', 'Metrics'),
+    ('/data-stream', 'data-stream', 'Data stream'),
+    ('/tpc', 'tpc', 'TPC'),
+    ('/caen-boards', 'caen-boards', 'CAEN boards'),
+    ('/multi-wire-chambers', 'multi-wire-chambers', 'MWCs'),
+    ('/physics', 'physics', 'Physics'),
 ] -%}
 
 {% set active_page = active_page|default('home') -%}
