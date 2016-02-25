@@ -86,16 +86,20 @@ def check_run_subrun(r, sr):
 @app.route('/home')
 @app.route('/index')
 def home():
-    return render_template('home.html', title='Home')
+    return render_template('home.html', title="Home")
 
 @app.route('/json')
 def json():
+
+    # /json?query=caen_board_0_data_blocks&run=latest&subrun=3
 
     run = request.args.get('run', None)
     subrun = request.args.get('subrun', None)
     query = request.args.get('query', None)
 
     run, subrun = check_run_subrun(run, subrun)
+
+    db_row_object = None
 
     if run and subrun:
         db_row_object = fetch_subrun(run, subrun)
@@ -115,8 +119,36 @@ def json():
 
     return jsonify(values=values)
 
+@app.route('/json/latest-runs')
+def json_latest_runs():
+    """
+        Get the last N run numbers from the database.
+
+            limit: Limit on the number of results returned.
+                   Default 100.
+    """
+
+    limit = request.args.get('limit', None)
+
+    if not limit:
+        limit = 100
+
+    # query PostgreSQL database for the lastest runs
+    query = db_session.query(DataQualityRun) \
+        .order_by(DataQualityRun.date_time.desc())
+    results = query.limit(limit)
+
+    values = []
+
+    for result in results:
+        values.append(result.run)
+
+    return jsonify(values=values)
+
 @app.route('/histograms')
 def histograms():
+
+    # /histograms?names=caen_board_0_timestamps+caen_board_1_timestamps&run=latest&subrun=3
 
     run = request.args.get('run', None)
     subrun = request.args.get('subrun', None)
@@ -183,15 +215,60 @@ def metric():
     else:
         return "NULL"
 
-@app.route('/random')
-def random():
-    data = list(np.random.randint(5, 10, 960))
-    return jsonify(values=data)
-
 @app.route('/metrics')
 def metrics():
     return render_template('metrics.html',
                            title="Metrics")
+
+@app.route('/metrics/tpc')
+def metrics_tpc():
+    return ""
+
+@app.route('/metrics/data-stream')
+def metrics_data_stream():
+    return ""
+
+@app.route('/tpc')
+def tpc():
+    return ""
+
+@app.route('/data-stream')
+def data_stream():
+
+    run = request.args.get('run', None)
+    subrun = request.args.get('subrun', None)
+
+    run, subrun = check_run_subrun(run, subrun)
+
+    return render_template('data-stream.html',
+                            title="Data Stream",
+                            run=run,
+                            subrun=subrun)
+
+@app.route('/caen-boards')
+def caen_boards():
+    return ""
+
+@app.route('/wire-chambers')
+def wire_chambers():
+    return ""
+
+@app.route('/wire-chambers/channels')
+def wire_chambers_channels():
+    return ""
+
+@app.route('/wire-chambers/timing')
+def wire_chambers_timing():
+    return ""
+
+@app.route('/physics')
+def physics():
+    return ""
+
+@app.route('/random')
+def random():
+    data = list(np.random.randint(5, 10, 960))
+    return jsonify(values=data)
 
 #@app.route('/test')
 #def test():
