@@ -13,7 +13,7 @@
 
                 <label class="control-label col-sm-4" for="run">Run</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" id="run" name="run" value="{{ run }}">
+                  <input type="text" class="form-control typeahead" id="run" name="run" value="{{ run }}">
                 </div>
 
               </div>
@@ -42,4 +42,51 @@
 
         </div>
       </div>
+
+      <script src="{{ url_for('static', filename='lib/jquery/js/jquery.min.js') }}"></script>
+      <script src="{{ url_for('static', filename='lib/typeahead.js/typeahead.bundle.min.js') }}"></script>
+
+      <script type=text/javascript>
+      $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+      </script>
+
+      <script>
+      $(document).ready(function () {
+          // instantiate the bloodhound suggestion engine
+          var engine = new Bloodhound({
+              datumTokenizer: function (datum) {
+                  return Bloodhound.tokenizers.whitespace(datum.run);
+              },
+              queryTokenizer: Bloodhound.tokenizers.whitespace,
+              prefetch: {
+                  url: $SCRIPT_ROOT + "/json/latest-runs?limit=100",
+                  filter: function (data) {
+                      console.log("data", data.results)
+                      return $.map(data.results, function (result) {
+                          return {
+                              run: result.run,
+                              subruns: result.subruns
+                          };
+                      });
+                  }
+              }
+          });
+
+          // initialize the bloodhound suggestion engine
+          engine.initialize();
+
+          // instantiate the typeahead UI
+          $('.typeahead').typeahead(
+              {
+                  hint: true,
+                  highlight: true,
+                  minLength: 1
+              },
+              {
+                  name: 'engine',
+                  displayKey: 'run',
+                  source: engine.ttAdapter(),
+          });
+      });
+      </script>
 
