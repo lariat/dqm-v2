@@ -61,14 +61,19 @@
       this.$SUBRUN = "{{ subrun }}";
 
       if ($RUN == "None") { $RUN = "latest" };
+
+      this.$UPDATE = false;
       </script>
 
       <script type="text/javascript">
       $(document).ready(function () {
           if(window.location.href.indexOf("?live") > -1) {
               $('#checkbox').attr('checked', true);
+              $UPDATE = true;
+              $RUN = "latest";
           } else {
               $('#checkbox').attr('checked', false);
+              $UPDATE = false;
           }
       });
       </script>
@@ -85,9 +90,12 @@
       $('#checkbox').change(function() {
         if ($(this).is(':checked')) {
             console.log('Checked');
+            $UPDATE = true;
+            $RUN = "latest";
             window.location.replace("{{ request.path }}?live");
         } else {
             console.log('Unchecked');
+            $UPDATE = false;
         }
       });
       </script>
