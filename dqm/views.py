@@ -229,12 +229,16 @@ def metrics():
     return render_template('metrics.html',
                            title="Metrics")
 
-@app.route('/metrics/tpc')
-def metrics_tpc():
-    return ""
-
 @app.route('/metrics/data-stream')
 def metrics_data_stream():
+    return ""
+
+@app.route('/metrics/tpc-pedestal-mean')
+def metrics_tpc_pedestal_mean():
+    return ""
+
+@app.route('/metrics/tpc-pedestal-rms')
+def metrics_tpc_pedestal_rms():
     return ""
 
 @app.route('/tpc')
