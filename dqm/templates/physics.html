@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% set active_page = "physics" %}
+
+{% block content %}
+
+    <div class="container">
+
+{% include 'run-subrun-form.html' %}
+
+      <div class="panel panel-default">
+        <div class="panel-body text-center">
+          <div id="tof-histogram"></div>
+        </div>
+      </div>
+
+    </div>
+
+{% include 'scripts.html' %}
+
+    <script src="{{ url_for('static', filename='lib/d3/js/d3.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/d3-tip/js/d3-tip.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/tof-histogram.js') }}"></script>
+
+{% include 'footer.html' %}
+
+{% endblock %}

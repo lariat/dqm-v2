@@ -269,9 +269,9 @@ def data_stream():
     run, subrun = check_run_subrun(run, subrun)
 
     return render_template('data-stream.html',
-                            title="Data Stream",
-                            run=run,
-                            subrun=subrun)
+                           title="Data Stream",
+                           run=run,
+                           subrun=subrun)
 
 @app.route('/caen-boards')
 def caen_boards():
@@ -291,8 +291,22 @@ def wire_chambers_timing():
 
 @app.route('/physics')
 def physics():
+
+    run = request.args.get('run', None)
+    subrun = request.args.get('subrun', None)
+
+    live = request.args.get('live', False)
+
+    if live == u'':
+        run = "latest"
+        subrun = None
+
+    run, subrun = check_run_subrun(run, subrun)
+
     return render_template('physics.html',
-                           title='Physics')
+                           title='Physics',
+                           run=run,
+                           subrun=subrun)
 
 @app.route('/random')
 def random():
