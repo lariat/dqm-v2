@@ -277,16 +277,31 @@ def data_stream():
 def caen_boards():
     return ""
 
-@app.route('/wire-chambers')
-def wire_chambers():
+@app.route('/multi-wire-chambers')
+def multi_wire_chambers():
+
+    run = request.args.get('run', None)
+    subrun = request.args.get('subrun', None)
+
+    live = request.args.get('live', False)
+
+    if live == u'':
+        run = "latest"
+        subrun = None
+
+    run, subrun = check_run_subrun(run, subrun)
+
+    return render_template('multi-wire-chambers.html',
+                           title="Multi-Wire Chambers",
+                           run=run,
+                           subrun=subrun)
+
+@app.route('/multi-wire-chambers/channels')
+def multi_wire_chambers_channels():
     return ""
 
-@app.route('/wire-chambers/channels')
-def wire_chambers_channels():
-    return ""
-
-@app.route('/wire-chambers/timing')
-def wire_chambers_timing():
+@app.route('/multi-wire-chambers/timing')
+def multi_wire_chambers_timing():
     return ""
 
 @app.route('/physics')

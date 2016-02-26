@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% set active_page = "multi-wire-chambers" %}
+
+{% block content %}
+
+    <div class="container">
+
+      <div class="jumbotron">
+        <h2>Multi-wire chambers</h2>
+      </div>
+
+{% include 'run-subrun-form.html' %}
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">Available plots</h3>
+        </div>
+        <div class="panel-body">
+          <p>Below is a list of the available plots at the moment:</p>
+          <div class="list-group">
+            <a href="{{ url_for('multi_wire_chambers_channels') }}" class="list-group-item">Channel occupancy of hits</a>
+            <a href="{{ url_for('multi_wire_chambers_timing') }}" class="list-group-item">Timing of hits</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+{% include 'scripts.html' %}
+
+{% include 'footer.html' %}
+
+{% endblock %}
