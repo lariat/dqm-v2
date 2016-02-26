@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+{% set active_page = "data-stream" %}
+
+{% block content %}
+
+    <style>
+      body {
+          font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+
+      .grouped-chart-container {
+          position: relative;
+      }
+
+      .grouped-chart-container .controls {
+          position: absolute;
+          top: 12px;
+          left: 18px;
+      }
+
+      .grouped-chart-container .tooltip {
+          position: absolute;
+          font-size: 13px;
+          white-space: nowrap;
+          border: 1px solid black;
+          background-color: white;
+          pointer-events: none;
+          border-radius: 5px;
+          display: none;
+      }
+
+      .grouped-chart-container .tooltip-wrapper {
+          position: relative;
+          padding: 6px;
+      }
+
+      .grouped-chart-container .tooltip-wrapper:before {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 0;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 10px solid;
+            border-color: black transparent transparent transparent;
+      }
+
+      .grouped-chart-container .tooltip-wrapper:after {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 0;
+            bottom: -19px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 10px solid;
+            border-color: white transparent transparent transparent;
+      }
+
+      .grouped-chart-container .tooltip-header {
+          padding: 0;
+          margin: 0;
+      }
+
+      .grouped-chart path,
+      .grouped-chart line,
+      .grouped-chart rect {
+          shape-rendering: crispEdges;
+      }
+
+      .grouped-chart text {
+          font: 10px sans-serif;
+      }
+
+      .grouped-chart .axis path,
+      .grouped-chart .axis line {
+          fill: none;
+          stroke: #000;
+      }
+
+      .grouped-chart .series-caen {
+          fill: #CD4638;
+      }
+
+      .grouped-chart .series-v1751 {
+          fill: #CCC;
+      }
+
+      .grouped-chart .series-mwc {
+          fill: steelblue;
+      }
+
+      .grouped-chart .grid-lines-container {
+          fill: none;
+          stroke: lightgrey;
+      }
+
+      .grouped-chart .layer rect {
+          opacity: 0.8;
+          transition: opacity 0.5s ease;
+      }
+
+      .grouped-chart .layer rect:hover {
+          opacity: 1;
+      }
+
+      .grouped-chart .legend {
+          cursor: pointer;
+      }
+
+      .grouped-chart .series-box {
+          stroke-width: 2px;
+      }
+
+      .grouped-chart .series-yes .series-box {
+          stroke: #CD4638;
+      }
+
+      .grouped-chart .series-no .series-box {
+          stroke: #CCC;
+      }
+
+      .grouped-chart .disabled .series-box {
+          fill-opacity: 0;
+      }
+
+      .grouped-chart .series-label {
+          fill: black;
+      }
+    </style>
+
+    <div class="container">
+
+      {% include 'run-subrun-form.html' %}
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">Data stream from each device</h3>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Device</th>
+              <th>Number of data blocks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>CAEN board 0 (V1740)</td>
+              <td id="caen-board-0-data-blocks"></td>
+            </tr>
+            <tr>
+              <th scope="row">2</th>
+              <td>CAEN board 1 (V1740)</td>
+              <td id="caen-board-1-data-blocks"></td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>CAEN board 2 (V1740)</td>
+              <td id="caen-board-2-data-blocks"></td>
+            </tr>
+            <tr>
+              <th scope="row">4</th>
+              <td>CAEN board 3 (V1740)</td>
+              <td id="caen-board-3-data-blocks"></td>
+            </tr>
+            <tr>
+              <th scope="row">5</th>
+              <td>CAEN board 4 (V1740)</td>
+              <td id="caen-board-4-data-blocks"></td>
+            </tr>
+            <tr>
+              <th scope="row">6</th>
+              <td>CAEN board 5 (V1740)</td>
+              <td id="caen-board-5-data-blocks"></td>
+            </tr>
+            <tr>
+              <th scope="row">7</th>
+              <td>CAEN board 6 (V1740)</td>
+              <td id="caen-board-6-data-blocks"></td>
+            </tr>
+            <tr>
+              <th scope="row">8</th>
+              <td>CAEN board 7 (V1740)</td>
+              <td id="caen-board-7-data-blocks"></td>
+            </tr>
+            <tr>
+              <th scope="row">9</th>
+              <td>CAEN board 24 (V1740B)</td>
+              <td id="caen-board-24-data-blocks"></td>
+            </tr>
+            <tr>
+              <th scope="row">10</th>
+              <td>CAEN board 8 (V1751)</td>
+              <td id="caen-board-8-data-blocks"></td>
+            </tr>
+            <tr>
+              <th scope="row">11</th>
+              <td>CAEN board 9 (V1751)</td>
+              <td id="caen-board-9-data-blocks"></td>
+            </tr>
+            <tr>
+              <th scope="row">12</th>
+              <td>Multi-wire chambers</td>
+              <td id="mwc-data-blocks"></td>
+            </tr>
+            <tr>
+              <th scope="row">13</th>
+              <td>Wave union TDC</td>
+              <td id="wut-data-blocks"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">Data block time stamps</h3>
+        </div>
+        <div class="panel-body text-center">
+          <div id="data-block-time-stamps"></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <a href="{{ url_for('metrics_data_stream') }}"><button type="button" class="btn btn-primary btn-block">Near-real-time metrics of data stream</button></a>
+        </div>
+      </div>
+
+    </div>
+
+{% include 'scripts.html' %}
+
+    <script src="{{ url_for('static', filename='js/data-stream-table.js') }}"></script>
+
+{% endblock %}
