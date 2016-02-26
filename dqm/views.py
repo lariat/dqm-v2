@@ -231,7 +231,8 @@ def metrics():
 
 @app.route('/metrics/data-stream')
 def metrics_data_stream():
-    return ""
+    return render_template('metrics-data-stream.html',
+                           title="Data stream metrics")
 
 @app.route('/metrics/tpc-pedestal-mean')
 def metrics_tpc_pedestal_mean():
