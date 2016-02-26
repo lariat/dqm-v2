@@ -60,7 +60,16 @@
       this.$RUN = "{{ run }}";
       this.$SUBRUN = "{{ subrun }}";
 
-      if ($RUN == "None") { $RUN = "latest" };
+      if ($RUN == "None") {
+          $RUN = "latest"
+      };
+
+      if ($RUN == "latest") {
+          $.getJSON($SCRIPT_ROOT + '/json/latest-runs?limit=1', function(data) {
+              console.log(data.results[0].run);
+              $("#run").val(data.results[0].run);
+          });
+      }
 
       this.$UPDATE = false;
       </script>
