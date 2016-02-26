@@ -8,23 +8,23 @@
             <input type="hidden" id="id_" name="id_" value="{{ run }}">
             #}
 
-            <div class="col-sm-5">
+            <div class="col-sm-4">
               <div class="form-group form-group-sm">
 
                 <label class="control-label col-sm-4" for="run">Run</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control typeahead" id="run" name="run" value="{{ run }}", placeholder="{{ run }}">
+                  <input type="text" class="form-control typeahead" id="run" name="run" value="{{ run }}" placeholder="{{ run }}">
                 </div>
 
               </div>
             </div>
 
-            <div class="col-sm-5">
+            <div class="col-sm-4">
               <div class="form-group form-group-sm">
 
                 <label class="control-label col-sm-4" for="subrun">Sub-run</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" id="subrun" name="subrun" value="{{ subrun }}", placeholder="{{ subrun }}">
+                  <input type="text" class="form-control" id="subrun" name="subrun" value="{{ subrun }}" placeholder="{{ subrun }}">
                 </div>
 
               </div>
@@ -40,14 +40,56 @@
 
           </form>
 
+            <div class="col-sm-2">
+              <div class="form-group form-group-sm">
+                <label><input id="checkbox" type="checkbox" value=""> Live</label>
+              </div>
+            </div>
+
         </div>
       </div>
+
+      <script type="text/javascript">
+      $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+      </script>
 
       <script src="{{ url_for('static', filename='lib/jquery/js/jquery.min.js') }}"></script>
       <script src="{{ url_for('static', filename='lib/typeahead.js/typeahead.bundle.min.js') }}"></script>
 
-      <script type=text/javascript>
-      $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+      <script type="text/javascript">
+      this.$RUN = "{{ run }}";
+      this.$SUBRUN = "{{ subrun }}";
+
+      if ($RUN == "None") { $RUN = "latest" };
+      </script>
+
+      <script type="text/javascript">
+      $(document).ready(function () {
+          if(window.location.href.indexOf("?live") > -1) {
+              $('#checkbox').attr('checked', true);
+          } else {
+              $('#checkbox').attr('checked', false);
+          }
+      });
+      </script>
+
+      <script type="text/javascript">
+      $(document).ready(function () {
+          if ($('#checkbox').is(":checked")) {
+              console.log('Checked');
+          }
+      });
+      </script>
+
+      <script type="text/javascript">
+      $('#checkbox').change(function() {
+        if ($(this).is(':checked')) {
+            console.log('Checked');
+            window.location.replace("{{ request.path }}?live");
+        } else {
+            console.log('Unchecked');
+        }
+      });
       </script>
 
       <script>
