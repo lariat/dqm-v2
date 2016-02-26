@@ -16,44 +16,9 @@ v1740b_channels = range(64)
 tpc_channels = range(480)
 
 #/////////////////////////////////////////////////////////////
-# iterators for MWPC TDCs
+# iterators for MWC TDCs
 #/////////////////////////////////////////////////////////////
-mwpc_tdc_numbers = range(1, 16+1)
-mwpc_tdc_channels = range(64)
-mwpc_tdc_clock_ticks = range(1024)
-
-#/////////////////////////////////////////////////////////////
-# request args for Flask
-#/////////////////////////////////////////////////////////////
-request_args = {
-    #'run'                      : None,
-    #'subrun'                   : None,
-    'number_events'            : None,
-    'number_tpc_events'        : None,
-    'number_data_blocks'       : {
-        'device' : {
-            'caen' : {
-                'board' : caen_boards
-                },
-            'mwpc' : None,
-            'wut'  : None,
-            }
-        },
-    'tpc_pedestal_mean_rms'    : None,
-    'tpc_adc_mean_rms'         : None,
-    'caen_pedestal_mean_rms'   : None,
-    'caen_adc_mean_rms'        : None,
-    'caen_v1751_adc_histogram' : {
-        'board'   : v1751_boards,
-        'channel' : v1751_channels,
-        },
-    'ustof_hits_histogram'     : None,
-    'dstof_hits_histogram'     : None,
-    'tof_histogram'            : None,
-    'mwpc_hits_histogram'      : {
-        'type'  : [ 'channel', 'timing' ],
-        'class' : [ 'good'   , 'bad'    ],
-        },
-    'mwpc_momenta_histogram'   : None,
-    }
+mwc_tdc_numbers = range(1, 16+1)
+mwc_tdc_channels = range(64)
+mwc_tdc_clock_ticks = range(1024)
  

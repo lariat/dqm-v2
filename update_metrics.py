@@ -44,7 +44,7 @@ parameters = [
     'caen_board_8_data_blocks',
     'caen_board_9_data_blocks',
     'caen_board_24_data_blocks',
-    'mwpc_data_blocks',
+    'mwc_data_blocks',
     'wut_data_blocks',
     ]
 

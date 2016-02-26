@@ -114,8 +114,6 @@ def json():
     query = str(query)
     parameter_list = query.split(' ')
 
-    print parameter_list
-
     # check to see if the parameters exists
     for parameter in parameter_list:
         if parameter not in db_row_object_dict:
@@ -248,6 +246,12 @@ def data_stream():
 
     run = request.args.get('run', None)
     subrun = request.args.get('subrun', None)
+
+    live = request.args.get('live', False)
+
+    if live == u'':
+        run = "latest"
+        subrun = None
 
     run, subrun = check_run_subrun(run, subrun)
 
