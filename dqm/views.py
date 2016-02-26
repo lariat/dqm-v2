@@ -234,12 +234,20 @@ def metrics_data_stream():
     return render_template('metrics-data-stream.html',
                            title="Data stream metrics")
 
-@app.route('/metrics/tpc-pedestal-mean')
-def metrics_tpc_pedestal_mean():
+@app.route('/metrics/tpc-pedestal-mean-deviations/induction')
+def metrics_tpc_pedestal_mean_deviations_induction():
     return ""
 
-@app.route('/metrics/tpc-pedestal-rms')
-def metrics_tpc_pedestal_rms():
+@app.route('/metrics/tpc-pedestal-mean-deviations/collection')
+def metrics_tpc_pedestal_mean_deviations_collection():
+    return ""
+
+@app.route('/metrics/tpc-pedestal-rms/induction')
+def metrics_tpc_pedestal_rms_induction():
+    return ""
+
+@app.route('/metrics/tpc-pedestal-rms/collection')
+def metrics_tpc_pedestal_rms_collection():
     return ""
 
 @app.route('/tpc')
@@ -283,7 +291,8 @@ def wire_chambers_timing():
 
 @app.route('/physics')
 def physics():
-    return ""
+    return render_template('physics.html',
+                           title='Physics')
 
 @app.route('/random')
 def random():
