@@ -86,13 +86,17 @@ function chart(config) {
       var data = [
           {
               name: "good",
-              values: _.zip(json[config.good_hits].bins, json[config.good_hits].counts).map(function(pair) {
+              values: _.zip(json[config.good_hits].bins.slice(config.start, config.stop),
+                            json[config.good_hits].counts.slice(config.start, config.stop))
+                .map(function(pair) {
                   return _.object(["x", "y"], pair);
               })
           },
           {
               name: "bad",
-              values: _.zip(json[config.bad_hits].bins, json[config.bad_hits].counts).map(function(pair) {
+              values: _.zip(json[config.bad_hits].bins.slice(config.start, config.stop),
+                            json[config.bad_hits].counts.slice(config.start, config.stop))
+                .map(function(pair) {
                   return _.object(["x", "y"], pair);
               })
           }
@@ -171,13 +175,17 @@ function chart(config) {
             var data = [
                 {
                     name: "good",
-                    values: _.zip(json[config.good_hits].bins, json[config.good_hits].counts).map(function(pair) {
+                    values: _.zip(json[config.good_hits].bins.slice(config.start, config.stop),
+                                  json[config.good_hits].counts.slice(config.start, config.stop))
+                      .map(function(pair) {
                         return _.object(["x", "y"], pair);
                     })
                 },
                 {
                     name: "bad",
-                    values: _.zip(json[config.bad_hits].bins, json[config.bad_hits].counts).map(function(pair) {
+                    values: _.zip(json[config.bad_hits].bins.slice(config.start, config.stop),
+                                  json[config.bad_hits].counts.slice(config.start, config.stop))
+                      .map(function(pair) {
                         return _.object(["x", "y"], pair);
                     })
                 }
