@@ -33,7 +33,7 @@ function heatmap(config) {
             return {
                 x: x,
                 y: y,
-                channel: idx,
+                channel: idx + config.start,
                 value: datum
             }
         });
