@@ -252,7 +252,16 @@ def metrics_tpc_pedestal_rms_collection():
 
 @app.route('/tpc')
 def tpc():
-    return ""
+
+    run = request.args.get('run', None)
+    subrun = request.args.get('subrun', None)
+
+    run, subrun = check_run_subrun(run, subrun)
+
+    return render_template('tpc.html',
+                           title="TPC",
+                           run=run,
+                           subrun=subrun)
 
 @app.route('/data-stream')
 def data_stream():

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% set active_page = "tpc" %}
+
+{% block content %}
+
+    <div class="container">
+
+{% include 'run-subrun-form.html' %}
+
+      <div class="alert alert-info" role="alert">No live plots for this page. See the <a href="{{ url_for('metrics') }}">Metrics</a> page for live plots of TPC pedestal mean RMS and deviation of pedestal mean.</div>
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">TPC pedestal mean and RMS</h3>
+        </div>
+        <div class="row text-center">
+          <div class="col-lg-12">
+            <div class="row">
+              <div class="col-lg-6" id="tpc-pedestal-mean-collection"></div>
+              <div class="col-lg-6" id="tpc-pedestal-rms-collection"></div>
+            </div>
+            <div class="row">
+              <div class="col-lg-6" id="tpc-pedestal-mean-induction"></div>
+              <div class="col-lg-6" id="tpc-pedestal-rms-induction"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <a href="{{ url_for('metrics') }}"><button type="button" class="btn btn-primary btn-block">Near-real-time metrics for TPC</button></a>
+        </div>
+      </div>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='lib/numeric/js/numeric-min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/underscore/js/underscore-min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/d3/js/d3.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/d3-tip/js/d3-tip.min.js') }}"></script>
+
+{% include 'scripts.html' %}
+
+    <script src="{{ url_for('static', filename='js/tpc-heatmap.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/tpc-pedestal-heatmaps.js') }}"></script>
+
+{% include 'footer.html' %}
+
+{% endblock %}
