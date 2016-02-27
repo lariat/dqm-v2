@@ -317,7 +317,22 @@ def multi_wire_chambers_channels():
 
 @app.route('/multi-wire-chambers/timing')
 def multi_wire_chambers_timing():
-    return ""
+
+    run = request.args.get('run', None)
+    subrun = request.args.get('subrun', None)
+
+    live = request.args.get('live', False)
+
+    if live == u'':
+        run = "latest"
+        subrun = None
+
+    run, subrun = check_run_subrun(run, subrun)
+
+    return render_template('multi-wire-chambers-timing.html',
+                           title="Multi-Wire Chambers &mdash; Timing",
+                           run=run,
+                           subrun=subrun)
 
 @app.route('/physics')
 def physics():

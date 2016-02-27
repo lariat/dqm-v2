@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% set active_page = "multi-wire-chambers" %}
+
+{% block content %}
+
+    <div class="container">
+
+      <div class="jumbotron">
+        <h2>Multi-wire chambers</h2>
+        <p>Channel occupancy of hits</p>
+      </div>
+
+{% include 'run-subrun-form.html' %}
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">MWPC 1</h3>
+        </div>
+        <div class="row text-center">
+          <div class="col-lg-12">
+            <div class="row">
+              <div class="col-lg-6">
+                <svg class="stacked-chart js-stacked-chart" id="mwpc-tdc-01-histogram"></svg>
+              </div>
+              <div class="col-lg-6">
+                <svg class="stacked-chart js-stacked-chart" id="mwpc-tdc-02-histogram"></svg>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-6">
+                <svg class="stacked-chart js-stacked-chart" id="mwpc-tdc-03-histogram"></svg>
+              </div>
+              <div class="col-lg-6">
+                <svg class="stacked-chart js-stacked-chart" id="mwpc-tdc-04-histogram"></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">MWPC 2</h3>
+        </div>
+        <div class="row text-center">
+          <div class="col-lg-12">
+            <div class="row">
+              <div class="col-lg-6">
+                <svg class="stacked-chart js-stacked-chart" id="mwpc-tdc-05-histogram"></svg>
+              </div>
+              <div class="col-lg-6">
+                <svg class="stacked-chart js-stacked-chart" id="mwpc-tdc-06-histogram"></svg>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-6">
+                <svg class="stacked-chart js-stacked-chart" id="mwpc-tdc-07-histogram"></svg>
+              </div>
+              <div class="col-lg-6">
+                <svg class="stacked-chart js-stacked-chart" id="mwpc-tdc-08-histogram"></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">MWPC 3</h3>
+        </div>
+        <div class="row text-center">
+          <div class="col-lg-12">
+            <div class="row">
+              <div class="col-lg-6">
+                <svg class="stacked-chart js-stacked-chart" id="mwpc-tdc-09-histogram"></svg>
+              </div>
+              <div class="col-lg-6">
+                <svg class="stacked-chart js-stacked-chart" id="mwpc-tdc-10-histogram"></svg>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-6">
+                <svg class="stacked-chart js-stacked-chart" id="mwpc-tdc-11-histogram"></svg>
+              </div>
+              <div class="col-lg-6">
+                <svg class="stacked-chart js-stacked-chart" id="mwpc-tdc-12-histogram"></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">MWPC 4</h3>
+        </div>
+        <div class="row text-center">
+          <div class="col-lg-12">
+            <div class="row">
+              <div class="col-lg-6">
+                <svg class="stacked-chart js-stacked-chart" id="mwpc-tdc-13-histogram"></svg>
+              </div>
+              <div class="col-lg-6">
+                <svg class="stacked-chart js-stacked-chart" id="mwpc-tdc-14-histogram"></svg>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-6">
+                <svg class="stacked-chart js-stacked-chart" id="mwpc-tdc-15-histogram"></svg>
+              </div>
+              <div class="col-lg-6">
+                <svg class="stacked-chart js-stacked-chart" id="mwpc-tdc-16-histogram"></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+{% include 'scripts.html' %}
+
+    <script src="{{ url_for('static', filename='lib/underscore/js/underscore-min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/d3/js/d3.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/d3-tip/js/d3-tip.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/mwc-histograms.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/mwc-tdc-timing-histograms.js') }}"></script>
+
+{% include 'footer.html' %}
+
+{% endblock %}
