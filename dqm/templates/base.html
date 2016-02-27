@@ -8,6 +8,11 @@
     ('/physics', 'physics', 'Physics'),
 ] -%}
 
+{% set no_live = [
+    'tpc',
+    'caen_boards',
+] -%}
+
 {% set active_page = active_page|default('home') -%}
 
 <!DOCTYPE html>
@@ -26,7 +31,7 @@
     #}
     <link href="{{ url_for('static', filename='css/typeaheadjs.css') }}" rel="stylesheet" type="text/css" media="screen">
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css" media="screen">
-    {% if active_page == 'multi-wire-chambers'%}
+    {% if active_page == 'multi-wire-chambers' %}
     <link href="{{ url_for('static', filename='css/mwc-histograms.css') }}" rel="stylesheet" type="text/css" media="screen">
     {% endif %}
   </head>
@@ -59,7 +64,7 @@
       </div>
     </nav>
 
-    {% block content %}{% endblock %}
+    {% block content scoped %}{% endblock %}
 
   </body>
 </html>

@@ -41,8 +41,8 @@
           </form>
 
             <div class="col-sm-2">
-              <div class="form-group form-group-sm">
-                <label><input id="checkbox" type="checkbox" value=""> Live</label>
+              <div class="form-group form-group-sm checkbox{% if active_page in no_live  %} disabled{% endif %}">
+                <label><input id="checkbox" type="checkbox" value=""{% if active_page in no_live %} disabled{% endif %}>Live</label>
               </div>
             </div>
 
@@ -76,7 +76,7 @@
 
       <script type="text/javascript">
       $(document).ready(function () {
-          if(window.location.href.indexOf("?live") > -1) {
+          if (window.location.href.indexOf("?live") > -1) {
               $('#checkbox').attr('checked', true);
               $UPDATE = true;
               $RUN = "latest";
@@ -108,6 +108,15 @@
         }
       });
       </script>
+
+      {% if active_page in no_live %}
+      <script type="text/javascript">
+      $(document).ready(function () {
+          $('#checkbox').attr('checked', false);
+          $UPDATE = false;
+      });
+      </script>
+      {% endif %}
 
       <script>
       // https://github.com/twitter/typeahead.js/pull/703
