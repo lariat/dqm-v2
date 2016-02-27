@@ -1,0 +1,69 @@
+.stacked-chart path,
+.stacked-chart line,
+.stacked-chart rect {
+    shape-rendering: crispEdges;
+}
+
+.stacked-chart text {
+    font: 10px sans-serif;
+}
+
+.stacked-chart .axis path,
+.stacked-chart .axis line {
+    fill: none;
+    stroke: #000;
+}
+
+.stacked-chart .series-good {
+    /* fill: #CD4638; */
+    fill: #55aa55;
+}
+
+.stacked-chart .series-good rect:hover {
+    /* fill: #116611; */
+    fill: #2D882D;
+}
+
+.stacked-chart .series-bad {
+    fill: #ccc;
+}
+
+.stacked-chart .series-bad rect:hover {
+    fill: #aaa;
+}
+
+.stacked-chart .series-neutral {
+    fill: steelblue;
+}
+
+.stacked-chart .grid-lines-container {
+    fill: none;
+    stroke: lightgrey;
+}
+
+.stacked-chart .layer rect {
+    /*
+    opacity: 0.8;
+    transition: opacity 0.5s ease;
+    */
+}
+
+.stacked-chart .series-box {
+    stroke-width: 2px;
+}
+
+.stacked-chart .series-yes .series-box {
+    stroke: #CD4638;
+}
+
+.stacked-chart .series-no .series-box {
+    stroke: #CCC;
+}
+
+.stacked-chart .disabled .series-box {
+    fill-opacity: 0;
+}
+
+.stacked-chart .series-label {
+    fill: black;
+}
