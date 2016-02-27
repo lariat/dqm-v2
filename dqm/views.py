@@ -250,19 +250,6 @@ def metrics_tpc_pedestal_rms_induction():
 def metrics_tpc_pedestal_rms_collection():
     return ""
 
-@app.route('/tpc')
-def tpc():
-
-    run = request.args.get('run', None)
-    subrun = request.args.get('subrun', None)
-
-    run, subrun = check_run_subrun(run, subrun)
-
-    return render_template('tpc.html',
-                           title="TPC",
-                           run=run,
-                           subrun=subrun)
-
 @app.route('/data-stream')
 def data_stream():
 
@@ -282,9 +269,31 @@ def data_stream():
                            run=run,
                            subrun=subrun)
 
+@app.route('/tpc')
+def tpc():
+
+    run = request.args.get('run', None)
+    subrun = request.args.get('subrun', None)
+
+    run, subrun = check_run_subrun(run, subrun)
+
+    return render_template('tpc.html',
+                           title="TPC",
+                           run=run,
+                           subrun=subrun)
+
 @app.route('/caen-boards')
 def caen_boards():
-    return ""
+
+    run = request.args.get('run', None)
+    subrun = request.args.get('subrun', None)
+
+    run, subrun = check_run_subrun(run, subrun)
+
+    return render_template('caen-boards.html',
+                           title="CAEN Boards",
+                           run=run,
+                           subrun=subrun)
 
 @app.route('/multi-wire-chambers')
 def multi_wire_chambers():
@@ -361,15 +370,4 @@ def physics():
                            title='Physics',
                            run=run,
                            subrun=subrun)
-
-@app.route('/random')
-def random():
-    data = list(np.random.randint(5, 10, 960))
-    return jsonify(values=data)
-
-#@app.route('/test')
-#def test():
-#    q = request.args.get('q', None)
-#    q = str(q)
-#    return q
 

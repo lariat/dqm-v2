@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% set active_page = "caen-boards" %}
+
+{% block content %}
+
+    <div class="container">
+
+{% include 'run-subrun-form.html' %}
+
+      <div class="alert alert-info" role="alert">No live plots for this page.</div>
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">CAEN board 8 pedestal mean and RMS</h3>
+        </div>
+        <div class="row text-center">
+          <div class="col-lg-12">
+            <div class="row">
+              <div class="col-lg-6" id="caen-board-8-pedestal-mean"></div>
+              <div class="col-lg-6" id="caen-board-8-pedestal-rms"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">CAEN board 9 pedestal mean and RMS</h3>
+        </div>
+        <div class="row text-center">
+          <div class="col-lg-12">
+            <div class="row">
+              <div class="col-lg-6" id="caen-board-9-pedestal-mean"></div>
+              <div class="col-lg-6" id="caen-board-9-pedestal-rms"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">CAEN board 24 pedestal mean and RMS</h3>
+        </div>
+        <div class="row text-center">
+          <div class="col-lg-12">
+            <div class="row">
+              <div class="col-lg-6" id="caen-board-24-pedestal-mean"></div>
+              <div class="col-lg-6" id="caen-board-24-pedestal-rms"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">CAEN board 7 pedestal mean and RMS</h3>
+        </div>
+        <div class="row text-center">
+          <div class="col-lg-12">
+            <div class="row">
+              <div class="col-lg-6" id="caen-board-7-pedestal-mean"></div>
+              <div class="col-lg-6" id="caen-board-7-pedestal-rms"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='lib/numeric/js/numeric-min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/d3/js/d3.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/d3-tip/js/d3-tip.min.js') }}"></script>
+
+{% include 'scripts.html' %}
+
+    <script src="{{ url_for('static', filename='js/caen-heatmap.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/caen-pedestal-heatmaps.js') }}"></script>
+
+{% include 'footer.html' %}
+
+{% endblock %}
