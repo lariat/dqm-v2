@@ -154,12 +154,12 @@ def update():
 
     parameters_dict = {}
     for parameter in parameters:
-        parameters_dict[parameter] = { time_bin : 0 for time_bin in time_bins }
+        parameters_dict[parameter] = { time_bin : None for time_bin in time_bins }
 
     array_parameters_dict = {}
     for parameter in array_parameters:
         array_parameters_dict[parameter] = {
-            time_bin : 0 for time_bin in time_bins }
+            time_bin : None for time_bin in time_bins }
 
     tpc_pedestal_deviation_dict = {}
     for parameter in tpc_pedestal_deviation_parameters:
