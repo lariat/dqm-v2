@@ -124,34 +124,32 @@
     <script src="{{ url_for('static', filename='lib/cubism/js/cubism.min.js') }}"></script>
 
     <script>
+    var parameters = {
+        "Number of events"          : "number_events",
+        "Number of TPC events"      : "number_tpc_events",
+        "CAEN board 0 data blocks"  : "caen_board_0_data_blocks",
+        "CAEN board 1 data blocks"  : "caen_board_1_data_blocks",
+        "CAEN board 2 data blocks"  : "caen_board_2_data_blocks",
+        "CAEN board 3 data blocks"  : "caen_board_3_data_blocks",
+        "CAEN board 4 data blocks"  : "caen_board_4_data_blocks",
+        "CAEN board 5 data blocks"  : "caen_board_5_data_blocks",
+        "CAEN board 6 data blocks"  : "caen_board_6_data_blocks",
+        "CAEN board 7 data blocks"  : "caen_board_7_data_blocks",
+        "CAEN board 24 data blocks" : "caen_board_24_data_blocks",
+        "CAEN board 8 data blocks"  : "caen_board_8_data_blocks",
+        "CAEN board 9 data blocks"  : "caen_board_9_data_blocks",
+        "MWC data blocks"           : "mwc_data_blocks",
+        "WUT data blocks"           : "wut_data_blocks",
+        };
+
     function metric(name) {
       return context.metric(function(start, stop, step, callback) {
-        d3.json('/metric?parameter=' + name, function(data) {
+        d3.json('/metric?parameter=' + parameters[name], function(data) {
                   if (!data) return callback(new Error('Unable to load data!'));
                   return callback(null, data.values);
                 });
       }, name);
     }
-    </script>
-
-    <script>
-    var parameters = [
-        "number_events",
-        "number_tpc_events",
-        "caen_board_0_data_blocks",
-        "caen_board_1_data_blocks",
-        "caen_board_2_data_blocks",
-        "caen_board_3_data_blocks",
-        "caen_board_4_data_blocks",
-        "caen_board_5_data_blocks",
-        "caen_board_6_data_blocks",
-        "caen_board_7_data_blocks",
-        "caen_board_24_data_blocks",
-        "caen_board_8_data_blocks",
-        "caen_board_9_data_blocks",
-        "mwc_data_blocks",
-        "wut_data_blocks",
-        ];
 
     var context = cubism.context()
         .serverDelay(6e4)
@@ -173,7 +171,7 @@
           .each(function(d) { d3.select(this).call(context.axis().ticks(12).orient(d)); });
 
       div.selectAll(".horizon")
-          .data(parameters.map(metric))
+          .data($.map(parameters, function(value, key) { return key; }).map(metric))
         .enter().insert("div", ".bottom")
           .attr("class", "horizon")
         .call(context.horizon()
