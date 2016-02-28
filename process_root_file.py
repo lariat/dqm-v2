@@ -401,9 +401,6 @@ SubRun.wut_data_blocks = number_wut_data_blocks
 #/////////////////////////////////////////////////////////////
 for board in caen_boards:
     setattr(SubRun,
-        "caen_board_{}_timestamps_histogram_bins".format(board),
-        caen_timestamps_histograms[board].bins_sparse)
-    setattr(SubRun,
         "caen_board_{}_timestamps_histogram_counts".format(board),
         caen_timestamps_histograms[board].counts_sparse)
     setattr(SubRun,
@@ -422,7 +419,6 @@ for board in caen_boards:
         "caen_board_{}_timestamps_histogram_number_bins".format(board),
         caen_timestamps_histograms[board].number_bins)
 
-SubRun.mwc_tdc_timestamps_histogram_bins = mwc_tdc_timestamps_histogram.bins_sparse
 SubRun.mwc_tdc_timestamps_histogram_counts = mwc_tdc_timestamps_histogram.counts_sparse
 SubRun.mwc_tdc_timestamps_histogram_min_bin = mwc_tdc_timestamps_histogram.min_bin
 SubRun.mwc_tdc_timestamps_histogram_max_bin = mwc_tdc_timestamps_histogram.max_bin
@@ -430,7 +426,6 @@ SubRun.mwc_tdc_timestamps_histogram_bin_width = mwc_tdc_timestamps_histogram.bin
 SubRun.mwc_tdc_timestamps_histogram_bin_indices = mwc_tdc_timestamps_histogram.bin_indices_sparse
 SubRun.mwc_tdc_timestamps_histogram_number_bins = mwc_tdc_timestamps_histogram.number_bins
 
-SubRun.wut_timestamps_histogram_bins = wut_timestamps_histogram.bins_sparse
 SubRun.wut_timestamps_histogram_counts = wut_timestamps_histogram.counts_sparse
 SubRun.wut_timestamps_histogram_min_bin = wut_timestamps_histogram.min_bin
 SubRun.wut_timestamps_histogram_max_bin = wut_timestamps_histogram.max_bin
@@ -482,9 +477,6 @@ for i in xrange(len(v1740b_boards)):
 for channel in v1751_channels:
     # CAEN board 8
     setattr(SubRun,
-        "caen_board_8_channel_{}_adc_histogram_bins".format(channel),
-        caen_board_8_adc_histograms[channel].bins_sparse)
-    setattr(SubRun,
         "caen_board_8_channel_{}_adc_histogram_counts".format(channel),
         caen_board_8_adc_histograms[channel].counts_sparse)
     setattr(SubRun,
@@ -504,9 +496,6 @@ for channel in v1751_channels:
         caen_board_8_adc_histograms[channel].number_bins)
 
     # CAEN board 9
-    setattr(SubRun,
-        "caen_board_9_channel_{}_adc_histogram_bins".format(channel),
-        caen_board_9_adc_histograms[channel].bins_sparse)
     setattr(SubRun,
         "caen_board_9_channel_{}_adc_histogram_counts".format(channel),
         caen_board_9_adc_histograms[channel].counts_sparse)
@@ -529,7 +518,6 @@ for channel in v1751_channels:
 #/////////////////////////////////////////////////////////////
 # add USTOF hits histogram to SubRun
 #/////////////////////////////////////////////////////////////
-SubRun.ustof_hits_histogram_bins = ustof_hits_histogram.bins_sparse
 SubRun.ustof_hits_histogram_counts = ustof_hits_histogram.counts_sparse
 SubRun.ustof_hits_histogram_min_bin = ustof_hits_histogram.min_bin
 SubRun.ustof_hits_histogram_max_bin = ustof_hits_histogram.max_bin
@@ -540,7 +528,6 @@ SubRun.ustof_hits_histogram_number_bins = ustof_hits_histogram.number_bins
 #/////////////////////////////////////////////////////////////
 # add DSTOF hits histogram to SubRun
 #/////////////////////////////////////////////////////////////
-SubRun.dstof_hits_histogram_bins = dstof_hits_histogram.bins_sparse
 SubRun.dstof_hits_histogram_counts = dstof_hits_histogram.counts_sparse
 SubRun.dstof_hits_histogram_min_bin = dstof_hits_histogram.min_bin
 SubRun.dstof_hits_histogram_max_bin = dstof_hits_histogram.max_bin
@@ -551,7 +538,6 @@ SubRun.dstof_hits_histogram_number_bins = dstof_hits_histogram.number_bins
 #/////////////////////////////////////////////////////////////
 # add TOF histogram to SubRun
 #/////////////////////////////////////////////////////////////
-SubRun.tof_histogram_bins = tof_histogram.bins_sparse
 SubRun.tof_histogram_counts = tof_histogram.counts_sparse
 SubRun.tof_histogram_min_bin = tof_histogram.min_bin
 SubRun.tof_histogram_max_bin = tof_histogram.max_bin
@@ -565,9 +551,6 @@ SubRun.tof_histogram_number_bins = tof_histogram.number_bins
 if mwc_ok:
     for tdc in mwc_tdc_numbers:
         # channel occupancy for good hits
-        setattr(SubRun,
-            "mwc_tdc_{}_good_hits_channel_histogram_bins".format(tdc),
-            mwc_good_hits_channel_histograms[tdc].bins_sparse)
         setattr(SubRun,
             "mwc_tdc_{}_good_hits_channel_histogram_counts".format(tdc),
             mwc_good_hits_channel_histograms[tdc].counts_sparse)
@@ -589,9 +572,6 @@ if mwc_ok:
 
         # channel occupancy for bad hits
         setattr(SubRun,
-            "mwc_tdc_{}_bad_hits_channel_histogram_bins".format(tdc),
-            mwc_bad_hits_channel_histograms[tdc].bins_sparse)
-        setattr(SubRun,
             "mwc_tdc_{}_bad_hits_channel_histogram_counts".format(tdc),
             mwc_bad_hits_channel_histograms[tdc].counts_sparse)
         setattr(SubRun,
@@ -612,9 +592,6 @@ if mwc_ok:
 
         # timing occupancy for good hits
         setattr(SubRun,
-            "mwc_tdc_{}_good_hits_timing_histogram_bins".format(tdc),
-            mwc_good_hits_timing_histograms[tdc].bins_sparse)
-        setattr(SubRun,
             "mwc_tdc_{}_good_hits_timing_histogram_counts".format(tdc),
             mwc_good_hits_timing_histograms[tdc].counts_sparse)
         setattr(SubRun,
@@ -634,9 +611,6 @@ if mwc_ok:
             mwc_good_hits_timing_histograms[tdc].number_bins)
 
         # timing occupancy for bad hits
-        setattr(SubRun,
-            "mwc_tdc_{}_bad_hits_timing_histogram_bins".format(tdc),
-            mwc_bad_hits_timing_histograms[tdc].bins_sparse)
         setattr(SubRun,
             "mwc_tdc_{}_bad_hits_timing_histogram_counts".format(tdc),
             mwc_bad_hits_timing_histograms[tdc].counts_sparse)
@@ -758,19 +732,15 @@ elif run_exists:
                 "caen_board_{}_timestamps".format(board))
 
             run_caen_timestamps_histograms[board].db_to_histogram(
-                getattr(Run, "caen_board_{}_timestamps_histogram_bins".format(board)),
-                getattr(Run, "caen_board_{}_timestamps_histogram_counts".format(board)),
-                getattr(Run, "caen_board_{}_timestamps_histogram_min_bin".format(board)),
-                getattr(Run, "caen_board_{}_timestamps_histogram_max_bin".format(board)),
-                getattr(Run, "caen_board_{}_timestamps_histogram_bin_width".format(board)),
                 getattr(Run, "caen_board_{}_timestamps_histogram_bin_indices".format(board)),
-                getattr(Run, "caen_board_{}_timestamps_histogram_number_bins".format(board)))
+                getattr(Run, "caen_board_{}_timestamps_histogram_counts".format(board)),
+                getattr(Run, "caen_board_{}_timestamps_histogram_bin_width".format(board)),
+                getattr(Run, "caen_board_{}_timestamps_histogram_number_bins".format(board)),
+                getattr(Run, "caen_board_{}_timestamps_histogram_min_bin".format(board)),
+                getattr(Run, "caen_board_{}_timestamps_histogram_max_bin".format(board)))
 
             run_caen_timestamps_histograms[board] += caen_timestamps_histograms[board]
 
-            setattr(Run,
-                "caen_board_{}_timestamps_histogram_bins".format(board),
-                run_caen_timestamps_histograms[board].bins_sparse)
             setattr(Run,
                 "caen_board_{}_timestamps_histogram_counts".format(board),
                 run_caen_timestamps_histograms[board].counts_sparse)
@@ -794,44 +764,40 @@ elif run_exists:
         run_mwc_tdc_timestamps_histogram = Histogram("run_mwc_tdc_timestamps")
 
         run_mwc_tdc_timestamps_histogram.db_to_histogram(
-            Run.mwc_tdc_timestamps_histogram_bins,
-            Run.mwc_tdc_timestamps_histogram_counts,
-            Run.mwc_tdc_timestamps_histogram_min_bin,
-            Run.mwc_tdc_timestamps_histogram_max_bin,
-            Run.mwc_tdc_timestamps_histogram_bin_width,
             Run.mwc_tdc_timestamps_histogram_bin_indices,
-            Run.mwc_tdc_timestamps_histogram_number_bins)
+            Run.mwc_tdc_timestamps_histogram_counts,
+            Run.mwc_tdc_timestamps_histogram_bin_width,
+            Run.mwc_tdc_timestamps_histogram_number_bins,
+            Run.mwc_tdc_timestamps_histogram_min_bin,
+            Run.mwc_tdc_timestamps_histogram_max_bin)
 
         run_mwc_tdc_timestamps_histogram += mwc_tdc_timestamps_histogram
 
-        Run.mwc_tdc_timestamps_histogram_bins = run_mwc_tdc_timestamps_histogram.bins_sparse
+        Run.mwc_tdc_timestamps_histogram_bin_indices = run_mwc_tdc_timestamps_histogram.bin_indices_sparse
         Run.mwc_tdc_timestamps_histogram_counts = run_mwc_tdc_timestamps_histogram.counts_sparse
         Run.mwc_tdc_timestamps_histogram_min_bin = run_mwc_tdc_timestamps_histogram.min_bin
         Run.mwc_tdc_timestamps_histogram_max_bin = run_mwc_tdc_timestamps_histogram.max_bin
         Run.mwc_tdc_timestamps_histogram_bin_width = run_mwc_tdc_timestamps_histogram.bin_width
-        Run.mwc_tdc_timestamps_histogram_bin_indices = run_mwc_tdc_timestamps_histogram.bin_indices_sparse
         Run.mwc_tdc_timestamps_histogram_number_bins = run_mwc_tdc_timestamps_histogram.number_bins
 
         # WUT timestamps
         run_wut_timestamps_histogram = Histogram("run_wut_timestamps")
 
         run_wut_timestamps_histogram.db_to_histogram(
-            Run.wut_timestamps_histogram_bins,
-            Run.wut_timestamps_histogram_counts,
-            Run.wut_timestamps_histogram_min_bin,
-            Run.wut_timestamps_histogram_max_bin,
-            Run.wut_timestamps_histogram_bin_width,
             Run.wut_timestamps_histogram_bin_indices,
-            Run.wut_timestamps_histogram_number_bins)
+            Run.wut_timestamps_histogram_counts,
+            Run.wut_timestamps_histogram_bin_width,
+            Run.wut_timestamps_histogram_number_bins,
+            Run.wut_timestamps_histogram_min_bin,
+            Run.wut_timestamps_histogram_max_bin)
 
         run_wut_timestamps_histogram += wut_timestamps_histogram
 
-        Run.wut_timestamps_histogram_bins = run_wut_timestamps_histogram.bins_sparse
+        Run.wut_timestamps_histogram_bin_indices = run_wut_timestamps_histogram.bin_indices_sparse
         Run.wut_timestamps_histogram_counts = run_wut_timestamps_histogram.counts_sparse
         Run.wut_timestamps_histogram_min_bin = run_wut_timestamps_histogram.min_bin
         Run.wut_timestamps_histogram_max_bin = run_wut_timestamps_histogram.max_bin
         Run.wut_timestamps_histogram_bin_width = run_wut_timestamps_histogram.bin_width
-        Run.wut_timestamps_histogram_bin_indices = run_wut_timestamps_histogram.bin_indices_sparse
         Run.wut_timestamps_histogram_number_bins = run_wut_timestamps_histogram.number_bins
 
         #/////////////////////////////////////////////////////
@@ -846,19 +812,15 @@ elif run_exists:
                 "caen_board_8_channel_{}_adc".format(channel))
 
             run_caen_board_8_adc_histograms[channel].db_to_histogram(
-                getattr(Run, "caen_board_8_channel_{}_adc_histogram_bins".format(channel)),
-                getattr(Run, "caen_board_8_channel_{}_adc_histogram_counts".format(channel)),
-                getattr(Run, "caen_board_8_channel_{}_adc_histogram_min_bin".format(channel)),
-                getattr(Run, "caen_board_8_channel_{}_adc_histogram_max_bin".format(channel)),
-                getattr(Run, "caen_board_8_channel_{}_adc_histogram_bin_width".format(channel)),
                 getattr(Run, "caen_board_8_channel_{}_adc_histogram_bin_indices".format(channel)),
-                getattr(Run, "caen_board_8_channel_{}_adc_histogram_number_bins".format(channel)))
+                getattr(Run, "caen_board_8_channel_{}_adc_histogram_counts".format(channel)),
+                getattr(Run, "caen_board_8_channel_{}_adc_histogram_bin_width".format(channel)),
+                getattr(Run, "caen_board_8_channel_{}_adc_histogram_number_bins".format(channel)),
+                getattr(Run, "caen_board_8_channel_{}_adc_histogram_min_bin".format(channel)),
+                getattr(Run, "caen_board_8_channel_{}_adc_histogram_max_bin".format(channel)))
 
             run_caen_board_8_adc_histograms[channel] += caen_board_8_adc_histograms[channel]
 
-            setattr(Run,
-                "caen_board_8_channel_{}_adc_histogram_bins".format(channel),
-                run_caen_board_8_adc_histograms[channel].bins_sparse)
             setattr(Run,
                 "caen_board_8_channel_{}_adc_histogram_counts".format(channel),
                 run_caen_board_8_adc_histograms[channel].counts_sparse)
@@ -883,19 +845,15 @@ elif run_exists:
                 "caen_board_9_channel_{}_adc".format(channel))
 
             run_caen_board_9_adc_histograms[channel].db_to_histogram(
-                getattr(Run, "caen_board_9_channel_{}_adc_histogram_bins".format(channel)),
-                getattr(Run, "caen_board_9_channel_{}_adc_histogram_counts".format(channel)),
-                getattr(Run, "caen_board_9_channel_{}_adc_histogram_min_bin".format(channel)),
-                getattr(Run, "caen_board_9_channel_{}_adc_histogram_max_bin".format(channel)),
-                getattr(Run, "caen_board_9_channel_{}_adc_histogram_bin_width".format(channel)),
                 getattr(Run, "caen_board_9_channel_{}_adc_histogram_bin_indices".format(channel)),
-                getattr(Run, "caen_board_9_channel_{}_adc_histogram_number_bins".format(channel)))
+                getattr(Run, "caen_board_9_channel_{}_adc_histogram_counts".format(channel)),
+                getattr(Run, "caen_board_9_channel_{}_adc_histogram_bin_width".format(channel)),
+                getattr(Run, "caen_board_9_channel_{}_adc_histogram_number_bins".format(channel)),
+                getattr(Run, "caen_board_9_channel_{}_adc_histogram_min_bin".format(channel)),
+                getattr(Run, "caen_board_9_channel_{}_adc_histogram_max_bin".format(channel)))
 
             run_caen_board_9_adc_histograms[channel] += caen_board_9_adc_histograms[channel]
 
-            setattr(Run,
-                "caen_board_9_channel_{}_adc_histogram_bins".format(channel),
-                run_caen_board_9_adc_histograms[channel].bins_sparse)
             setattr(Run,
                 "caen_board_9_channel_{}_adc_histogram_counts".format(channel),
                 run_caen_board_9_adc_histograms[channel].counts_sparse)
@@ -921,17 +879,15 @@ elif run_exists:
         run_ustof_hits_histogram = Histogram("run_ustof_hits")
 
         run_ustof_hits_histogram.db_to_histogram(
-            Run.ustof_hits_histogram_bins,
-            Run.ustof_hits_histogram_counts,
-            Run.ustof_hits_histogram_min_bin,
-            Run.ustof_hits_histogram_max_bin,
-            Run.ustof_hits_histogram_bin_width,
             Run.ustof_hits_histogram_bin_indices,
-            Run.ustof_hits_histogram_number_bins)
+            Run.ustof_hits_histogram_counts,
+            Run.ustof_hits_histogram_bin_width,
+            Run.ustof_hits_histogram_number_bins,
+            Run.ustof_hits_histogram_min_bin,
+            Run.ustof_hits_histogram_max_bin)
 
         run_ustof_hits_histogram += ustof_hits_histogram
 
-        Run.ustof_hits_histogram_bins = run_ustof_hits_histogram.bins_sparse
         Run.ustof_hits_histogram_counts = run_ustof_hits_histogram.counts_sparse
         Run.ustof_hits_histogram_min_bin = run_ustof_hits_histogram.min_bin
         Run.ustof_hits_histogram_max_bin = run_ustof_hits_histogram.max_bin
@@ -945,17 +901,15 @@ elif run_exists:
         run_dstof_hits_histogram = Histogram("run_dstof_hits")
 
         run_dstof_hits_histogram.db_to_histogram(
-            Run.dstof_hits_histogram_bins,
-            Run.dstof_hits_histogram_counts,
-            Run.dstof_hits_histogram_min_bin,
-            Run.dstof_hits_histogram_max_bin,
-            Run.dstof_hits_histogram_bin_width,
             Run.dstof_hits_histogram_bin_indices,
-            Run.dstof_hits_histogram_number_bins)
+            Run.dstof_hits_histogram_counts,
+            Run.dstof_hits_histogram_bin_width,
+            Run.dstof_hits_histogram_number_bins,
+            Run.dstof_hits_histogram_min_bin,
+            Run.dstof_hits_histogram_max_bin)
 
         run_dstof_hits_histogram += dstof_hits_histogram
 
-        Run.dstof_hits_histogram_bins = run_dstof_hits_histogram.bins_sparse
         Run.dstof_hits_histogram_counts = run_dstof_hits_histogram.counts_sparse
         Run.dstof_hits_histogram_min_bin = run_dstof_hits_histogram.min_bin
         Run.dstof_hits_histogram_max_bin = run_dstof_hits_histogram.max_bin
@@ -968,17 +922,15 @@ elif run_exists:
         #/////////////////////////////////////////////////////
         run_tof_histogram = Histogram("run_tof")
 
-        run_tof_histogram.db_to_histogram(Run.tof_histogram_bins,
+        run_tof_histogram.db_to_histogram(Run.tof_histogram_bin_indices,
                                           Run.tof_histogram_counts,
-                                          Run.tof_histogram_min_bin,
-                                          Run.tof_histogram_max_bin,
                                           Run.tof_histogram_bin_width,
-                                          Run.tof_histogram_bin_indices,
-                                          Run.tof_histogram_number_bins)
+                                          Run.tof_histogram_number_bins,
+                                          Run.tof_histogram_min_bin,
+                                          Run.tof_histogram_max_bin)
 
         run_tof_histogram += tof_histogram
 
-        Run.tof_histogram_bins = run_tof_histogram.bins_sparse
         Run.tof_histogram_counts = run_tof_histogram.counts_sparse
         Run.tof_histogram_min_bin = run_tof_histogram.min_bin
         Run.tof_histogram_max_bin = run_tof_histogram.max_bin
@@ -1002,20 +954,16 @@ elif run_exists:
                     "mwc_tdc_{}_good_hits_channel_histogram".format(tdc))
 
                 run_mwc_good_hits_channel_histograms[tdc].db_to_histogram(
-                    getattr(Run, "mwc_tdc_{}_good_hits_channel_histogram_bins".format(tdc)),
-                    getattr(Run, "mwc_tdc_{}_good_hits_channel_histogram_counts".format(tdc)),
-                    getattr(Run, "mwc_tdc_{}_good_hits_channel_histogram_min_bin".format(tdc)),
-                    getattr(Run, "mwc_tdc_{}_good_hits_channel_histogram_max_bin".format(tdc)),
-                    getattr(Run, "mwc_tdc_{}_good_hits_channel_histogram_bin_width".format(tdc)),
                     getattr(Run, "mwc_tdc_{}_good_hits_channel_histogram_bin_indices".format(tdc)),
-                    getattr(Run, "mwc_tdc_{}_good_hits_channel_histogram_number_bins".format(tdc)))
+                    getattr(Run, "mwc_tdc_{}_good_hits_channel_histogram_counts".format(tdc)),
+                    getattr(Run, "mwc_tdc_{}_good_hits_channel_histogram_bin_width".format(tdc)),
+                    getattr(Run, "mwc_tdc_{}_good_hits_channel_histogram_number_bins".format(tdc)),
+                    getattr(Run, "mwc_tdc_{}_good_hits_channel_histogram_min_bin".format(tdc)),
+                    getattr(Run, "mwc_tdc_{}_good_hits_channel_histogram_max_bin".format(tdc)))
 
                 run_mwc_good_hits_channel_histograms[tdc] += \
                     mwc_good_hits_channel_histograms[tdc]
 
-                setattr(Run,
-                    "mwc_tdc_{}_good_hits_channel_histogram_bins".format(tdc),
-                    run_mwc_good_hits_channel_histograms[tdc].bins_sparse)
                 setattr(Run,
                     "mwc_tdc_{}_good_hits_channel_histogram_counts".format(tdc),
                     run_mwc_good_hits_channel_histograms[tdc].counts_sparse)
@@ -1040,20 +988,16 @@ elif run_exists:
                     "mwc_tdc_{}_bad_hits_channel_histogram".format(tdc))
 
                 run_mwc_bad_hits_channel_histograms[tdc].db_to_histogram(
-                    getattr(Run, "mwc_tdc_{}_bad_hits_channel_histogram_bins".format(tdc)),
-                    getattr(Run, "mwc_tdc_{}_bad_hits_channel_histogram_counts".format(tdc)),
-                    getattr(Run, "mwc_tdc_{}_bad_hits_channel_histogram_min_bin".format(tdc)),
-                    getattr(Run, "mwc_tdc_{}_bad_hits_channel_histogram_max_bin".format(tdc)),
-                    getattr(Run, "mwc_tdc_{}_bad_hits_channel_histogram_bin_width".format(tdc)),
                     getattr(Run, "mwc_tdc_{}_bad_hits_channel_histogram_bin_indices".format(tdc)),
-                    getattr(Run, "mwc_tdc_{}_bad_hits_channel_histogram_number_bins".format(tdc)))
+                    getattr(Run, "mwc_tdc_{}_bad_hits_channel_histogram_counts".format(tdc)),
+                    getattr(Run, "mwc_tdc_{}_bad_hits_channel_histogram_bin_width".format(tdc)),
+                    getattr(Run, "mwc_tdc_{}_bad_hits_channel_histogram_number_bins".format(tdc)),
+                    getattr(Run, "mwc_tdc_{}_bad_hits_channel_histogram_min_bin".format(tdc)),
+                    getattr(Run, "mwc_tdc_{}_bad_hits_channel_histogram_max_bin".format(tdc)))
 
                 run_mwc_bad_hits_channel_histograms[tdc] += \
                     mwc_bad_hits_channel_histograms[tdc]
 
-                setattr(Run,
-                    "mwc_tdc_{}_bad_hits_channel_histogram_bins".format(tdc),
-                    run_mwc_bad_hits_channel_histograms[tdc].bins_sparse)
                 setattr(Run,
                     "mwc_tdc_{}_bad_hits_channel_histogram_counts".format(tdc),
                     run_mwc_bad_hits_channel_histograms[tdc].counts_sparse)
@@ -1078,20 +1022,16 @@ elif run_exists:
                     "mwc_tdc_{}_good_hits_timing_histogram".format(tdc))
 
                 run_mwc_good_hits_timing_histograms[tdc].db_to_histogram(
-                    getattr(Run, "mwc_tdc_{}_good_hits_timing_histogram_bins".format(tdc)),
-                    getattr(Run, "mwc_tdc_{}_good_hits_timing_histogram_counts".format(tdc)),
-                    getattr(Run, "mwc_tdc_{}_good_hits_timing_histogram_min_bin".format(tdc)),
-                    getattr(Run, "mwc_tdc_{}_good_hits_timing_histogram_max_bin".format(tdc)),
-                    getattr(Run, "mwc_tdc_{}_good_hits_timing_histogram_bin_width".format(tdc)),
                     getattr(Run, "mwc_tdc_{}_good_hits_timing_histogram_bin_indices".format(tdc)),
-                    getattr(Run, "mwc_tdc_{}_good_hits_timing_histogram_number_bins".format(tdc)))
+                    getattr(Run, "mwc_tdc_{}_good_hits_timing_histogram_counts".format(tdc)),
+                    getattr(Run, "mwc_tdc_{}_good_hits_timing_histogram_bin_width".format(tdc)),
+                    getattr(Run, "mwc_tdc_{}_good_hits_timing_histogram_number_bins".format(tdc)),
+                    getattr(Run, "mwc_tdc_{}_good_hits_timing_histogram_min_bin".format(tdc)),
+                    getattr(Run, "mwc_tdc_{}_good_hits_timing_histogram_max_bin".format(tdc)))
 
                 run_mwc_good_hits_timing_histograms[tdc] += \
                     mwc_good_hits_timing_histograms[tdc]
 
-                setattr(Run,
-                    "mwc_tdc_{}_good_hits_timing_histogram_bins".format(tdc),
-                    run_mwc_good_hits_timing_histograms[tdc].bins_sparse)
                 setattr(Run,
                     "mwc_tdc_{}_good_hits_timing_histogram_counts".format(tdc),
                     run_mwc_good_hits_timing_histograms[tdc].counts_sparse)
@@ -1116,20 +1056,16 @@ elif run_exists:
                     "mwc_tdc_{}_bad_hits_timing_histogram".format(tdc))
 
                 run_mwc_bad_hits_timing_histograms[tdc].db_to_histogram(
-                    getattr(Run, "mwc_tdc_{}_bad_hits_timing_histogram_bins".format(tdc)),
-                    getattr(Run, "mwc_tdc_{}_bad_hits_timing_histogram_counts".format(tdc)),
-                    getattr(Run, "mwc_tdc_{}_bad_hits_timing_histogram_min_bin".format(tdc)),
-                    getattr(Run, "mwc_tdc_{}_bad_hits_timing_histogram_max_bin".format(tdc)),
-                    getattr(Run, "mwc_tdc_{}_bad_hits_timing_histogram_bin_width".format(tdc)),
                     getattr(Run, "mwc_tdc_{}_bad_hits_timing_histogram_bin_indices".format(tdc)),
-                    getattr(Run, "mwc_tdc_{}_bad_hits_timing_histogram_number_bins".format(tdc)))
+                    getattr(Run, "mwc_tdc_{}_bad_hits_timing_histogram_counts".format(tdc)),
+                    getattr(Run, "mwc_tdc_{}_bad_hits_timing_histogram_bin_width".format(tdc)),
+                    getattr(Run, "mwc_tdc_{}_bad_hits_timing_histogram_number_bins".format(tdc)),
+                    getattr(Run, "mwc_tdc_{}_bad_hits_timing_histogram_min_bin".format(tdc)),
+                    getattr(Run, "mwc_tdc_{}_bad_hits_timing_histogram_max_bin".format(tdc)))
 
                 run_mwc_bad_hits_timing_histograms[tdc] += \
                     mwc_bad_hits_timing_histograms[tdc]
 
-                setattr(Run,
-                    "mwc_tdc_{}_bad_hits_timing_histogram_bins".format(tdc),
-                    run_mwc_bad_hits_timing_histograms[tdc].bins_sparse)
                 setattr(Run,
                     "mwc_tdc_{}_bad_hits_timing_histogram_counts".format(tdc),
                     run_mwc_bad_hits_timing_histograms[tdc].counts_sparse)
