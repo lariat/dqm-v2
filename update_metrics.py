@@ -108,6 +108,9 @@ tpc_pedestal_deviation_parameters = [
     for channel in allowed.tpc_channels
     ]
 
+null_key = key_prefix + 'null'
+null_list = [ None ] * number_bins
+
 def update():
     date_time = datetime(2016, 2, 18, 22, 30, 00)
     #date_time = datetime(2016, 2, 18, 21, 45, 0)
@@ -120,6 +123,14 @@ def update():
     #/////////////////////////////////////////////////////////
     redis = Redis()
 
+    # null array for empty horizon
+    if not redis.exists(null_key):
+        # send commands in a pipeline to save on round-trip time
+        p = redis.pipeline()
+        p.delete(null_key)
+        p.rpush(null_key, *null_list)
+        p.execute()
+        
     # check if the TPC pedestal mean reference exists
     tpc_pedestal_reference_exists = redis.exists(
         tpc_pedestal_mean_reference_key)
