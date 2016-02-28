@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% set active_page = "metrics" %}
+
+{% block content %}
+
+    <style>
+    body {
+      font-family: "Helvetica Neue", Helvetica, sans-serif;
+      margin: 30px auto;
+      width: 960px;
+      position: relative;
+    }
+
+    header {
+      padding: 6px 0;
+    }
+
+    .group {
+      margin-bottom: 1em;
+    }
+
+    .axis {
+      font: 10px sans-serif;
+      position: fixed;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .axis text {
+      -webkit-transition: fill-opacity 250ms linear;
+    }
+
+    .axis path {
+      display: none;
+    }
+
+    .axis line {
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+
+    .axis.top {
+      background-image: linear-gradient(top, #fff 0%, rgba(255, 255, 255, 0) 100%);
+      background-image: -o-linear-gradient(top, #fff 0%, rgba(255, 255, 255, 0) 100%);
+      background-image: -moz-linear-gradient(top, #fff 0%, rgba(255, 255, 255, 0) 100%);
+      background-image: -webkit-linear-gradient(top, #fff 0%, rgba(255, 255, 255 ,0) 100%);
+      background-image: -ms-linear-gradient(top, #fff 0%, rgba(255, 255, 255, 0) 100%);
+      /* top: 0px; */
+      top: 50px;
+      padding: 0 0 24px 0;
+    }
+
+    .axis.bottom {
+      background-image: linear-gradient(bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
+      background-image: -o-linear-gradient(bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
+      background-image: -moz-linear-gradient(bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
+      background-image: -webkit-linear-gradient(bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
+      background-image: -ms-linear-gradient(bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
+      bottom: 0px;
+      padding: 24px 0 0 0;
+    }
+
+    .horizon {
+      border-bottom: solid 1px #000;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .horizon {
+      border-top: solid 1px #000;
+      border-bottom: solid 1px #000;
+    }
+
+    .horizon + .horizon {
+      border-top: none;
+    }
+
+    .horizon canvas {
+      display: block;
+    }
+
+    .horizon .title,
+    .horizon .value {
+      bottom: 0;
+      line-height: 30px;
+      margin: 0 6px;
+      position: absolute;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
+      white-space: nowrap;
+    }
+
+    .horizon .title {
+      left: 0;
+    }
+
+    .horizon .value {
+      right: 0;
+    }
+
+    .line {
+      background: #000;
+      opacity: .2;
+      z-index: 2;
+    }
+
+    /*
+    .rule {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      pointer-events: none;
+    }
+    */
+    </style>
+
+    <div class="container"></div>
+
+    <div id="graph" style="min-height: 650px"></div>
+
+    <script src="{{ url_for('static', filename='lib/jquery/js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/d3/js/d3.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/cubism/js/cubism.min.js') }}"></script>
+
+    <script>
+    var parameters = {
+        "TPC PEDESTAL RMS ON COLLECTION PLANE" : "null",
+    };
+
+    for (i = 240; i < 480; ++i) {
+        parameters["TPC channel " + i] = "tpc_pedestal_rms_channel_" + i;
+    }
+
+    function metric(name) {
+      return context.metric(function(start, stop, step, callback) {
+        d3.json('/metric?parameter=' + parameters[name], function(data) {
+                  console.log(data)
+                  if (!data) return callback(new Error('Unable to load data!'));
+                  return callback(null, data.values);
+                });
+      }, name);
+    }
+
+    var context = cubism.context()
+        .serverDelay(6e4)
+        .clientDelay(0)
+        //.step(1e3)  // 1 second
+        .step(6e4)  // 1 minute
+        .size(960);
+
+    d3.select("#graph").call(function(div) {
+
+      div.append("div")
+          .attr("class", "rule")
+          .call(context.rule());
+
+      div.selectAll(".axis")
+          .data(["top", "bottom"])
+        .enter().append("div")
+          .attr("class", function(d) { return d + " axis"; })
+          .each(function(d) { d3.select(this).call(context.axis().ticks(12).orient(d)); });
+
+      div.selectAll(".horizon")
+          .data($.map(parameters, function(value, key) { return key; }).map(metric))
+        .enter().insert("div", ".bottom")
+          .attr("class", "horizon")
+        .call(context.horizon()
+          .height(30)
+          .extent([-1, 40])
+          .format(d3.format(".1f")));  // float
+
+    });
+
+    // on mousemove, reposition the chart values to match the rule
+    context.on("focus", function(i) {
+      d3.selectAll(".value").style("right", i == null ? null : context.size() - i + "px");
+    });
+    </script>
+
+{% endblock %}
+

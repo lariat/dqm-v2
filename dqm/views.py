@@ -238,19 +238,27 @@ def metrics_data_stream():
 
 @app.route('/metrics/tpc-pedestal-mean-deviations/induction')
 def metrics_tpc_pedestal_mean_deviations_induction():
-    return ""
+    return render_template(
+        'metrics-tpc-pedestal-mean-deviations-induction.html',
+        title="TPC pedestal mean deviations on induction plane")
 
 @app.route('/metrics/tpc-pedestal-mean-deviations/collection')
 def metrics_tpc_pedestal_mean_deviations_collection():
-    return ""
+    return render_template(
+        'metrics-tpc-pedestal-mean-deviations-collection.html',
+        title="TPC pedestal mean deviations on collection plane")
 
 @app.route('/metrics/tpc-pedestal-rms/induction')
 def metrics_tpc_pedestal_rms_induction():
-    return ""
+    return render_template(
+        'metrics-tpc-pedestal-rms-induction.html',
+        title="TPC pedestal RMS on induction plane")
 
 @app.route('/metrics/tpc-pedestal-rms/collection')
 def metrics_tpc_pedestal_rms_collection():
-    return ""
+    return render_template(
+        'metrics-tpc-pedestal-rms-collection.html',
+        title="TPC pedestal RMS on collection plane")
 
 @app.route('/data-stream')
 def data_stream():
@@ -267,7 +275,7 @@ def data_stream():
     run, subrun = check_run_subrun(run, subrun)
 
     return render_template('data-stream.html',
-                           title="Data Stream",
+                           title="Data stream",
                            run=run,
                            subrun=subrun)
 
@@ -305,7 +313,7 @@ def caen_boards():
     run, subrun = check_run_subrun(run, subrun)
 
     return render_template('caen-boards.html',
-                           title="CAEN Boards",
+                           title="CAEN boards",
                            run=run,
                            subrun=subrun)
 
@@ -324,7 +332,7 @@ def multi_wire_chambers():
     run, subrun = check_run_subrun(run, subrun)
 
     return render_template('multi-wire-chambers.html',
-                           title="Multi-Wire Chambers",
+                           title="Multi-wire chambers",
                            run=run,
                            subrun=subrun)
 
@@ -343,7 +351,7 @@ def multi_wire_chambers_channels():
     run, subrun = check_run_subrun(run, subrun)
 
     return render_template('multi-wire-chambers-channels.html',
-                           title="Multi-Wire Chambers &mdash; Channels",
+                           title="Multi-wire chambers &mdash; Channels",
                            run=run,
                            subrun=subrun)
 
@@ -362,7 +370,7 @@ def multi_wire_chambers_timing():
     run, subrun = check_run_subrun(run, subrun)
 
     return render_template('multi-wire-chambers-timing.html',
-                           title="Multi-Wire Chambers &mdash; Timing",
+                           title="Multi-wire chambers &mdash; Timing",
                            run=run,
                            subrun=subrun)
 
