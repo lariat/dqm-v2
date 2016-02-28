@@ -199,6 +199,11 @@
                   name: 'engine',
                   displayKey: 'run',
                   source: engine.ttAdapter(),
+                  templates: {
+                      suggestion: function(data) {
+                          return '<div><strong>' + data.run + '</strong> &mdash; ' + data.subruns[data.subruns.length - 1] + ' sub-runs</div>';
+                      }
+                  }
           });
 
           function updateCache() {
