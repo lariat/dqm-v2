@@ -25,8 +25,13 @@ import log
 bin_width = 60  # seconds
 number_bins = 960
 
+v1751_pedestal_reference = 1024/2.
+v1740_pedestal_reference = 4096/2.
+v1740b_pedestal_reference = 4096/2.
+
 key_prefix = 'dqm/metric/1min/'
 tpc_pedestal_mean_reference_key = 'dqm/pedestal-reference/pedestal_mean'
+daq_uptime_key = 'dqm/daq/uptime'
 
 parameters = [
     'run',
@@ -108,6 +113,28 @@ tpc_pedestal_deviation_parameters = [
     for channel in allowed.tpc_channels
     ]
 
+caen_pedestal_deviation_parameters = []
+
+caen_pedestal_deviation_parameters.extend([
+    'caen_board_8_pedestal_deviation_channel_' + str(channel)
+    for channel in allowed.v1751_channels
+    ])
+
+caen_pedestal_deviation_parameters.extend([
+    'caen_board_9_pedestal_deviation_channel_' + str(channel)
+    for channel in allowed.v1751_channels
+    ])
+
+caen_pedestal_deviation_parameters.extend([
+    'caen_board_7_pedestal_deviation_channel_' + str(channel)
+    for channel in allowed.v1740_channels[32:]
+    ])
+
+caen_pedestal_deviation_parameters.extend( [
+    'caen_board_24_pedestal_deviation_channel_' + str(channel)
+    for channel in allowed.v1740b_channels
+    ])
+
 null_key = key_prefix + 'null'
 null_list = [ None ] * number_bins
 
@@ -130,7 +157,7 @@ def update():
         p.delete(null_key)
         p.rpush(null_key, *null_list)
         p.execute()
-        
+
     # check if the TPC pedestal mean reference exists
     tpc_pedestal_reference_exists = redis.exists(
         tpc_pedestal_mean_reference_key)
@@ -154,7 +181,8 @@ def update():
 
     parameters_dict = {}
     for parameter in parameters:
-        parameters_dict[parameter] = { time_bin : None for time_bin in time_bins }
+        parameters_dict[parameter] = {
+            time_bin : None for time_bin in time_bins }
 
     array_parameters_dict = {}
     for parameter in array_parameters:
@@ -164,6 +192,11 @@ def update():
     tpc_pedestal_deviation_dict = {}
     for parameter in tpc_pedestal_deviation_parameters:
         tpc_pedestal_deviation_dict[parameter] = {
+            time_bin : None for time_bin in time_bins }
+
+    caen_pedestal_deviation_dict = {}
+    for parameter in caen_pedestal_deviation_parameters:
+        caen_pedestal_deviation_dict[parameter] = {
             time_bin : None for time_bin in time_bins }
 
     #/////////////////////////////////////////////////////////
@@ -192,15 +225,40 @@ def update():
                 array_parameters_dict[parameter][time_bin] = value
 
                 if (parameter_base == 'tpc_pedestal_mean' and
-                    tpc_pedestal_reference_exists):
-
+                    tpc_pedestal_reference_exists and value > 0):
                     parameter = 'tpc_pedestal_deviation_channel_' + \
                                 str(channel)
+                    tpc_pedestal_deviation_dict[parameter][time_bin] = \
+                        value - \
+                        float(tpc_pedestal_mean_reference[channel_index])
 
-                    if value > 0:
-                        tpc_pedestal_deviation_dict[parameter][time_bin] = \
-                            value - \
-                            float(tpc_pedestal_mean_reference[channel_index])
+                if (parameter_base == 'caen_board_8_pedestal_mean' and
+                    value > 0):
+                    parameter = 'caen_board_8_pedestal_deviation_channel_' + \
+                                str(channel)
+                    caen_pedestal_deviation_dict[parameter][time_bin] = \
+                        value - v1751_pedestal_reference
+
+                if (parameter_base == 'caen_board_9_pedestal_mean' and
+                    value > 0):
+                    parameter = 'caen_board_9_pedestal_deviation_channel_' + \
+                                str(channel)
+                    caen_pedestal_deviation_dict[parameter][time_bin] = \
+                        value - v1751_pedestal_reference
+
+                if (parameter_base == 'caen_board_7_pedestal_mean' and
+                    value > 0):
+                    parameter = 'caen_board_7_pedestal_deviation_channel_' + \
+                                str(channel)
+                    caen_pedestal_deviation_dict[parameter][time_bin] = \
+                        value - v1740_pedestal_reference
+
+                if (parameter_base == 'caen_board_24_pedestal_mean' and
+                    value > 0):
+                    parameter = 'caen_board_24_pedestal_deviation_channel_' + \
+                                str(channel)
+                    caen_pedestal_deviation_dict[parameter][time_bin] = \
+                        value - v1740b_pedestal_reference
 
     #/////////////////////////////////////////////////////////
     # sort according to datetime
@@ -228,6 +286,14 @@ def update():
                        tpc_pedestal_deviation_dict[parameter].values()))
             ]
 
+    caen_pedestal_deviation_parameter_values = {}
+    for parameter in caen_pedestal_deviation_parameters:
+        caen_pedestal_deviation_parameter_values[parameter] = [
+            x for (y, x) in
+            sorted(zip(caen_pedestal_deviation_dict[parameter].keys(),
+                       caen_pedestal_deviation_dict[parameter].values()))
+            ]
+
     # send commands in a pipeline to save on round-trip time
     p = redis.pipeline()
     p.set(key_prefix + 'timestamp', timestamp)
@@ -253,6 +319,23 @@ def update():
         p.rpush(parameter_key,
                 *tpc_pedestal_deviation_parameter_values[parameter])
     p.execute()
+
+    # send commands in a pipeline to save on round-trip time
+    p = redis.pipeline()
+    for parameter in caen_pedestal_deviation_parameters:
+        parameter_key = key_prefix + parameter
+        p.delete(parameter_key)
+        p.rpush(parameter_key,
+                *caen_pedestal_deviation_parameter_values[parameter])
+    p.execute()
+
+    # get DAQ uptime for the last bin_width * number_bins seconds
+    daq_minute_count = 0
+    for subrun in parameter_values['subrun']:
+        if subrun:
+            daq_minute_count += 1
+    daq_uptime = float(daq_minute_count) / len(parameter_values['subrun'])
+    redis.set(daq_uptime_key, daq_uptime)
 
 if __name__ == '__main__':
 
