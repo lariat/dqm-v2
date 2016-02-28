@@ -135,7 +135,6 @@
     function metric(name) {
       return context.metric(function(start, stop, step, callback) {
         d3.json('/metric?parameter=' + parameters[name], function(data) {
-                  console.log(data)
                   if (!data) return callback(new Error('Unable to load data!'));
                   return callback(null, data.values);
                 });
