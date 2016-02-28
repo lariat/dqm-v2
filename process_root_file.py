@@ -18,9 +18,7 @@ from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 import ROOT
 #import root_numpy as rnp
 
-from guppy import hpy
-
-import log
+from log import Logger
 from classes import Histogram
 
 from dqm.database import db_session
@@ -30,11 +28,6 @@ import dqm.allowed as allowed
 import mwpc
 
 #/////////////////////////////////////////////////////////////
-# heapy
-#/////////////////////////////////////////////////////////////
-hp = hpy()
-
-#/////////////////////////////////////////////////////////////
 # argparse
 #/////////////////////////////////////////////////////////////
 parser = argparse.ArgumentParser(description="Analyze from ROOT file.")
@@ -42,6 +35,11 @@ parser.add_argument('file', type=str, help="path to ROOT file")
 parser.add_argument('--backlog', dest='backlog', action='store_true',
     help="backlog mode, prevents updating the DataQualityLatest table")
 args = parser.parse_args()
+
+#/////////////////////////////////////////////////////////////
+# Logger
+#/////////////////////////////////////////////////////////////
+log = Logger('process_root_file.py', './logs/process_root_file.py.log')
 
 #/////////////////////////////////////////////////////////////
 # iterators for CAEN boards and channels
@@ -156,7 +154,7 @@ for branch in event_record_ttree:
     break
 
 if not event_record_read:
-    print "EventRecord TTree not read!"
+    log.logger.warning("EventRecord TTree not read!")
 
 #/////////////////////////////////////////////////////////////
 # check if subrun exists in database
@@ -172,8 +170,9 @@ subrun_exists = db_session.query(exists()
 # if subrun exists in database, exit
 #/////////////////////////////////////////////////////////////
 if subrun_exists:
-    print "Run {}, SubRun {} already exists in table!".format(run, subrun)
-    print "Exiting..."
+    log.logger.info("Run {}, SubRun {} already exists in table!"
+                    .format(run, subrun))
+    log.logger.info("Exiting...")
     db_session.close()  # close transaction
     sys.exit(1)
 
@@ -1101,9 +1100,9 @@ elif run_exists:
         run_ok = True
 
     except MultipleResultsFound as e:
-        print str(e)
+        log.logger.error(str(e))
     except NoResultFound as e:
-        print str(e)
+        log.logger.error(str(e))
 
 #/////////////////////////////////////////////////////////////
 # add SubRun to session
@@ -1134,12 +1133,10 @@ try:
     db_session.commit()
 except IntegrityError as e:
     db_session.rollback()
-    print str(e)
+    log.logger.error(str(e))
 except SQLAlchemyError as e:
     db_session.rollback()
-    print str(e)
+    log.logger.error(str(e))
 
 db_session.remove()
-
-print hp.heap()
 
