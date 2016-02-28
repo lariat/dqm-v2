@@ -194,17 +194,19 @@ def histograms():
     for parameter in parameter_list:
         histogram = Histogram(parameter)
         histogram.db_to_histogram(
-             getattr(db_row_object, parameter + "_histogram_bins"),
+             getattr(db_row_object, parameter + "_histogram_bin_indices"),
              getattr(db_row_object, parameter + "_histogram_counts"),
+             getattr(db_row_object, parameter + "_histogram_bin_width"),
+             getattr(db_row_object, parameter + "_histogram_number_bins"),
              getattr(db_row_object, parameter + "_histogram_min_bin"),
-             getattr(db_row_object, parameter + "_histogram_max_bin"),
-             getattr(db_row_object, parameter + "_histogram_bin_width"))
+             getattr(db_row_object, parameter + "_histogram_max_bin"))
         json_data[parameter] = {
-            'bins'   : histogram.bins.tolist(),
-            'counts' : histogram.counts.tolist(),
-            'min_bin' : histogram.min_bin,
-            'max_bin' : histogram.max_bin,
-            'bin_width' : histogram.bin_width,
+            'bins'        : histogram.bins.tolist(),
+            'counts'      : histogram.counts.tolist(),
+            'bin_width'   : histogram.bin_width,
+            'number_bins' : histogram.number_bins,
+            'min_bin'     : histogram.min_bin,
+            'max_bin'     : histogram.max_bin,
             }
 
     return jsonify(json_data)
