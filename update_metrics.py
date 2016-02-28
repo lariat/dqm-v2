@@ -20,7 +20,9 @@ import dqm.allowed as allowed
 
 from metrics.binning import round_time, date_time_bins
 
-import log
+from log import Logger
+
+log = Logger('update_metrics', './logs/update_metrics.log')
 
 bin_width = 60  # seconds
 number_bins = 960
