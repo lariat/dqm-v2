@@ -120,9 +120,53 @@ def json():
             return "NULL"
 
     json_data = {}
-    
+
     for parameter in parameter_list:
         json_data[parameter] = db_row_object_dict[parameter]
+
+    return jsonify(json_data)
+
+@app.route('/json/tpc-pedestal-deviation')
+def json_tpc_pedestal_deviation():
+
+    tpc_pedestal_mean_reference_key = 'dqm/pedestal-reference/pedestal_mean'
+
+    # check if the TPC pedestal mean reference exists
+    tpc_pedestal_reference_exists = redis.exists(
+        tpc_pedestal_mean_reference_key)
+
+    if tpc_pedestal_reference_exists:
+        tpc_pedestal_mean_reference = redis.lrange(
+            tpc_pedestal_mean_reference_key, 0, -1)
+    else:
+        return "NULL"
+
+    run = request.args.get('run', None)
+    subrun = request.args.get('subrun', None)
+
+    run, subrun = check_run_subrun(run, subrun)
+    db_row_object = None
+
+    if run and subrun:
+        db_row_object = fetch_subrun(run, subrun)
+    elif run and not subrun:
+        db_row_object = fetch_run(run)
+
+    db_row_object_dict = dict(db_row_object.__dict__) 
+    db_row_object_dict.pop('_sa_instance_state', None)
+
+    parameter = 'tpc_pedestal_mean'
+
+    if parameter not in db_row_object_dict:
+        return "NULL"
+
+    tpc_pedestal_mean = db_row_object_dict[parameter]
+
+    tpc_pedestal_deviation = \
+        np.array(tpc_pedestal_mean, dtype=np.float64) - \
+        np.array(tpc_pedestal_mean_reference, dtype=np.float64)
+
+    json_data = { 'tpc_pedestal_deviation' : tpc_pedestal_deviation.tolist() }
 
     return jsonify(json_data)
 
@@ -318,10 +362,13 @@ def tpc():
 
     run, subrun = check_run_subrun(run, subrun)
 
+    reference_pedestal_run = redis.get('dqm/pedestal-reference/run')
+
     return render_template('tpc.html',
                            title="TPC",
                            run=run,
-                           subrun=subrun)
+                           subrun=subrun,
+                           reference_pedestal_run=reference_pedestal_run)
 
 @app.route('/caen-boards')
 def caen_boards():
