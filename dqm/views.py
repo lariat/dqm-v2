@@ -260,6 +260,27 @@ def metrics_tpc_pedestal_rms_collection():
         'metrics-tpc-pedestal-rms-collection.html',
         title="TPC pedestal RMS on collection plane")
 
+@app.route('/metrics/caen-v1751/pedestal-mean-deviations')
+def metrics_caen_v1751_pedestal_mean_deviations():
+    return render_template('metrics-caen-v1751-pedestal-mean-deviations.html',
+                           title="CAEN V1751 pedestal mean deviations")
+
+@app.route('/metrics/caen-v1740-v1740b/pedestal-mean-deviations')
+def metrics_caen_v1740_v1740b_pedestal_mean_deviations():
+    return render_template(
+        'metrics-caen-v1740-v1740b-pedestal-mean-deviations.html',
+        title="CAEN V1740/V1740B pedestal mean deviations")
+
+@app.route('/metrics/caen-v1751/pedestal-rms')
+def metrics_caen_v1751_pedestal_rms():
+    return render_template('metrics-caen-v1751-pedestal-rms.html',
+                           title="CAEN V1751 pedestal RMS")
+
+@app.route('/metrics/caen-v1740-v1740b/pedestal-rms')
+def metrics_caen_v1740_v1740b_pedestal_rms():
+    return render_template('metrics-caen-v1740-v1740b-pedestal-rms.html',
+                           title="CAEN V1740/V1740B pedestal RMS")
+
 @app.route('/data-stream')
 def data_stream():
 
