@@ -1,13 +1,5 @@
-#import sys
 import logging
-from logging import RotatingFileHandler
-#from datetime import datetime
-
-#def get_logger(logger_name):
-#    logger = logging.getLogger(logger_name)
-#    logger.addHandler(handler)
-#    logger.setLevel(logging.DEBUG)
-#    return logger
+from logging.handlers import RotatingFileHandler
 
 class Logger:
     """ Create a logger. """
