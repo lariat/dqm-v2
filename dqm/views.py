@@ -253,7 +253,7 @@ def metrics_tpc_pedestal_rms_collection():
 @app.route('/data-stream')
 def data_stream():
 
-    run = request.args.get('run', None)
+    run = request.args.get('run', "latest")
     subrun = request.args.get('subrun', None)
 
     live = request.args.get('live', False)
@@ -272,8 +272,14 @@ def data_stream():
 @app.route('/tpc')
 def tpc():
 
-    run = request.args.get('run', None)
+    run = request.args.get('run', "latest")
     subrun = request.args.get('subrun', None)
+
+    live = request.args.get('live', False)
+
+    if live == u'':
+        run = "latest"
+        subrun = None
 
     run, subrun = check_run_subrun(run, subrun)
 
@@ -285,8 +291,14 @@ def tpc():
 @app.route('/caen-boards')
 def caen_boards():
 
-    run = request.args.get('run', None)
+    run = request.args.get('run', "latest")
     subrun = request.args.get('subrun', None)
+
+    live = request.args.get('live', False)
+
+    if live == u'':
+        run = "latest"
+        subrun = None
 
     run, subrun = check_run_subrun(run, subrun)
 
@@ -298,7 +310,7 @@ def caen_boards():
 @app.route('/multi-wire-chambers')
 def multi_wire_chambers():
 
-    run = request.args.get('run', None)
+    run = request.args.get('run', "latest")
     subrun = request.args.get('subrun', None)
 
     live = request.args.get('live', False)
@@ -317,7 +329,7 @@ def multi_wire_chambers():
 @app.route('/multi-wire-chambers/channels')
 def multi_wire_chambers_channels():
 
-    run = request.args.get('run', None)
+    run = request.args.get('run', "latest")
     subrun = request.args.get('subrun', None)
 
     live = request.args.get('live', False)
@@ -336,7 +348,7 @@ def multi_wire_chambers_channels():
 @app.route('/multi-wire-chambers/timing')
 def multi_wire_chambers_timing():
 
-    run = request.args.get('run', None)
+    run = request.args.get('run', "latest")
     subrun = request.args.get('subrun', None)
 
     live = request.args.get('live', False)
@@ -355,7 +367,7 @@ def multi_wire_chambers_timing():
 @app.route('/physics')
 def physics():
 
-    run = request.args.get('run', None)
+    run = request.args.get('run', "latest")
     subrun = request.args.get('subrun', None)
 
     live = request.args.get('live', False)

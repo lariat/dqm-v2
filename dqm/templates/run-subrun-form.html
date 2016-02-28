@@ -41,8 +41,8 @@
           </form>
 
             <div class="col-sm-2">
-              <div class="form-group form-group-sm checkbox{% if active_page in no_live  %} disabled{% endif %}">
-                <label><input id="checkbox" type="checkbox" value=""{% if active_page in no_live %} disabled{% endif %}>Live</label>
+              <div class="form-group form-group-sm checkbox">
+                <label><input id="checkbox" type="checkbox" value="">Live</label>
               </div>
             </div>
 
@@ -60,16 +60,16 @@
       this.$RUN = "{{ run }}";
       this.$SUBRUN = "{{ subrun }}";
 
-      if ($RUN == "None") {
-          $RUN = "latest"
-      };
+      //if ($RUN == "None") {
+      //    $RUN = "latest"
+      //};
 
-      if ($RUN == "latest") {
-          $.getJSON($SCRIPT_ROOT + '/json/latest-runs?limit=1', function(data) {
-              console.log(data.results[0].run);
-              $("#run").val(data.results[0].run);
-          });
-      }
+      //if ($RUN == "latest") {
+      //    $.getJSON($SCRIPT_ROOT + '/json/latest-runs?limit=1', function(data) {
+      //        console.log(data.results[0].run);
+      //        $("#run").val(data.results[0].run);
+      //    });
+      //}
 
       this.$UPDATE = false;
       </script>
@@ -77,9 +77,11 @@
       <script type="text/javascript">
       $(document).ready(function () {
           if (window.location.href.indexOf("?live") > -1) {
+{% if active_page not in no_live %}
               $('#checkbox').attr('checked', true);
               $UPDATE = true;
               $RUN = "latest";
+{% endif %}
           } else {
               $('#checkbox').attr('checked', false);
               $UPDATE = false;
@@ -87,10 +89,58 @@
       });
       </script>
 
+{#
+    http://stackoverflow.com/questions/11498957/jquery-removing-everything-after-question-mark-in-url
+    http://jsbin.com/xikufatohi/1/edit?js,console
+#}
+
+      <script type="text/javascript">
+      var getURL = function(url) {
+          if (url.indexOf('?') === -1) {
+              return {
+                  base : url,
+                  query : ''
+              };
+          } else {
+              return {
+                  base : url.substring(0, url.indexOf('?')),
+                  query : url.substring(url.indexOf('?'))
+              };
+          }
+      };
+
+      function urlLive() {
+          $('ul.navbar-nav li a, div.list-group a').attr('href', function(index, value) {
+              var url = getURL(value);
+              //console.log('url.base', url.base)
+              //console.log('url.query', url.query)
+              //console.log('value', value)
+              //console.log('index', index)
+              return url.base + '?live';
+          });
+      };
+
+      function urlRunSubrun() {
+          $('ul.navbar-nav li a, div.list-group a').attr('href', function(index, value) {
+              var url = getURL(value);
+              //console.log('url.base', url.base)
+              //console.log('url.query', url.query)
+              //console.log('value', value)
+              //console.log('index', index)
+              return url.base + '?run=' + $RUN + '&subrun=' + $SUBRUN;
+          });
+      };
+      </script>
+
       <script type="text/javascript">
       $(document).ready(function () {
           if ($('#checkbox').is(":checked")) {
               console.log('Checked');
+              urlLive();
+{% if active_page in no_live %}
+{% endif %}
+          } else {
+              urlRunSubrun();
           }
       });
       </script>
@@ -100,23 +150,15 @@
         if ($(this).is(':checked')) {
             console.log('Checked');
             $UPDATE = true;
-            $RUN = "latest";
+            //$RUN = "latest";
             window.location.replace("{{ request.path }}?live");
         } else {
             console.log('Unchecked');
             $UPDATE = false;
+            urlRunSubrun();
         }
       });
       </script>
-
-      {% if active_page in no_live %}
-      <script type="text/javascript">
-      $(document).ready(function () {
-          $('#checkbox').attr('checked', false);
-          $UPDATE = false;
-      });
-      </script>
-      {% endif %}
 
       <script>
       // https://github.com/twitter/typeahead.js/pull/703
