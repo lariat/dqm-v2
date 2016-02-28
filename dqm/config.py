@@ -2,3 +2,5 @@
 SECRET_KEY = 'correcthorsebatterystaple'
 
 SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/lariat_dqm'
+
+SQLALCHEMY_TRACK_MODIFICATIONS = True
