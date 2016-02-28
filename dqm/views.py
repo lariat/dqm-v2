@@ -238,15 +238,19 @@ def metrics_data_stream():
 
 @app.route('/metrics/tpc-pedestal-mean-deviations/induction')
 def metrics_tpc_pedestal_mean_deviations_induction():
+    reference_pedestal_run = redis.get('dqm/pedestal-reference/run')
     return render_template(
         'metrics-tpc-pedestal-mean-deviations-induction.html',
-        title="TPC pedestal mean deviations on induction plane")
+        title="TPC pedestal mean deviations on induction plane",
+        reference_pedestal_run=reference_pedestal_run)
 
 @app.route('/metrics/tpc-pedestal-mean-deviations/collection')
 def metrics_tpc_pedestal_mean_deviations_collection():
+    reference_pedestal_run = redis.get('dqm/pedestal-reference/run')
     return render_template(
         'metrics-tpc-pedestal-mean-deviations-collection.html',
-        title="TPC pedestal mean deviations on collection plane")
+        title="TPC pedestal mean deviations on collection plane",
+        reference_pedestal_run=reference_pedestal_run)
 
 @app.route('/metrics/tpc-pedestal-rms/induction')
 def metrics_tpc_pedestal_rms_induction():
