@@ -43,11 +43,11 @@ def fetch_run(run):
 
 def latest_run_subrun():
     """ Get the latest run and sub-run numbers. """
-    Latest = DataQualityLatest.query.order_by(
-        DataQualityLatest.date_time_updated.desc()).first()
-    run = Latest.run
-    subrun = Latest.subrun
-    date_time = Latest.date_time_updated
+    latest_subrun = DataQualitySubRun.query.order_by(
+        DataQualitySubRun.date_time.desc()).first()
+    run = latest_subrun.run
+    subrun = latest_subrun.subrun
+    date_time = latest_subrun.date_time
     return run, subrun
 
 def check_run_subrun(r, sr):
