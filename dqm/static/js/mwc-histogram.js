@@ -268,7 +268,6 @@ function chart(config) {
     var timeout;
     function loadNext() {
         if ($UPDATE) {
-            console.log("Updating plots...");
             update();
             timeout = setTimeout(loadNext, 15000);
         }

@@ -40,7 +40,6 @@
     var timeout;
     function loadNext() {
         if ($UPDATE) {
-            console.log("Filling table...");
             fillTable();
             timeout = setTimeout(loadNext, 15000);
         }

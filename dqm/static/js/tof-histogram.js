@@ -186,7 +186,6 @@
     var timeout;
     function loadNext() {
         if ($UPDATE) {
-            console.log("Updating histogram...");
             update();
             timeout = setTimeout(loadNext, 15000);
         }
