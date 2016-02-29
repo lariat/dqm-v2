@@ -8,8 +8,6 @@ from dqm.models import DataQualitySubRun, DataQualityRun
 
 init_db()
 
-db_session.add(latest)
-
 try:
     db_session.commit()
 except IntegrityError as e:
