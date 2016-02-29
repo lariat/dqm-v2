@@ -22,7 +22,7 @@ from log import Logger
 from classes import Histogram
 
 from dqm.database import db_session
-from dqm.models import DataQualityRun, DataQualitySubRun, DataQualityLatest
+from dqm.models import DataQualityRun, DataQualitySubRun
 import dqm.allowed as allowed
 
 import mwpc
@@ -32,8 +32,6 @@ import mwpc
 #/////////////////////////////////////////////////////////////
 parser = argparse.ArgumentParser(description="Analyze from ROOT file.")
 parser.add_argument('file', type=str, help="path to ROOT file")
-parser.add_argument('--backlog', dest='backlog', action='store_true',
-    help="backlog mode, prevents updating the DataQualityLatest table")
 args = parser.parse_args()
 
 #/////////////////////////////////////////////////////////////
@@ -1114,17 +1112,6 @@ db_session.add(SubRun)
 #/////////////////////////////////////////////////////////////
 if run_ok:
     db_session.add(Run)
-
-#/////////////////////////////////////////////////////////////
-# update Latest with latest run and sub-run
-#/////////////////////////////////////////////////////////////
-if not args.backlog:
-    Latest = DataQualityLatest.query.order_by(
-        DataQualityLatest.date_time_updated.desc()).first()
-    Latest.run = run
-    Latest.subrun = subrun
-    Latest.date_time_updated = datetime.now()
-    db_session.add(Latest)
 
 #/////////////////////////////////////////////////////////////
 # attempt to commit changes and additions to database

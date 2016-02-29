@@ -14,7 +14,7 @@ from redis import Redis
 
 from dqm import app
 from dqm.database import db_session
-from dqm.models import DataQualityRun, DataQualitySubRun, DataQualityLatest
+from dqm.models import DataQualityRun, DataQualitySubRun
 import dqm.allowed as allowed
 
 from classes import Histogram
