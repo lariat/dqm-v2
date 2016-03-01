@@ -70,6 +70,7 @@ wut_timestamps_th1_name = "DataQuality/timestamps/wut_timestamps"
 ustof_hits_th1_name = "DataQuality/tof/USTOFHits"
 dstof_hits_th1_name = "DataQuality/tof/DSTOFHits"
 tof_th1_name = "DataQuality/tof/TOF"
+mwc_tdc_time_bit_mismatch_th1_name = "DataQuality/TDCTimeBitMismatch"
 
 #/////////////////////////////////////////////////////////////
 # TTree names
@@ -318,6 +319,16 @@ for channel in v1751_channels:
         caen_board_9_adc_bins, caen_board_9_adc_counts)
 
 #/////////////////////////////////////////////////////////////
+# get histogram of MWC TDCs with mismatched time bits
+#/////////////////////////////////////////////////////////////
+mwc_tdc_time_bit_mismatch_th1 = f.Get(mwc_tdc_time_bit_mismatch_th1_name)
+mwc_tdc_time_bit_mismatch_bins, mwc_tdc_time_bit_mismatch_counts = \
+    th1_to_arrays(mwc_tdc_time_bit_mismatch_th1)
+mwc_tdc_time_bit_mismatch_histogram = Histogram("mwc_tdc_time_bit_mismatch")
+mwc_tdc_time_bit_mismatch_histogram.histogram_to_db(
+    mwc_tdc_time_bit_mismatch_bins, mwc_tdc_time_bit_mismatch_counts)
+
+#/////////////////////////////////////////////////////////////
 # get USTOF hits histogram
 #/////////////////////////////////////////////////////////////
 ustof_hits_th1 = f.Get(ustof_hits_th1_name)
@@ -511,6 +522,16 @@ for channel in v1751_channels:
     setattr(SubRun,
         "caen_board_9_channel_{}_adc_histogram_number_bins".format(channel),
         caen_board_9_adc_histograms[channel].number_bins)
+
+#/////////////////////////////////////////////////////////////
+# add histogram of MWC TDCs with mismatched time bits to SubRun
+#/////////////////////////////////////////////////////////////
+SubRun.mwc_tdc_time_bit_mismatch_histogram_counts = mwc_tdc_time_bit_mismatch_histogram.counts_sparse
+SubRun.mwc_tdc_time_bit_mismatch_histogram_min_bin = mwc_tdc_time_bit_mismatch_histogram.min_bin
+SubRun.mwc_tdc_time_bit_mismatch_histogram_max_bin = mwc_tdc_time_bit_mismatch_histogram.max_bin
+SubRun.mwc_tdc_time_bit_mismatch_histogram_bin_width = mwc_tdc_time_bit_mismatch_histogram.bin_width
+SubRun.mwc_tdc_time_bit_mismatch_histogram_bin_indices = mwc_tdc_time_bit_mismatch_histogram.bin_indices_sparse
+SubRun.mwc_tdc_time_bit_mismatch_histogram_number_bins = mwc_tdc_time_bit_mismatch_histogram.number_bins
 
 #/////////////////////////////////////////////////////////////
 # add USTOF hits histogram to SubRun
@@ -869,6 +890,28 @@ elif run_exists:
             setattr(Run,
                 "caen_board_9_channel_{}_adc_histogram_number_bins".format(channel),
                 run_caen_board_9_adc_histograms[channel].number_bins)
+
+        #/////////////////////////////////////////////////////
+        # update histogram of MWC TDCs with mismatched time bits in Run
+        #/////////////////////////////////////////////////////
+        run_mwc_tdc_time_bit_mismatch_histogram = Histogram("run_mwc_tdc_time_bit_mismatch")
+
+        run_mwc_tdc_time_bit_mismatch_histogram.db_to_histogram(
+            Run.mwc_tdc_time_bit_mismatch_histogram_bin_indices,
+            Run.mwc_tdc_time_bit_mismatch_histogram_counts,
+            Run.mwc_tdc_time_bit_mismatch_histogram_bin_width,
+            Run.mwc_tdc_time_bit_mismatch_histogram_number_bins,
+            Run.mwc_tdc_time_bit_mismatch_histogram_min_bin,
+            Run.mwc_tdc_time_bit_mismatch_histogram_max_bin)
+
+        run_mwc_tdc_time_bit_mismatch_histogram += mwc_tdc_time_bit_mismatch_histogram
+
+        Run.mwc_tdc_time_bit_mismatch_histogram_counts = run_mwc_tdc_time_bit_mismatch_histogram.counts_sparse
+        Run.mwc_tdc_time_bit_mismatch_histogram_min_bin = run_mwc_tdc_time_bit_mismatch_histogram.min_bin
+        Run.mwc_tdc_time_bit_mismatch_histogram_max_bin = run_mwc_tdc_time_bit_mismatch_histogram.max_bin
+        Run.mwc_tdc_time_bit_mismatch_histogram_bin_width = run_mwc_tdc_time_bit_mismatch_histogram.bin_width
+        Run.mwc_tdc_time_bit_mismatch_histogram_bin_indices = run_mwc_tdc_time_bit_mismatch_histogram.bin_indices_sparse
+        Run.mwc_tdc_time_bit_mismatch_histogram_number_bins = run_mwc_tdc_time_bit_mismatch_histogram.number_bins
 
         #/////////////////////////////////////////////////////
         # update USTOF hits histogram in Run

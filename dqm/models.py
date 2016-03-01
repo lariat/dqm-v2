@@ -753,6 +753,16 @@ class DataQualityMixin(object):
     mwc_tdc_16_bad_hits_timing_histogram_number_bins = Column(Integer, unique=False)
 
     #/////////////////////////////////////////////////////////
+    # histogram of MWC TDCs with mismatched time bits
+    #/////////////////////////////////////////////////////////
+    mwc_tdc_time_bit_mismatch_histogram_bin_indices = Column(ARRAY(Integer), unique=False)
+    mwc_tdc_time_bit_mismatch_histogram_counts = Column(ARRAY(Integer), unique=False)
+    mwc_tdc_time_bit_mismatch_histogram_min_bin = Column(Integer, unique=False)
+    mwc_tdc_time_bit_mismatch_histogram_max_bin = Column(Integer, unique=False)
+    mwc_tdc_time_bit_mismatch_histogram_bin_width = Column(Integer, unique=False)
+    mwc_tdc_time_bit_mismatch_histogram_number_bins = Column(Integer, unique=False)
+
+    #/////////////////////////////////////////////////////////
     # histograms of USTOF/DSTOF hits
     #/////////////////////////////////////////////////////////
     ustof_hits_histogram_bin_indices = Column(ARRAY(Integer), unique=False)
