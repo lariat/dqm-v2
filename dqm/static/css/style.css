@@ -3,11 +3,6 @@ body {
   padding-top: 70px;
 }
 
-.table-striped>tbody>tr:nth-child(odd)>td,
-.table-striped>tbody>tr:nth-child(odd)>th {
-  background-color: #f1f1f1;
-}
-
 .layer {
   shape-rendering: crispEdges;
 }

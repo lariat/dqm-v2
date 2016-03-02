@@ -138,79 +138,96 @@
         <div class="panel-heading">
             <h3 class="panel-title">Data stream from each device</h3>
         </div>
+{#
+        <table class="table">
+#}
         <table class="table table-striped">
           <thead>
             <tr>
               <th>#</th>
               <th>Device</th>
-              <th>Number of data blocks</th>
+              <th>Data blocks</th>
+              <th>Data blocks from latest sub-run</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <tr id="caen-board-0">
               <th scope="row">1</th>
               <td>CAEN board 0 (V1740)</td>
               <td id="caen-board-0-data-blocks"></td>
+              <td id="caen-board-0-data-blocks-latest"></td>
             </tr>
-            <tr>
+            <tr id="caen-board-1">
               <th scope="row">2</th>
               <td>CAEN board 1 (V1740)</td>
               <td id="caen-board-1-data-blocks"></td>
+              <td id="caen-board-1-data-blocks-latest"></td>
             </tr>
-            <tr>
+            <tr id="caen-board-2">
               <th scope="row">3</th>
               <td>CAEN board 2 (V1740)</td>
               <td id="caen-board-2-data-blocks"></td>
+              <td id="caen-board-2-data-blocks-latest"></td>
             </tr>
-            <tr>
+            <tr id="caen-board-3">
               <th scope="row">4</th>
               <td>CAEN board 3 (V1740)</td>
               <td id="caen-board-3-data-blocks"></td>
+              <td id="caen-board-3-data-blocks-latest"></td>
             </tr>
-            <tr>
+            <tr id="caen-board-4">
               <th scope="row">5</th>
               <td>CAEN board 4 (V1740)</td>
               <td id="caen-board-4-data-blocks"></td>
+              <td id="caen-board-4-data-blocks-latest"></td>
             </tr>
-            <tr>
+            <tr id="caen-board-5">
               <th scope="row">6</th>
               <td>CAEN board 5 (V1740)</td>
               <td id="caen-board-5-data-blocks"></td>
+              <td id="caen-board-5-data-blocks-latest"></td>
             </tr>
-            <tr>
+            <tr id="caen-board-6">
               <th scope="row">7</th>
               <td>CAEN board 6 (V1740)</td>
               <td id="caen-board-6-data-blocks"></td>
+              <td id="caen-board-6-data-blocks-latest"></td>
             </tr>
-            <tr>
+            <tr id="caen-board-7">
               <th scope="row">8</th>
               <td>CAEN board 7 (V1740)</td>
               <td id="caen-board-7-data-blocks"></td>
+              <td id="caen-board-7-data-blocks-latest"></td>
             </tr>
-            <tr>
+            <tr id="caen-board-24">
               <th scope="row">9</th>
               <td>CAEN board 24 (V1740B)</td>
               <td id="caen-board-24-data-blocks"></td>
+              <td id="caen-board-24-data-blocks-latest"></td>
             </tr>
-            <tr>
+            <tr id="caen-board-8">
               <th scope="row">10</th>
               <td>CAEN board 8 (V1751)</td>
               <td id="caen-board-8-data-blocks"></td>
+              <td id="caen-board-8-data-blocks-latest"></td>
             </tr>
-            <tr>
+            <tr id="caen-board-9">
               <th scope="row">11</th>
               <td>CAEN board 9 (V1751)</td>
               <td id="caen-board-9-data-blocks"></td>
+              <td id="caen-board-9-data-blocks-latest"></td>
             </tr>
-            <tr>
+            <tr id="mwc">
               <th scope="row">12</th>
               <td>Multi-wire chambers</td>
               <td id="mwc-data-blocks"></td>
+              <td id="mwc-data-blocks-latest"></td>
             </tr>
-            <tr>
+            <tr id="wut">
               <th scope="row">13</th>
               <td>Wave union TDC</td>
               <td id="wut-data-blocks"></td>
+              <td id="wut-data-blocks-latest"></td>
             </tr>
           </tbody>
         </table>
