@@ -1,5 +1,19 @@
 (function() {
 
+    function time_bit_alert(number_tdcs) {
+        if (number_tdcs > 6) {
+            //$("#mwc-tdc-time-bit-mismatch").addClass('panel-danger').removeClass('panel-default');
+            $("#mwc-tdc-time-bit-mismatch-alert")
+                .addClass('alert alert-danger')
+                .html('There are <strong>' + number_tdcs + '</strong> MWC TDCs with mismatched time bits! Please alert the Run Coordinator!');
+        } else {
+            //$("#mwc-tdc-time-bit-mismatch").addClass('panel-default').removeClass('panel-danger');
+            $("#mwc-tdc-time-bit-mismatch-alert")
+                .removeClass('alert alert-danger')
+                .empty();
+        }
+    }
+
     var json_url = $SCRIPT_ROOT + "/histograms?query=mwc_tdc_time_bit_mismatch&run=" + $RUN + "&subrun=" + $SUBRUN;
 
     // Set the dimensions of the canvas / graph
@@ -56,10 +70,16 @@
         var counts = json.mwc_tdc_time_bit_mismatch.counts;
 
         var data = [];
+        var number_tdcs_with_time_bit_mismatch = 0;
 
         for (var bin in bins) {
             data.push({"x": bins[bin], "y": counts[bin]});
+            if (counts[bin] > 0) {
+                number_tdcs_with_time_bit_mismatch += 1;
+            }
         }
+
+        time_bit_alert(number_tdcs_with_time_bit_mismatch);
 
         // Scale the range of the data
         x.domain([min_bin, max_bin + bin_step]);
@@ -125,11 +145,18 @@
 
             var bins = json.mwc_tdc_time_bit_mismatch.bins;
             var counts = json.mwc_tdc_time_bit_mismatch.counts;
+
             var data = [];
+            var number_tdcs_with_time_bit_mismatch = 0;
 
             for (var bin in bins) {
                 data.push({"x": bins[bin], "y": counts[bin]});
+                if (counts[bin] > 0) {
+                    number_tdcs_with_time_bit_mismatch += 1;
+                }
             }
+
+            time_bit_alert(number_tdcs_with_time_bit_mismatch);
 
             var bin_array = [];
             for (var i = min_bin; i <= max_bin + bin_step; i += bin_step) {
