@@ -24,7 +24,7 @@ dqmproc = imp.load_source(
 hostname = socket.gethostname()
 
 src_file_dir = '/daqdata/dropbox'
-log_file_path = '/lariat/data/users/lariatdqm/dqm-v2/log/cerberus.log'
+#log_file_path = '/lariat/data/users/lariatdqm/dqm-v2/log/cerberus.log'
 
 msg_format = "[%(asctime)s] [%(name)s] [" \
              + hostname + \
@@ -36,14 +36,14 @@ formatter = logging.Formatter(
     datefmt=date_format
     )
 
-handler = RotatingFileHandler(
-    filename=log_file_path,
-    mode='a',
-    maxBytes=50000000,
-    backupCount=10,
-    )
+#handler = RotatingFileHandler(
+#    filename=log_file_path,
+#    mode='a',
+#    maxBytes=50000000,
+#    backupCount=10,
+#    )
 
-#handler = logging.StreamHandler()
+handler = logging.StreamHandler()
 
 handler.setFormatter(formatter)
 handler.setLevel(logging.DEBUG)
@@ -114,4 +114,3 @@ if __name__ == '__main__':
         observer.stop()
 
     observer.join()
-
