@@ -37,7 +37,9 @@ args = parser.parse_args()
 #/////////////////////////////////////////////////////////////
 # Logger
 #/////////////////////////////////////////////////////////////
-log = Logger('process_root_file', './logs/process_root_file.log')
+log = Logger(
+    'process_root_file',
+    '/lariat/data/users/lariatdqm/dqm-v2/log/process_root_file.log')
 
 #/////////////////////////////////////////////////////////////
 # iterators for CAEN boards and channels
