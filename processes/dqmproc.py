@@ -16,7 +16,7 @@ import samweb_client
 # configure logger
 #///////////////////////////////////////////////////////////////////////
 logger_name = 'dqmproc'
-log_file_path = '/lariat/data/users/lariatdqm/dqm-v2/log/dqmproc.log'
+log_file_path = '/lariat/data/users/lariatdqm/dqm-v2/log/dqmproc/dqmproc.log'
 
 msg_format = "%(asctime)s [%(name)s] [" \
              + socket.gethostname() + \
