@@ -136,7 +136,7 @@
 
     function metric(name) {
       return context.metric(function(start, stop, step, callback) {
-        d3.json('/metric?parameter=' + parameters[name], function(data) {
+        d3.json('/metric?parameter=' + parameters[name] + '&start=' + start + '&stop=' + stop + '&step=' + step, function(data) {
                   if (!data) return callback(new Error('Unable to load data!'));
                   return callback(null, data.values);
                 });
@@ -144,8 +144,8 @@
     }
 
     var context = cubism.context()
-        .serverDelay(6e4)
-        .clientDelay(0)
+        .serverDelay(6e4)  // 1 minutes
+        .clientDelay(1e3)  // 1 second
         //.step(1e3)  // 1 second
         .step(6e4)  // 1 minute
         .size(960);

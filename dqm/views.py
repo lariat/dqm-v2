@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import dateutil.parser
 
 import numpy as np
 
@@ -259,12 +260,47 @@ def histograms():
 def metric():
 
     parameter = request.args.get('parameter', None)
+    start = request.args.get('start', None)
+    stop = request.args.get('stop', None)
+    step = request.args.get('step', None)
+
+    if not all([ parameter, start, stop, step ]):
+        return "NULL"
 
     key_prefix = 'dqm/metric/1min/'
-    key = key_prefix + parameter
+    time_bin_key = key_prefix + 'time_bins'
+    parameter_key = key_prefix + parameter
 
-    if redis.exists(key):
-        values = redis.lrange(key, 0, -1)
+    # cubism magic
+    date_time_start = dateutil.parser.parse(start).replace(tzinfo=None)
+    date_time_stop = dateutil.parser.parse(stop).replace(tzinfo=None)
+    date_time_start -= timedelta(minutes=3)
+    date_time_stop -= timedelta(minutes=3)
+    date_time_delta = date_time_stop - date_time_start
+    step = int(step)
+    step_in_seconds = step / 1e3
+
+    # get start and stop time bins from redis
+    time_bin_start = dateutil.parser.parse(redis.lrange(time_bin_key, 0, 0)[0])
+    time_bin_stop = dateutil.parser.parse(redis.lrange(time_bin_key, -1, -1)[0])
+    date_time_delta = time_bin_stop - time_bin_start
+    number_bins = int(date_time_delta.total_seconds() / step_in_seconds) + 1
+
+    # generate datetime bins
+    date_time_bins = [
+        time_bin_start + idx * timedelta(seconds=step_in_seconds)
+        for idx in range(0, number_bins)
+        ]
+
+    try:
+        start_index = date_time_bins.index(date_time_start)
+        stop_index = date_time_bins.index(date_time_stop)
+    except:
+        start_index = 0
+        stop_index = -1
+
+    if redis.exists(parameter_key):
+        values = redis.lrange(parameter_key, start_index, stop_index)
         return jsonify(values=values)
 
     else:

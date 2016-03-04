@@ -20,12 +20,13 @@ import dqm.allowed as allowed
 
 from metrics.binning import round_time, date_time_bins
 
-from log import Logger
+#from log import Logger
 
-log = Logger('update_metrics', './logs/update_metrics.log')
+#log = Logger('update_metrics', './logs/update_metrics.log')
 
+delay = 3 * 60  # seconds
 bin_width = 60  # seconds
-number_bins = 960
+number_bins = 970 # 960
 
 v1751_pedestal_reference = 1024/2.
 v1740_pedestal_reference = 4096/2.
@@ -141,8 +142,7 @@ null_key = key_prefix + 'null'
 null_list = [ None ] * number_bins
 
 def update():
-    date_time = datetime(2016, 2, 18, 22, 30, 00)
-    #date_time = datetime(2016, 2, 18, 21, 45, 0)
+    date_time = datetime.now() - timedelta(seconds=delay)
 
     # http://stackoverflow.com/questions/8542723/change-datetime-to-unix-time-stamp-in-python
     timestamp = date_time.strftime('%s')
@@ -150,7 +150,7 @@ def update():
     #/////////////////////////////////////////////////////////
     # redis client instance
     #/////////////////////////////////////////////////////////
-    redis = Redis()
+    redis = Redis(host='lariat-daq03', port=6379)
 
     # null array for empty horizon
     if not redis.exists(null_key):
@@ -169,18 +169,33 @@ def update():
             tpc_pedestal_mean_reference_key, 0, -1)
 
     #/////////////////////////////////////////////////////////
-    # query PostgreSQL database
-    #/////////////////////////////////////////////////////////
-    query = db_session.query(DataQualitySubRun) \
-        .order_by(DataQualitySubRun.date_time.desc()) \
-        .filter(and_(DataQualitySubRun.date_time <= date_time))
-    results = query.all()
-
-    #/////////////////////////////////////////////////////////
     # create bins for time series
     #/////////////////////////////////////////////////////////
     time_bins = date_time_bins(date_time, bin_width, number_bins)
+    date_time_start, date_time_stop = time_bins[0], time_bins[-1]
 
+    # send commands in a pipeline to save on round-trip time
+    p = redis.pipeline()
+    time_bins_key = key_prefix + 'time_bins'
+    p.delete(time_bins_key)
+    p.rpush(time_bins_key, *time_bins)
+    p.execute()
+
+    #/////////////////////////////////////////////////////////
+    # query PostgreSQL database
+    #/////////////////////////////////////////////////////////
+    #query = db_session.query(DataQualitySubRun) \
+    #    .order_by(DataQualitySubRun.date_time.desc()) \
+    #    .filter(and_(DataQualitySubRun.date_time <= date_time))
+    query = db_session.query(DataQualitySubRun) \
+        .order_by(DataQualitySubRun.date_time.desc()) \
+        .filter(DataQualitySubRun.date_time.between(date_time_start,
+                                                    date_time_stop))
+    results = query.all()
+
+    #/////////////////////////////////////////////////////////
+    # initialize bins for time series
+    #/////////////////////////////////////////////////////////
     parameters_dict = {}
     for parameter in parameters:
         parameters_dict[parameter] = {
