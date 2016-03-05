@@ -170,6 +170,8 @@ def process_raw_data_file(raw_data_file_path):
 
         p1 = subprocess.check_call(command, stdout=stdout, stderr=stderr)
 
+    logger.debug("p1 exit status: %s", p1)
+
     logger.info("Log file: %s" % stdout_log_1)
     logger.info("Log file: %s" % stderr_log_1)
 
@@ -185,6 +187,8 @@ def process_raw_data_file(raw_data_file_path):
             ]
 
         p2 = subprocess.check_call(command, stdout=stdout, stderr=stderr)
+
+    logger.debug("p2 exit status: %s", p2)
 
     logger.info("Log file: %s" % stdout_log_2)
     logger.info("Log file: %s" % stderr_log_2)
