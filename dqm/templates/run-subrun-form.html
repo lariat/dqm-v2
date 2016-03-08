@@ -81,14 +81,15 @@
 
       <script type="text/javascript">
       $(document).ready(function () {
+          //function checkLatestRun() {
+          //   $.getJSON($SCRIPT_ROOT + '/json/latest-runs?limit=1', function(data) {
+          //       console.log(data.results[0].run);
+          //       $("#run").val(data.results[0].run);
+          //   });
+          //}
           if (window.location.href.indexOf("?live") > -1) {
-{% if active_page not in no_live %}
-{% endif %}
               $('#checkbox').attr('checked', true);
               $UPDATE = true;
-{% if active_page not in no_live %}
-              //$RUN = "latest";
-{% endif %}
           } else {
               $('#checkbox').attr('checked', false);
               $('#run-subrun-form').addClass('alert-danger').removeClass('alert-success');
@@ -145,8 +146,6 @@
           if ($('#checkbox').is(":checked")) {
               console.log('Checked');
               urlLive();
-{% if active_page in no_live %}
-{% endif %}
           } else {
               urlRunSubrun();
           }

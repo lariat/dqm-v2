@@ -143,7 +143,7 @@ $(document).ready(function() {
         .attr("y", 30)
         .attr("text-anchor", "end")
         //.style("font-size", "10px")
-        .text("Time stamp [s]");
+        .text("Time stamp in super-cycle [s]");
 
     svg.append("g")
         .attr("class", "y axis")
@@ -153,7 +153,7 @@ $(document).ready(function() {
         .attr("y", 6)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .text("Number of data blocks per 0.5 s");
+        .text("Number of data blocks per 0.2 s");
 
     var device = svg.selectAll(".device")
         .data(devices)
