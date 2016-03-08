@@ -50,8 +50,28 @@
             </div>
 
         </div>
+
+        <div class="row alert alert-info">
+          <div class="col-sm-5">
+            <strong>Last updated:</strong> <span id="date-time-updated"></span>
+          </div>
+          <div class="col-sm-6">
+            <strong>Number of sub-runs:</strong> <span id="number-sub-runs"></span>
+          </div>
+        </div>
 {#
       </div>
+#}
+
+{#
+            <div class="row">
+              <div class="col-sm-5">
+                Last updated:
+              </div>
+              <div class="col-sm-5">
+                Total number of sub-runs:
+              </div>
+            </div>
 #}
 
       <script type="text/javascript">
@@ -81,12 +101,7 @@
 
       <script type="text/javascript">
       $(document).ready(function () {
-          //function checkLatestRun() {
-          //   $.getJSON($SCRIPT_ROOT + '/json/latest-runs?limit=1', function(data) {
-          //       console.log(data.results[0].run);
-          //       $("#run").val(data.results[0].run);
-          //   });
-          //}
+
           if (window.location.href.indexOf("?live") > -1) {
               $('#checkbox').attr('checked', true);
               $UPDATE = true;
@@ -94,6 +109,49 @@
               $('#checkbox').attr('checked', false);
               $('#run-subrun-form').addClass('alert-danger').removeClass('alert-success');
               $UPDATE = false;
+          }
+
+          function checkLatestRun() {
+             $.getJSON($SCRIPT_ROOT + '/json/latest-runs?limit=1', function(data) {
+                 //console.log(data.results[0].run);
+                 //$("#run").val(data.results[0].run);
+                 var latestRun = +data.results[0].run;
+                 if (latestRun > +$RUN) {
+                    window.location.reload();
+                 }
+             });
+          }
+
+          function updateTimestamp() {
+             $.getJSON($SCRIPT_ROOT + 'json?query=date_time_updated&run=' + $RUN + '&subrun=' + $SUBRUN, function(data) {
+                 //console.log("date_time_updated", data.date_time_updated)
+                 //console.log("date_time_updated", Date.parse(data.date_time_updated))
+                 //console.log(Date.now())
+                 $("#date-time-updated").html(JSON.stringify(Date.parse(data.date_time_updated)));
+             });
+          }
+
+          function updateNumberSubRuns() {
+             $.getJSON($SCRIPT_ROOT + 'json?query=subruns&run=' + $RUN, function(data) {
+                 //console.log("subruns", data.subruns.sort(function(a, b){return b-a})[0])
+                 var numberSubRuns = data.subruns.sort(function(a, b){return b-a})[0];
+                 $("#number-sub-runs").html(JSON.stringify(numberSubRuns));
+             });
+          }
+
+          updateTimestamp();
+          updateNumberSubRuns();
+
+          var timeout;
+          function loadNext() {
+              checkLatestRun();
+              updateTimestamp();
+              updateNumberSubRuns();
+              timeout = setTimeout(loadNext, 15000);
+          }
+
+          if ($UPDATE) {
+              setTimeout(loadNext, 30000);
           }
       });
       </script>
@@ -201,18 +259,20 @@
               {
                   hint: true,
                   highlight: true,
-                  minLength: 1
+                  minLength: 1,
               },
               {
-                  name: 'engine',
+                  //name: 'engine',
                   displayKey: 'run',
                   source: engine.ttAdapter(),
                   templates: {
                       suggestion: function(data) {
-                          return '<div><strong>' + data.run + '</strong> &mdash; ' + data.subruns[data.subruns.length - 1] + ' sub-runs</div>';
+                          return '<div>' + data.run + ' &mdash; ' + data.subruns[data.subruns.length - 1] + ' sub-runs</div>';
                       }
-                  }
-          });
+                  },
+                  limit: 15,
+              }
+          );
 
           function updateCache() {
               // clear suggestions loaded from local and prefetch
