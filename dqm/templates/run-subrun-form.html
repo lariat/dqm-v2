@@ -81,6 +81,7 @@
       <script src="{{ url_for('static', filename='lib/jquery/js/jquery.min.js') }}"></script>
       <script src="{{ url_for('static', filename='lib/typeahead.js/typeahead.bundle.min.js') }}"></script>
       <script src="{{ url_for('static', filename='lib/timeago/js/jquery.timeago.js') }}"></script>
+      <script src="{{ url_for('static', filename='lib/moment/js/moment.min.js') }}"></script>
 
       <script type="text/javascript">
       this.$RUN = "{{ run }}";
@@ -123,20 +124,23 @@
              });
           }
 
+          var now = Date.now()
+
           function updateTimestamp() {
-             $.getJSON($SCRIPT_ROOT + 'json?query=date_time_updated&run=' + $RUN + '&subrun=' + $SUBRUN, function(data) {
-                 //console.log("date_time_updated", data.date_time_updated)
-                 //console.log("date_time_updated", Date.parse(data.date_time_updated))
-                 //console.log(Date.now())
-                 //var date_time_updated = Date.parse(data.date_time_updated);
+             $.getJSON($SCRIPT_ROOT + '/json?query=date_time_updated&run=' + $RUN + '&subrun=' + $SUBRUN, function(data) {
                  var date_time_updated = Date.parse(data.date_time_updated + '-0600');
-                 console.log("date_time_updated", date_time_updated)
-                 $("#date-time-updated").html(jQuery.timeago(date_time_updated));
+                 //console.log("date_time_updated:", date_time_updated)
+                 //console.log("timeago:", jQuery.timeago(date_time_updated))
+                 //console.log("moment:", moment(date_time_updated).fromNow())
+                 //console.log("timeago:", jQuery.timeago(now))
+                 //console.log("moment:", moment(now).fromNow())
+                 //$("#date-time-updated").html(jQuery.timeago(date_time_updated));
+                 $("#date-time-updated").html(moment(date_time_updated).fromNow());
              });
           }
 
           function updateNumberSubRuns() {
-             $.getJSON($SCRIPT_ROOT + 'json?query=subruns&run=' + $RUN, function(data) {
+             $.getJSON($SCRIPT_ROOT + '/json?query=subruns&run=' + $RUN, function(data) {
                  //console.log("subruns", data.subruns.sort(function(a, b){return b-a})[0])
                  var numberSubRuns = data.subruns.sort(function(a, b){return b-a})[0];
                  $("#number-sub-runs").html(JSON.stringify(numberSubRuns));
