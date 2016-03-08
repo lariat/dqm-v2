@@ -80,6 +80,7 @@
 
       <script src="{{ url_for('static', filename='lib/jquery/js/jquery.min.js') }}"></script>
       <script src="{{ url_for('static', filename='lib/typeahead.js/typeahead.bundle.min.js') }}"></script>
+      <script src="{{ url_for('static', filename='lib/timeago/js/jquery.timeago.js') }}"></script>
 
       <script type="text/javascript">
       this.$RUN = "{{ run }}";
@@ -127,7 +128,10 @@
                  //console.log("date_time_updated", data.date_time_updated)
                  //console.log("date_time_updated", Date.parse(data.date_time_updated))
                  //console.log(Date.now())
-                 $("#date-time-updated").html(JSON.stringify(Date.parse(data.date_time_updated)));
+                 //var date_time_updated = Date.parse(data.date_time_updated);
+                 var date_time_updated = Date.parse(data.date_time_updated + '-0600');
+                 console.log("date_time_updated", date_time_updated)
+                 $("#date-time-updated").html(jQuery.timeago(date_time_updated));
              });
           }
 
