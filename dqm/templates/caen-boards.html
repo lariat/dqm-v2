@@ -7,7 +7,9 @@
 
 {% include 'run-subrun-form.html' %}
 
-      <div class="alert alert-warning" role="alert">No live plots for this page. See the <a href="{{ url_for('metrics') }}"><strong>Metrics</strong></a> page for live plots of pedestal mean RMS and deviation of pedestal mean of CAEN boards.</div>
+      <div class="alert alert-warning" role="alert">
+        <p>No live plots for this page. See the <a href="{{ url_for('metrics') }}"><strong>Metrics</strong></a> page for live plots of pedestal mean RMS and deviation of pedestal mean of CAEN boards. If the <em>Live</em> checkbox is checked, the page will automatically refresh every minute.</p>
+      </div>
 
       <div class="panel panel-primary">
         <div class="panel-heading">
@@ -81,6 +83,30 @@
 
     <script src="{{ url_for('static', filename='js/caen-heatmap.js') }}"></script>
     <script src="{{ url_for('static', filename='js/caen-pedestal-heatmaps.js') }}"></script>
+
+    <script type="text/javascript">
+    (function() {
+
+        var timeout;
+        function loadNext() {
+            if ($UPDATE) {
+                console.log("Reloading...");
+                window.location.reload()
+                timeout = setTimeout(loadNext, 60000);
+            }
+        }
+
+        setTimeout(function() {
+            if ($UPDATE) {
+                console.log("Hello!");
+                loadNext();
+            } else {
+                console.log("Goodbye!");
+            }
+        }, 60000);
+
+    }) ();
+    </script>
 
 {% include 'footer.html' %}
 
