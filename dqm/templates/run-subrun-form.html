@@ -51,7 +51,7 @@
 
         </div>
 
-        <div class="row alert alert-info">
+        <div class="row alert alert-info" id="date-time-updated-number-sub-runs">
           <div class="col-sm-5">
             <strong>Last updated:</strong> <span id="date-time-updated" title="" style="border-bottom: 1px dotted #000;"></span>
           </div>
@@ -121,11 +121,16 @@
              });
           }
 
-          var now = Date.now()
-
           function updateTimestamp() {
              $.getJSON($SCRIPT_ROOT + '/json?query=date_time_updated&run=' + $RUN + '&subrun=' + $SUBRUN, function(data) {
+                 var now = Date.now()
                  var date_time_updated = Date.parse(data.date_time_updated + '-0600');
+                 if (now - date_time_updated > 5 * 60 * 1000) {
+                     $('#date-time-updated-number-sub-runs').addClass('alert-danger').removeClass('alert-info');
+                 }
+                 //console.log("Time difference:", now - date_time_updated);
+                 //console.log("5 minutes:", 5 * 60 * 1000);
+                 //console.log("5 minutes ago:", moment(now - 5 * 60 * 1000).fromNow());
                  $("#date-time-updated").attr('title', moment(date_time_updated).format('MMMM Do YYYY, h:mm:ss a'));
                  $("#date-time-updated").html(moment(date_time_updated).fromNow());
              });
@@ -143,8 +148,10 @@
 
           var timeout;
           function loadNext() {
-              checkLatestRun();
-              updateTimestamp();
+              if ($UPDATE) {
+                  checkLatestRun();
+                  updateTimestamp();
+              }
               updateNumberSubRuns();
               timeout = setTimeout(loadNext, 15000);
           }
