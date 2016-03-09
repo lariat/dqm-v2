@@ -53,7 +53,7 @@
 
         <div class="row alert alert-info">
           <div class="col-sm-5">
-            <strong>Last updated:</strong> <span id="date-time-updated"></span>
+            <strong>Last updated:</strong> <span id="date-time-updated" title="" style="border-bottom: 1px dotted #000;"></span>
           </div>
           <div class="col-sm-6">
             <strong>Number of sub-runs:</strong> <span id="number-sub-runs"></span>
@@ -80,7 +80,6 @@
 
       <script src="{{ url_for('static', filename='lib/jquery/js/jquery.min.js') }}"></script>
       <script src="{{ url_for('static', filename='lib/typeahead.js/typeahead.bundle.min.js') }}"></script>
-      <script src="{{ url_for('static', filename='lib/timeago/js/jquery.timeago.js') }}"></script>
       <script src="{{ url_for('static', filename='lib/moment/js/moment.min.js') }}"></script>
 
       <script type="text/javascript">
@@ -115,8 +114,6 @@
 
           function checkLatestRun() {
              $.getJSON($SCRIPT_ROOT + '/json/latest-runs?limit=1', function(data) {
-                 //console.log(data.results[0].run);
-                 //$("#run").val(data.results[0].run);
                  var latestRun = +data.results[0].run;
                  if (latestRun > +$RUN) {
                     window.location.reload();
@@ -129,19 +126,13 @@
           function updateTimestamp() {
              $.getJSON($SCRIPT_ROOT + '/json?query=date_time_updated&run=' + $RUN + '&subrun=' + $SUBRUN, function(data) {
                  var date_time_updated = Date.parse(data.date_time_updated + '-0600');
-                 //console.log("date_time_updated:", date_time_updated)
-                 //console.log("timeago:", jQuery.timeago(date_time_updated))
-                 //console.log("moment:", moment(date_time_updated).fromNow())
-                 //console.log("timeago:", jQuery.timeago(now))
-                 //console.log("moment:", moment(now).fromNow())
-                 //$("#date-time-updated").html(jQuery.timeago(date_time_updated));
+                 $("#date-time-updated").attr('title', moment(date_time_updated).format('MMMM Do YYYY, h:mm:ss a'));
                  $("#date-time-updated").html(moment(date_time_updated).fromNow());
              });
           }
 
           function updateNumberSubRuns() {
              $.getJSON($SCRIPT_ROOT + '/json?query=subruns&run=' + $RUN, function(data) {
-                 //console.log("subruns", data.subruns.sort(function(a, b){return b-a})[0])
                  var numberSubRuns = data.subruns.sort(function(a, b){return b-a})[0];
                  $("#number-sub-runs").html(JSON.stringify(numberSubRuns));
              });
