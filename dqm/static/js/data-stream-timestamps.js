@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-  var margin = {top: 20, right: 80, bottom: 50, left: 50},
+  var margin = {top: 20, right: 80, bottom: 50, left: 80},
       width = 960 - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom;
 
@@ -140,7 +140,7 @@ $(document).ready(function() {
       .append("text")
         //.attr("class", "label")
         .attr("x", width)
-        .attr("y", 30)
+        .attr("y", 35)
         .attr("text-anchor", "end")
         //.style("font-size", "10px")
         .text("Time stamp in super-cycle [s]");
@@ -150,7 +150,7 @@ $(document).ready(function() {
         .call(yAxis)
       .append("text")
         .attr("transform", "rotate(-90)")
-        .attr("y", 6)
+        .attr("y", -60)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
         .text("Number of data blocks per 0.2 s");
