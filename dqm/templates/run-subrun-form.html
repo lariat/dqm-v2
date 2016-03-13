@@ -123,8 +123,17 @@
 
           function updateTimestamp() {
              $.getJSON($SCRIPT_ROOT + '/json?query=date_time_updated&run=' + $RUN + '&subrun=' + $SUBRUN, function(data) {
+
+                 var offset;
+                 if (moment(Date.parse(data.date_time_updated)).isDST()) {
+                     offset = '-0500';
+                 } else {
+                     offset = '-0600';
+                 }
+
                  var now = Date.now()
-                 var date_time_updated = Date.parse(data.date_time_updated + '-0600');
+                 var date_time_updated = Date.parse(data.date_time_updated + offset);
+
                  if (now - date_time_updated > 5 * 60 * 1000) {
                      $('#date-time-updated-number-sub-runs').addClass('alert-danger').removeClass('alert-info');
                  } else {
