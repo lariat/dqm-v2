@@ -502,7 +502,7 @@ def physics():
                            run=run,
                            subrun=subrun)
 
-@app.route('/test')
-def test():
-    return render_template('test.html', title='Test')
+@app.route('/alert-test')
+def alert_test():
+    return render_template('alert-test.html', title='Alert System Test')
 
