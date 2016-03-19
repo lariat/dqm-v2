@@ -14,15 +14,18 @@
           <h3 class="panel-title">Alert system test</h3>
         </div>
         <div class="panel-body">
+          <audio id="alarm" src="{{ url_for('static', filename='sound/alarm.ogg') }}" type="audio/ogg"></audio>    
           <button type="button" class="btn btn-default" aria-label="Left Align" id="on">
-            <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
           </button>
           <button type="button" class="btn btn-default" aria-label="Left Align" id="off">
-            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
           </button>
+          {#
           <button type="button" class="btn btn-default" aria-label="Left Align" id="volume">
             <span class="glyphicon glyphicon-volume-up" aria-hidden="true" id="glyphicon-volume"></span>
           </button>
+          #}
         </div>
       </div>
 
@@ -36,8 +39,9 @@
     $MUTE = false;
     $('#on').click(function() {
         $ALERT = true;
-        resetVolumeState();
+        //resetVolumeState();
         toggleAlertPanel();
+        audioAlert();
         setTimeout(function() {
             if ($ALERT) {
                 console.log("Hello!");
@@ -48,13 +52,13 @@
 
     $('#off').click(function() {
         $ALERT = false;
-        resetVolumeState();
+        //resetVolumeState();
         toggleAlertPanel();
     });
 
-    $('#volume').click(function() {
-        toggleVolumeState();
-    });
+    //$('#volume').click(function() {
+    //    toggleVolumeState();
+    //});
 
     var timeout;
 
@@ -67,6 +71,12 @@
         }
     }
 
+    function audioAlert() {
+        if ($ALERT) {
+            $('#alarm').get(0).play();
+        }
+    }
+
     function toggleAlertPanel() {
         if ($ALERT) {
             $('#alert-panel').addClass('panel-danger').removeClass('panel-info');
@@ -75,19 +85,19 @@
         }
     }
 
-    function resetVolumeState() {
-        $MUTE = false;
-        $('#glyphicon-volume').addClass('glyphicon-volume-up').removeClass('glyphicon-volume-off');
-    }
+    //function resetVolumeState() {
+    //    $MUTE = false;
+    //    $('#glyphicon-volume').addClass('glyphicon-volume-up').removeClass('glyphicon-volume-off');
+    //}
 
-    function toggleVolumeState() {
-        if ($MUTE) {
-            resetVolumeState();
-        } else {
-            $MUTE = true;
-            $('#glyphicon-volume').addClass('glyphicon-volume-off').removeClass('glyphicon-volume-up');
-        }
-    }
+    //function toggleVolumeState() {
+    //    if ($MUTE) {
+    //        resetVolumeState();
+    //    } else {
+    //        $MUTE = true;
+    //        $('#glyphicon-volume').addClass('glyphicon-volume-off').removeClass('glyphicon-volume-up');
+    //    }
+    //}
 
     //setInterval(function() {
     //    $('body').effect('highlight', {color: 'red'}, 1000)
