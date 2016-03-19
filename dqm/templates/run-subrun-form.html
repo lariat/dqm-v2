@@ -74,6 +74,8 @@
             </div>
 #}
 
+      <audio id="alarm" src="{{ url_for('static', filename='sound/alarm.ogg') }}" type="audio/ogg"></audio>
+
       <script type="text/javascript">
       $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
       </script>
@@ -81,6 +83,9 @@
       <script src="{{ url_for('static', filename='lib/jquery/js/jquery.min.js') }}"></script>
       <script src="{{ url_for('static', filename='lib/typeahead.js/typeahead.bundle.min.js') }}"></script>
       <script src="{{ url_for('static', filename='lib/moment/js/moment.min.js') }}"></script>
+      <script src="{{ url_for('static', filename='lib/jquery-ui/js/jquery-ui.min.js') }}"></script>
+
+      <script src="{{ url_for('static', filename='js/alert.js') }}"></script>
 
       <script type="text/javascript">
       this.$RUN = "{{ run }}";
@@ -98,6 +103,7 @@
       //}
 
       this.$UPDATE = false;
+      this.$ALERT = false;
       </script>
 
       <script type="text/javascript">
@@ -136,8 +142,14 @@
 
                  if (now - date_time_updated > 5 * 60 * 1000) {
                      $('#date-time-updated-number-sub-runs').addClass('alert-danger').removeClass('alert-info');
+                     if ($UPDATE) {
+                         $ALERT = true;
+                         visualAlert();
+                         audioAlert();
+                     }
                  } else {
                      $('#date-time-updated-number-sub-runs').addClass('alert-info').removeClass('alert-danger');
+                     $ALERT = false;
                  }
                  //console.log("Time difference:", now - date_time_updated);
                  //console.log("5 minutes:", 5 * 60 * 1000);
@@ -229,21 +241,21 @@
 
       <script type="text/javascript">
       $('#checkbox').change(function() {
-        if ($(this).is(':checked')) {
-            console.log('Checked');
-            $UPDATE = true;
-            //$RUN = "latest";
-            window.location.replace("{{ request.path }}?live");
-        } else {
-            console.log('Unchecked');
-            $('#run-subrun-form').addClass('alert-danger').removeClass('alert-success');
-            $UPDATE = false;
-            urlRunSubrun();
-        }
+          if ($(this).is(':checked')) {
+              console.log('Checked');
+              $UPDATE = true;
+              //$RUN = "latest";
+              window.location.replace("{{ request.path }}?live");
+          } else {
+              console.log('Unchecked');
+              $('#run-subrun-form').addClass('alert-danger').removeClass('alert-success');
+              $UPDATE = false;
+              urlRunSubrun();
+          }
       });
       </script>
 
-      <script>
+      <script type="text/javascript">
       // https://github.com/twitter/typeahead.js/pull/703
 
       $(document).ready(function() {

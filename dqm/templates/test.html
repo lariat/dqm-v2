@@ -34,74 +34,76 @@
     <script src="{{ url_for('static', filename='lib/jquery/js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='lib/jquery-ui/js/jquery-ui.min.js') }}"></script>
 
-    <script>
-    $ALERT = false;
-    $MUTE = false;
-    $('#on').click(function() {
-        $ALERT = true;
-        //resetVolumeState();
-        toggleAlertPanel();
-        audioAlert();
-        setTimeout(function() {
+    <script type="text/javascript">
+    this.$ALERT = false;
+    this.$MUTE = false;
+    $(document).ready(function () {
+        $('#on').click(function() {
+            $ALERT = true;
+            //resetVolumeState();
+            toggleAlertPanel();
+            audioAlert();
+            setTimeout(function() {
+                if ($ALERT) {
+                    console.log("Hello!");
+                    visualAlert();
+                }
+            }, 1000);
+        });
+
+        $('#off').click(function() {
+            $ALERT = false;
+            //resetVolumeState();
+            toggleAlertPanel();
+        });
+
+        //$('#volume').click(function() {
+        //    toggleVolumeState();
+        //});
+
+        var timeout;
+
+        function visualAlert() {
             if ($ALERT) {
-                console.log("Hello!");
-                visualAlert();
+                //$('body').effect('highlight', {color: 'red'}, 1000)
+                //$('body').effect('highlight', {color: '#d9534f'}, 1000)
+                $('body').effect('highlight', {color: '#c12e2a'}, 1000)
+                timeout = setTimeout(visualAlert, 1000);
             }
-        }, 1000);
+        }
+
+        function audioAlert() {
+            if ($ALERT) {
+                $('#alarm').get(0).play();
+            }
+        }
+
+        function toggleAlertPanel() {
+            if ($ALERT) {
+                $('#alert-panel').addClass('panel-danger').removeClass('panel-info');
+            } else {
+                $('#alert-panel').addClass('panel-info').removeClass('panel-danger');
+            }
+        }
+
+        //function resetVolumeState() {
+        //    $MUTE = false;
+        //    $('#glyphicon-volume').addClass('glyphicon-volume-up').removeClass('glyphicon-volume-off');
+        //}
+
+        //function toggleVolumeState() {
+        //    if ($MUTE) {
+        //        resetVolumeState();
+        //    } else {
+        //        $MUTE = true;
+        //        $('#glyphicon-volume').addClass('glyphicon-volume-off').removeClass('glyphicon-volume-up');
+        //    }
+        //}
+
+        //setInterval(function() {
+        //    $('body').effect('highlight', {color: 'red'}, 1000)
+        //}, 1000);
     });
-
-    $('#off').click(function() {
-        $ALERT = false;
-        //resetVolumeState();
-        toggleAlertPanel();
-    });
-
-    //$('#volume').click(function() {
-    //    toggleVolumeState();
-    //});
-
-    var timeout;
-
-    function visualAlert() {
-        if ($ALERT) {
-            //$('body').effect('highlight', {color: 'red'}, 1000)
-            //$('body').effect('highlight', {color: '#d9534f'}, 1000)
-            $('body').effect('highlight', {color: '#c12e2a'}, 1000)
-            timeout = setTimeout(visualAlert, 1000);
-        }
-    }
-
-    function audioAlert() {
-        if ($ALERT) {
-            $('#alarm').get(0).play();
-        }
-    }
-
-    function toggleAlertPanel() {
-        if ($ALERT) {
-            $('#alert-panel').addClass('panel-danger').removeClass('panel-info');
-        } else {
-            $('#alert-panel').addClass('panel-info').removeClass('panel-danger');
-        }
-    }
-
-    //function resetVolumeState() {
-    //    $MUTE = false;
-    //    $('#glyphicon-volume').addClass('glyphicon-volume-up').removeClass('glyphicon-volume-off');
-    //}
-
-    //function toggleVolumeState() {
-    //    if ($MUTE) {
-    //        resetVolumeState();
-    //    } else {
-    //        $MUTE = true;
-    //        $('#glyphicon-volume').addClass('glyphicon-volume-off').removeClass('glyphicon-volume-up');
-    //    }
-    //}
-
-    //setInterval(function() {
-    //    $('body').effect('highlight', {color: 'red'}, 1000)
-    //}, 1000);
     </script>
 
 {% include 'scripts.html' %}
