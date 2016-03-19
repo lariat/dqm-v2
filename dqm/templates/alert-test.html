@@ -9,12 +9,19 @@
         <h2>LArIAT near-real-time data quality monitor</h2>
       </div>
 
-      <div class="panel panel-info" id="alert-panel">
+      <div class="panel panel-info" id="alert-test">
         <div class="panel-heading">
           <h3 class="panel-title">Alert system test</h3>
         </div>
         <div class="panel-body">
           <audio id="alarm" src="{{ url_for('static', filename='sound/alarm.ogg') }}" type="audio/ogg"></audio>    
+          <p>
+            Please test to see if your browser is compatible with the
+            alert system. Clicking the play button should sound off an
+            audible alarm and make the background of this page flash
+            red. Clicking the stop button should return this page back
+            to normal.
+          </p>
           <button type="button" class="btn btn-default" aria-label="Left Align" id="on">
             <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
           </button>
@@ -52,9 +59,9 @@
 
         function toggleAlertPanel() {
             if ($ALERT) {
-                $('#alert-panel').addClass('panel-danger').removeClass('panel-info');
+                $('#alert-test').addClass('panel-danger').removeClass('panel-info');
             } else {
-                $('#alert-panel').addClass('panel-info').removeClass('panel-danger');
+                $('#alert-test').addClass('panel-info').removeClass('panel-danger');
             }
         }
     });
