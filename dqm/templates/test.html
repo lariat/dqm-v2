@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% set active_page = "test" %}
+
+{% block content %}
+
+    <div class="container">
+
+      <div class="jumbotron">
+        <h2>LArIAT near-real-time data quality monitor</h2>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h3 class="panel-title">Alert system test</h3>
+        </div>
+        <div class="panel-body">
+          <button type="button" class="btn btn-default" aria-label="Left Align" id="on">
+            <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="btn btn-default" aria-label="Left Align" id="off">
+            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="btn btn-default" aria-label="Left Align" id="volume">
+            <span class="glyphicon glyphicon-volume-up" aria-hidden="true" id="glyphicon-volume"></span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='lib/jquery/js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/jquery-ui/js/jquery-ui.min.js') }}"></script>
+
+    <script>
+    $ALERT = false;
+    $MUTE = false;
+    $('#on').click(function() {
+        $ALERT = true;
+        resetVolumeState();
+        setTimeout(function() {
+            if ($ALERT) {
+                console.log("Hello!");
+                visualAlert();
+            }
+        }, 1000);
+    });
+
+    $('#off').click(function() {
+        $ALERT = false;
+        resetVolumeState();
+    });
+
+    $('#volume').click(function() {
+        toggleVolumeState();
+    });
+
+    var timeout;
+
+    function visualAlert() {
+        if ($ALERT) {
+            $('body').effect('highlight', {color: 'red'}, 1000)
+            //$('body').effect('highlight', {color: '#d9534f'}, 1000)
+            //$('body').effect('highlight', {color: '#c12e2a'}, 1000)
+            timeout = setTimeout(visualAlert, 1000);
+        }
+    }
+
+    function resetVolumeState() {
+        $MUTE = false;
+        $('#glyphicon-volume').addClass('glyphicon-volume-up').removeClass('glyphicon-volume-off');
+    }
+
+    function toggleVolumeState() {
+        if ($MUTE) {
+            resetVolumeState();
+        } else {
+            $MUTE = true;
+            $('#glyphicon-volume').addClass('glyphicon-volume-off').removeClass('glyphicon-volume-up');
+        }
+    }
+
+    //setInterval(function() {
+    //    $('body').effect('highlight', {color: 'red'}, 1000)
+    //}, 1000);
+    </script>
+
+{% include 'scripts.html' %}
+
+{% include 'footer.html' %}
+
+{% endblock %}

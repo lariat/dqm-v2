@@ -22,7 +22,7 @@ from classes import Histogram
 from metrics.binning import round_time, date_time_bins
 
 # redis client instance
-redis = Redis()
+redis = Redis(host='lariat-daq01', port=6379)
 
 def fetch_subrun(run, subrun):
     """ Fetch SubRun from database. """
@@ -196,6 +196,7 @@ def json_latest_runs():
         json_results.append({
             'run'     : result.run,
             'subruns' : result.subruns,
+            'updated' : result.date_time_updated,
             })
 
     return jsonify(results=json_results)
@@ -500,4 +501,8 @@ def physics():
                            title='Physics',
                            run=run,
                            subrun=subrun)
+
+@app.route('/test')
+def test():
+    return render_template('test.html', title='Test')
 
