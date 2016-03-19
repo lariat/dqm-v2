@@ -9,7 +9,7 @@
         <h2>LArIAT near-real-time data quality monitor</h2>
       </div>
 
-      <div class="panel panel-info">
+      <div class="panel panel-info" id="alert-panel">
         <div class="panel-heading">
           <h3 class="panel-title">Alert system test</h3>
         </div>
@@ -37,6 +37,7 @@
     $('#on').click(function() {
         $ALERT = true;
         resetVolumeState();
+        toggleAlertPanel();
         setTimeout(function() {
             if ($ALERT) {
                 console.log("Hello!");
@@ -48,6 +49,7 @@
     $('#off').click(function() {
         $ALERT = false;
         resetVolumeState();
+        toggleAlertPanel();
     });
 
     $('#volume').click(function() {
@@ -58,10 +60,18 @@
 
     function visualAlert() {
         if ($ALERT) {
-            $('body').effect('highlight', {color: 'red'}, 1000)
+            //$('body').effect('highlight', {color: 'red'}, 1000)
             //$('body').effect('highlight', {color: '#d9534f'}, 1000)
-            //$('body').effect('highlight', {color: '#c12e2a'}, 1000)
+            $('body').effect('highlight', {color: '#c12e2a'}, 1000)
             timeout = setTimeout(visualAlert, 1000);
+        }
+    }
+
+    function toggleAlertPanel() {
+        if ($ALERT) {
+            $('#alert-panel').addClass('panel-danger').removeClass('panel-info');
+        } else {
+            $('#alert-panel').addClass('panel-info').removeClass('panel-danger');
         }
     }
 
