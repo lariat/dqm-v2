@@ -143,7 +143,7 @@ $(document).ready(function() {
         .attr("y", 35)
         .attr("text-anchor", "end")
         //.style("font-size", "10px")
-        .text("Time stamp in super-cycle [s]");
+        .text("Timestamp in supercycle [s]");
 
     svg.append("g")
         .attr("class", "y axis")
