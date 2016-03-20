@@ -104,6 +104,7 @@
 
       this.$UPDATE = false;
       this.$ALERT = false;
+      this.$AUDIO = true;
       </script>
 
       <script type="text/javascript">
@@ -128,7 +129,12 @@
           }
 
           function updateTimestamp() {
-             $.getJSON($SCRIPT_ROOT + '/json?query=date_time_updated&run=' + $RUN + '&subrun=' + $SUBRUN, function(data) {
+
+              // http://stackoverflow.com/questions/15764844/jquery-getjson-save-result-into-variable/15764911#15764911
+
+              $.getJSON($SCRIPT_ROOT + '/json?query=date_time_updated&run=' + $RUN + '&subrun=' + $SUBRUN, updateTimestampCallback);
+
+              function updateTimestampCallback(data) {
 
                  var offset;
                  if (moment(Date.parse(data.date_time_updated)).isDST()) {
@@ -145,18 +151,24 @@
                      if ($UPDATE) {
                          $ALERT = true;
                          visualAlert();
-                         audioAlert();
+                         //audioAlert();
+                         if ($AUDIO) {
+                             audioAlert();
+                            $AUDIO = false;
+                         }
                      }
                  } else {
                      $('#date-time-updated-number-sub-runs').addClass('alert-info').removeClass('alert-danger');
                      $ALERT = false;
+                     $AUDIO = true;
                  }
                  //console.log("Time difference:", now - date_time_updated);
                  //console.log("5 minutes:", 5 * 60 * 1000);
                  //console.log("5 minutes ago:", moment(now - 5 * 60 * 1000).fromNow());
                  $("#date-time-updated").attr('title', moment(date_time_updated).format('MMMM Do YYYY, h:mm:ss a'));
                  $("#date-time-updated").html(moment(date_time_updated).fromNow());
-             });
+
+              }
           }
 
           function updateNumberSubRuns() {
