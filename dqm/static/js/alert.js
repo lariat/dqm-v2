@@ -1,5 +1,10 @@
 var alertTimeout;
 
+var sounds = [
+    '/static/sound/ogg/industrial_alarm.ogg',
+    '/static/sound/ogg/r2d2.ogg',
+    ];
+
 function visualAlert() {
     if ($ALERT) {
         //$('body').effect('highlight', {color: 'red'}, 1000)
@@ -10,9 +15,17 @@ function visualAlert() {
     }
 }
 
+//function audioAlert() {
+//    if ($ALERT) {
+//        $('#alarm').get(0).play();
+//    }
+//}
+
 function audioAlert() {
     if ($ALERT) {
-        $('#alarm').get(0).play();
+        var sound = sounds[Math.floor(Math.random() * sounds.length)];
+        var audio = new Audio(sound);
+        audio.play();
     }
 }
 
