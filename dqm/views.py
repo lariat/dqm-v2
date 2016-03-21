@@ -60,7 +60,7 @@ def check_run_subrun(r, sr):
         print "Run number not specified!"
         return run, subrun
 
-    if r == "latest" or sr == "latest":
+    if r == "latest" or sr == "latest" or sr == "penultimate":
         latest_run, latest_subrun = latest_run_subrun()
 
     if r:
@@ -75,6 +75,8 @@ def check_run_subrun(r, sr):
     if sr:
         if sr == "latest":
             subrun = latest_subrun
+        elif sr == "penultimate":
+            subrun = latest_subrun - 1
         else:
             try:
                 subrun = int(sr)

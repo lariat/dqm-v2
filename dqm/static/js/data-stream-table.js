@@ -16,6 +16,20 @@
         mwcAlert = false,
         wutAlert = false;
 
+    var caen_board_0_data_blocks_penultimate,
+        caen_board_1_data_blocks_penultimate,
+        caen_board_2_data_blocks_penultimate,
+        caen_board_3_data_blocks_penultimate,
+        caen_board_4_data_blocks_penultimate,
+        caen_board_5_data_blocks_penultimate,
+        caen_board_6_data_blocks_penultimate,
+        caen_board_7_data_blocks_penultimate,
+        caen_board_24_data_blocks_penultimate,
+        caen_board_8_data_blocks_penultimate,
+        caen_board_9_data_blocks_penultimate,
+        mwc_data_blocks_penultimate,
+        wut_data_blocks_penultimate;
+
     $(document).ready(function() {
         fillTable();
     });
@@ -50,7 +64,118 @@
             $("#caen-board-8-data-blocks").html(JSON.stringify(data.caen_board_9_data_blocks));
             $("#mwc-data-blocks").html(JSON.stringify(data.mwc_data_blocks));
             $("#wut-data-blocks").html(JSON.stringify(data.wut_data_blocks));
+
+            if (data.caen_board_0_data_blocks < 1) {
+                $("#caen-board-0-data-blocks").addClass('danger');
+            } else {
+                $("#caen-board-0-data-blocks").removeClass('danger');
+            }
+
+            if (data.caen_board_1_data_blocks < 1) {
+                $("#caen-board-1-data-blocks").addClass('danger');
+            } else {
+                $("#caen-board-1-data-blocks").removeClass('danger');
+            }
+
+            if (data.caen_board_2_data_blocks < 1) {
+                $("#caen-board-2-data-blocks").addClass('danger');
+            } else {
+                $("#caen-board-2-data-blocks").removeClass('danger');
+            }
+
+            if (data.caen_board_3_data_blocks < 1) {
+                $("#caen-board-3-data-blocks").addClass('danger');
+            } else {
+                $("#caen-board-3-data-blocks").removeClass('danger');
+            }
+
+            if (data.caen_board_4_data_blocks < 1) {
+                $("#caen-board-4-data-blocks").addClass('danger');
+            } else {
+                $("#caen-board-4-data-blocks").removeClass('danger');
+            }
+
+            if (data.caen_board_5_data_blocks < 1) {
+                $("#caen-board-5-data-blocks").addClass('danger');
+            } else {
+                $("#caen-board-5-data-blocks").removeClass('danger');
+            }
+
+            if (data.caen_board_6_data_blocks < 1) {
+                $("#caen-board-6-data-blocks").addClass('danger');
+            } else {
+                $("#caen-board-6-data-blocks").removeClass('danger');
+            }
+
+            if (data.caen_board_7_data_blocks < 1) {
+                $("#caen-board-7-data-blocks").addClass('danger');
+            } else {
+                $("#caen-board-7-data-blocks").removeClass('danger');
+            }
+
+            if (data.caen_board_24_data_blocks < 1) {
+                $("#caen-board-24-data-blocks").addClass('danger');
+            } else {
+                $("#caen-board-24-data-blocks").removeClass('danger');
+            }
+
+            if (data.caen_board_8_data_blocks < 1) {
+                $("#caen-board-8-data-blocks").addClass('danger');
+            } else {
+                $("#caen-board-8-data-blocks").removeClass('danger');
+            }
+
+            if (data.caen_board_9_data_blocks < 1) {
+                $("#caen-board-9-data-blocks").addClass('danger');
+            } else {
+                $("#caen-board-9-data-blocks").removeClass('danger');
+            }
+
+            if (data.mwc_data_blocks < 1) {
+                $("#mwc-data-blocks").addClass('danger');
+            } else {
+                $("#mwc-data-blocks").removeClass('danger');
+            }
+
+            //if (data.wut_data_blocks < 1) {
+            //    $("#wut-data-blocks").addClass('danger');
+            //} else {
+            //    $("#wut-data-blocks").removeClass('danger');
+            //}
         });
+
+        $.getJSON($SCRIPT_ROOT + '/json?query=' + 'caen_board_0_data_blocks+'
+                                                + 'caen_board_1_data_blocks+'
+                                                + 'caen_board_2_data_blocks+'
+                                                + 'caen_board_3_data_blocks+'
+                                                + 'caen_board_4_data_blocks+'
+                                                + 'caen_board_5_data_blocks+'
+                                                + 'caen_board_6_data_blocks+'
+                                                + 'caen_board_7_data_blocks+'
+                                                + 'caen_board_8_data_blocks+'
+                                                + 'caen_board_9_data_blocks+'
+                                                + 'caen_board_24_data_blocks+'
+                                                + 'mwc_data_blocks+'
+                                                + 'wut_data_blocks'
+                                                + '&run=' + $RUN
+                                                + '&subrun=penultimate', updatePenultimateSubRun)
+        function updatePenultimateSubRun(data) {
+
+            caen_board_0_data_blocks_penultimate = data.caen_board_0_data_blocks,
+            caen_board_1_data_blocks_penultimate = data.caen_board_1_data_blocks,
+            caen_board_2_data_blocks_penultimate = data.caen_board_2_data_blocks,
+            caen_board_3_data_blocks_penultimate = data.caen_board_3_data_blocks,
+            caen_board_4_data_blocks_penultimate = data.caen_board_4_data_blocks,
+            caen_board_5_data_blocks_penultimate = data.caen_board_5_data_blocks,
+            caen_board_6_data_blocks_penultimate = data.caen_board_6_data_blocks,
+            caen_board_7_data_blocks_penultimate = data.caen_board_7_data_blocks,
+            caen_board_24_data_blocks_penultimate = data.caen_board_24_data_blocks,
+            caen_board_8_data_blocks_penultimate = data.caen_board_8_data_blocks,
+            caen_board_9_data_blocks_penultimate = data.caen_board_9_data_blocks,
+            mwc_data_blocks_penultimate = data.mwc_data_blocks,
+            wut_data_blocks_penultimate = data.wut_data_blocks;
+
+        }
 
         $.getJSON($SCRIPT_ROOT + '/json?query=' + 'caen_board_0_data_blocks+'
                                                 + 'caen_board_1_data_blocks+'
@@ -84,7 +209,7 @@
             $("#mwc-data-blocks-latest").html(JSON.stringify(data.mwc_data_blocks));
             $("#wut-data-blocks-latest").html(JSON.stringify(data.wut_data_blocks));
 
-            if (data.caen_board_0_data_blocks < 1) {
+            if (data.caen_board_0_data_blocks < 1 && caen_board_0_data_blocks_penultimate) {
                 $("#caen-board-0").addClass('danger');
                 caenBoard0Alert = true;
             } else {
@@ -92,7 +217,7 @@
                 caenBoard0Alert = false;
             }
 
-            if (data.caen_board_1_data_blocks < 1) {
+            if (data.caen_board_1_data_blocks < 1 && caen_board_1_data_blocks_penultimate) {
                 $("#caen-board-1").addClass('danger');
                 caenBoard1Alert = true;
             } else {
@@ -100,7 +225,7 @@
                 caenBoard1Alert = false;
             }
 
-            if (data.caen_board_2_data_blocks < 1) {
+            if (data.caen_board_2_data_blocks < 1 && caen_board_2_data_blocks_penultimate) {
                 $("#caen-board-2").addClass('danger');
                 caenBoard2Alert = true;
             } else {
@@ -108,7 +233,7 @@
                 caenBoard2Alert = false;
             }
 
-            if (data.caen_board_3_data_blocks < 1) {
+            if (data.caen_board_3_data_blocks < 1 && caen_board_3_data_blocks_penultimate) {
                 $("#caen-board-3").addClass('danger');
                 caenBoard3Alert = true;
             } else {
@@ -116,7 +241,7 @@
                 caenBoard3Alert = false;
             }
 
-            if (data.caen_board_4_data_blocks < 1) {
+            if (data.caen_board_4_data_blocks < 1 && caen_board_4_data_blocks_penultimate) {
                 $("#caen-board-4").addClass('danger');
                 caenBoard4Alert = true;
             } else {
@@ -124,7 +249,7 @@
                 caenBoard4Alert = false;
             }
 
-            if (data.caen_board_5_data_blocks < 1) {
+            if (data.caen_board_5_data_blocks < 1 && caen_board_5_data_blocks_penultimate) {
                 $("#caen-board-5").addClass('danger');
                 caenBoard5Alert = true;
             } else {
@@ -132,7 +257,7 @@
                 caenBoard5Alert = false;
             }
 
-            if (data.caen_board_6_data_blocks < 1) {
+            if (data.caen_board_6_data_blocks < 1 && caen_board_6_data_blocks_penultimate) {
                 $("#caen-board-6").addClass('danger');
                 caenBoard6Alert = true;
             } else {
@@ -140,7 +265,7 @@
                 caenBoard6Alert = false;
             }
 
-            if (data.caen_board_7_data_blocks < 1) {
+            if (data.caen_board_7_data_blocks < 1 && caen_board_7_data_blocks_penultimate) {
                 $("#caen-board-7").addClass('danger');
                 caenBoard7Alert = true;
             } else {
@@ -148,7 +273,7 @@
                 caenBoard7Alert = false;
             }
 
-            if (data.caen_board_24_data_blocks < 1) {
+            if (data.caen_board_24_data_blocks < 1 && caen_board_24_data_blocks_penultimate) {
                 $("#caen-board-24").addClass('danger');
                 caenBoard24Alert = true;
             } else {
@@ -156,7 +281,7 @@
                 caenBoard24Alert = false;
             }
 
-            if (data.caen_board_8_data_blocks < 1) {
+            if (data.caen_board_8_data_blocks < 1 && caen_board_8_data_blocks_penultimate) {
                 $("#caen-board-8").addClass('danger');
                 caenBoard8Alert = true;
             } else {
@@ -164,7 +289,7 @@
                 caenBoard8Alert = false;
             }
 
-            if (data.caen_board_9_data_blocks < 1) {
+            if (data.caen_board_9_data_blocks < 1 && caen_board_9_data_blocks_penultimate) {
                 $("#caen-board-9").addClass('danger');
                 caenBoard9Alert = true;
             } else {
@@ -172,7 +297,7 @@
                 caenBoard9Alert = false;
             }
 
-            if (data.mwc_data_blocks < 1) {
+            if (data.mwc_data_blocks < 1 && mwc_data_blocks_penultimate < 1) {
                 $("#mwc").addClass('danger');
                 mwcAlert = true;
             } else {
@@ -180,7 +305,7 @@
                 mwcAlert = false;
             }
 
-            //if (data.wut_data_blocks < 1) {
+            //if (data.wut_data_blocks < 1 && wut_data_blocks_penultimate < 1) {
             //    $("#wut").addClass('danger');
             //    wutAlert = true;
             //} else {
@@ -214,10 +339,11 @@
                     audioAlert();
                     dataStreamAudioAlert = false;
                 }
+                alertPanel('Missing data blocks!');
             } else {
                 dataStreamAudioAlert = true;
+                alertPanelCollapse();
             }
-           
 
         }
     }

@@ -1,80 +1,75 @@
 
-{#
-      <div class="panel panel-default">
-        <div class="panel-body row" id="run-subrun-form">
-#}
-        <div class="row alert alert-success" id="run-subrun-form">
+      <div class="row alert alert-success" id="run-subrun-form">
 
-          <form class="form-inline" role="form">
+        <form class="form-inline" role="form">
 
-            {#
-            <input type="hidden" id="id_" name="id_" value="{{ run }}">
-            #}
+          <div class="col-sm-4">
+            <div class="form-group form-group-sm">
 
-            <div class="col-sm-4">
-              <div class="form-group form-group-sm">
-
-                <label class="control-label col-sm-4" for="run">Run</label>
-                <div class="col-sm-8">
-                  <input type="text" class="form-control typeahead" id="run" name="run" value="{{ run }}" placeholder="{{ run }}">
-                </div>
-
+              <label class="control-label col-sm-4" for="run">Run</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control typeahead" id="run" name="run" value="{{ run }}" placeholder="{{ run }}">
               </div>
+
             </div>
-
-            <div class="col-sm-4">
-              <div class="form-group form-group-sm">
-
-                <label class="control-label col-sm-4" for="subrun">Sub-run</label>
-                <div class="col-sm-8">
-                  <input type="text" class="form-control" id="subrun" name="subrun" value="{{ subrun }}" placeholder="{{ subrun }}">
-                </div>
-
-              </div>
-            </div>
-
-            <div class="col-sm-2">
-              <div class="form-group form-group-sm">
-
-                <button type="submit" class="btn btn-default btn-outline">Submit</button>
-
-              </div>
-            </div>
-
-          </form>
-
-            <div class="col-sm-2">
-              <div class="form-group form-group-sm checkbox">
-                <label><input id="checkbox" type="checkbox" value="">Live</label>
-              </div>
-            </div>
-
-        </div>
-
-        <div class="row alert alert-info" id="date-time-updated-number-sub-runs">
-          <div class="col-sm-5">
-            <strong>Last updated:</strong> <span id="date-time-updated" title="" style="border-bottom: 1px dotted #000;"></span>
           </div>
-          <div class="col-sm-6">
-            <strong>Number of sub-runs:</strong> <span id="number-sub-runs"></span>
+
+          <div class="col-sm-4">
+            <div class="form-group form-group-sm">
+
+              <label class="control-label col-sm-4" for="subrun">Sub-run</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="subrun" name="subrun" value="{{ subrun }}" placeholder="{{ subrun }}">
+              </div>
+
+            </div>
           </div>
-        </div>
-{#
+
+          <div class="col-sm-2">
+            <div class="form-group form-group-sm">
+
+              <button type="submit" class="btn btn-default btn-outline">Submit</button>
+
+            </div>
+          </div>
+
+        </form>
+
+          <div class="col-sm-2">
+            <div class="form-group form-group-sm checkbox">
+              <label><input id="checkbox" type="checkbox" value="">Live</label>
+            </div>
+          </div>
+
       </div>
-#}
 
-{#
-            <div class="row">
-              <div class="col-sm-5">
-                Last updated:
-              </div>
-              <div class="col-sm-5">
-                Total number of sub-runs:
-              </div>
-            </div>
-#}
+      <div class="row alert alert-info" id="date-time-updated-number-sub-runs">
+        <div class="col-sm-5">
+          <strong>Last updated:</strong> <span id="date-time-updated" title="" style="border-bottom: 1px dotted #000;"></span>
+        </div>
+        <div class="col-sm-6">
+          <strong>Number of sub-runs:</strong> <span id="number-sub-runs"></span>
+        </div>
+      </div>
 
+      <div class="panel panel-danger collapse" id="alert-panel">
+        <div class="panel-heading">
+          <h3 class="panel-title">ALERT</h3>
+        </div>
+        <div class="panel-body">
+          <p id="alert-message">
+            Alert message.
+          </p>
+          {#
+          <button type="button" class="btn btn-danger" id="acknowledge">Acknowledge</button>
+          <button type="button" class="btn btn-success">Acknowledged</button>
+          #}
+        </div>
+      </div>
+
+      {#
       <audio id="alarm" src="{{ url_for('static', filename='sound/alarm.ogg') }}" type="audio/ogg"></audio>
+      #}
 
       <script type="text/javascript">
       $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
@@ -105,6 +100,7 @@
       this.$UPDATE = false;
       this.$ALERT = false;
       this.$AUDIO = true;
+      this.$ACKNOWLEDGED = false;
       </script>
 
       <script type="text/javascript">
@@ -154,13 +150,15 @@
                          //audioAlert();
                          if ($AUDIO) {
                              audioAlert();
-                            $AUDIO = false;
+                             $AUDIO = false;
                          }
+                         alertPanel('DQM has not updated within the last 5 minutes! Please notify an expert!');
                      }
                  } else {
                      $('#date-time-updated-number-sub-runs').addClass('alert-info').removeClass('alert-danger');
                      $ALERT = false;
                      $AUDIO = true;
+                     alertPanelCollapse();
                  }
                  //console.log("Time difference:", now - date_time_updated);
                  //console.log("5 minutes:", 5 * 60 * 1000);
