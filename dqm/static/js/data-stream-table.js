@@ -2,6 +2,9 @@
 
     var dataStreamAudioAlert = true;
 
+    var latestRun,
+        latestSubRun;
+
     var caenBoard0Alert = false,
         caenBoard1Alert = false,
         caenBoard2Alert = false,
@@ -35,6 +38,15 @@
     });
 
     function fillTable() {
+
+        $.getJSON($SCRIPT_ROOT + '/json/latest-runs?limit=1', latestSubRunCallback);
+
+        function latestSubRunCallback(data) {
+            latestRun = data.results[0].run;
+            latestSubRun = data.results[0].subruns[data.results[0].subruns.length - 1];
+            //console.log(latestRun, latestSubRun);
+        }
+
         $.getJSON($SCRIPT_ROOT + '/json?query=' + 'caen_board_0_data_blocks+'
                                                 + 'caen_board_1_data_blocks+'
                                                 + 'caen_board_2_data_blocks+'
@@ -314,22 +326,25 @@
             //}
 
             if ($UPDATE) {
-                if (caenBoard0Alert  ||
-                    caenBoard1Alert  ||
-                    caenBoard2Alert  ||
-                    caenBoard3Alert  ||
-                    caenBoard4Alert  ||
-                    caenBoard5Alert  ||
-                    caenBoard6Alert  ||
-                    caenBoard7Alert  ||
-                    caenBoard8Alert  ||
-                    caenBoard9Alert  ||
-                    caenBoard24Alert ||
-                    mwcAlert         ||
-                    wutAlert) {
-                    $ALERT = true;
-                } else {
-                    $ALERT = false;
+                if (latestSubRun > 1) {
+                //if (latestRun == $RUN && latestSubRun > 1) {
+                    if (caenBoard0Alert  ||
+                        caenBoard1Alert  ||
+                        caenBoard2Alert  ||
+                        caenBoard3Alert  ||
+                        caenBoard4Alert  ||
+                        caenBoard5Alert  ||
+                        caenBoard6Alert  ||
+                        caenBoard7Alert  ||
+                        caenBoard8Alert  ||
+                        caenBoard9Alert  ||
+                        caenBoard24Alert ||
+                        mwcAlert         ||
+                        wutAlert) {
+                        $ALERT = true;
+                    } else {
+                        $ALERT = false;
+                    }
                 }
             }
 
