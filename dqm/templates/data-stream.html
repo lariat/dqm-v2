@@ -133,6 +133,29 @@
     <div class="container">
 
 {% include 'run-subrun-form.html' %}
+      <script>
+      this.$ALERT$DATASTREAM = false;
+      this.$AUDIO$DATASTREAM = true;
+      </script>
+
+      <audio id="alarm-datastream" src="{{ url_for('static', filename='sound/ogg/r2d2.ogg') }}" type="audio/ogg"></audio>
+
+      <div class="panel panel-danger collapse" id="alert-panel-datastream">
+        <div class="panel-heading">
+          <h3 class="panel-title">ALERT</h3>
+        </div>
+        <div class="panel-body">
+          <p id="alert-message-datastream">
+            Alert message.
+          </p>
+          {#
+          <button type="button" class="btn btn-danger" id="acknowledge">Acknowledge</button>
+          <button type="button" class="btn btn-success">Acknowledged</button>
+          #}
+        </div>
+      </div>
+
+      <script src="{{ url_for('static', filename='js/alert-datastream.js') }}"></script>
 
       <div class="panel panel-primary">
         <div class="panel-heading">

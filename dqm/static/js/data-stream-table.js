@@ -1,6 +1,6 @@
 (function() {
 
-    var dataStreamAudioAlert = true;
+    var $AUDIO$DATASTREAM = true;
 
     var latestRun,
         latestSubRun;
@@ -341,23 +341,23 @@
                         caenBoard24Alert ||
                         mwcAlert         ||
                         wutAlert) {
-                        $ALERT = true;
+                        $ALERT$DATASTREAM = true;
                     } else {
-                        $ALERT = false;
+                        $ALERT$DATASTREAM = false;
                     }
                 }
             }
 
-            if ($ALERT) {
-                visualAlert();
-                if (dataStreamAudioAlert) {
-                    audioAlert();
-                    dataStreamAudioAlert = false;
+            if ($ALERT$DATASTREAM) {
+                visualAlertDataStream();
+                if ($AUDIO$DATASTREAM) {
+                    audioAlertDataStream();
+                    $AUDIO$DATASTREAM = false;
                 }
-                alertPanel('Missing data blocks!');
+                alertPanelDataStream('Missing data blocks!');
             } else {
-                dataStreamAudioAlert = true;
-                alertPanelCollapse();
+                $AUDIO$DATASTREAM = true;
+                alertPanelCollapseDataStream();
             }
 
         }
