@@ -132,12 +132,7 @@
 
               function updateTimestampCallback(data) {
 
-                 var offset;
-                 if (moment(Date.parse(data.date_time_updated)).isDST()) {
-                     offset = '-0500';
-                 } else {
-                     offset = '-0600';
-                 }
+                 var offset = '-0500';
 
                  var now = Date.now()
                  var date_time_updated = Date.parse(data.date_time_updated + offset);
@@ -162,8 +157,8 @@
                  //console.log("Time difference:", now - date_time_updated);
                  //console.log("5 minutes:", 5 * 60 * 1000);
                  //console.log("5 minutes ago:", moment(now - 5 * 60 * 1000).fromNow());
-                 $("#date-time-updated").attr('title', moment(date_time_updated).format('MMMM Do YYYY, h:mm:ss a'));
-                 $("#date-time-updated").html(moment(date_time_updated).fromNow());
+                 $("#date-time-updated").attr('title', moment(date_time_updated).utc().format('MMMM Do YYYY, h:mm:ss a'));
+                 $("#date-time-updated").html(moment(date_time_updated).utc().fromNow());
 
               }
           }
