@@ -9,7 +9,7 @@ from rq import Worker, Queue, Connection
 listen = ['high', 'default', 'low']
 
 # redis connection
-conn = Redis(host='lariat-daq03', port=6379)
+conn = Redis(host='lariat-daq04', port=6379)
 
 if __name__ == '__main__':
 
