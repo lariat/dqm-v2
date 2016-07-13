@@ -20,6 +20,8 @@ class Logger:
             backupCount=10,
             )
 
+        #handler = logging.StreamHandler()
+
         handler.setFormatter(formatter)
         handler.setLevel(logging.DEBUG)
 
