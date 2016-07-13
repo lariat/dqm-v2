@@ -2,4 +2,4 @@
 
 from dqm import app
 
-app.run(debug=True, port=5000)
+app.run(host='lariat-daq01', debug=True, port=5000)
