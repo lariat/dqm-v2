@@ -5,6 +5,7 @@ import sys
 from rq import Queue
 from worker import conn
 
+#q = Queue('low', connection=conn)
 q = Queue(connection=conn)
 
 if __name__ == '__main__':
