@@ -175,7 +175,7 @@ if subrun_exists:
                     .format(run, subrun))
     log.logger.info("Exiting...")
     db_session.close()  # close transaction
-    sys.exit(1)
+    sys.exit(255)
 
 #/////////////////////////////////////////////////////////////
 # check if run exists in database
