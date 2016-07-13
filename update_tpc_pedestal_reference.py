@@ -12,11 +12,6 @@ from datetime import datetime
 
 from redis import Redis
 
-from log import Logger
-
-log = Logger('update_pedestal_reference',
-             './logs/update_pedestal_reference.log')
-
 if __name__ == '__main__':
 
     #/////////////////////////////////////////////////////////
@@ -64,12 +59,12 @@ if __name__ == '__main__':
             pedestal_mean.append(float(line_[46:54].strip(' ')))
             pedestal_mean.append(float(line_[64:72].strip(' ')))
 
-    log.logger.info("Pedestal run %s" % run)
+    print("Pedestal run %s" % run)
 
     #/////////////////////////////////////////////////////////
     # redis client instance
     #/////////////////////////////////////////////////////////
-    redis = Redis()
+    redis = Redis(host='lariat-daq01', port=6379)
 
     # redis keys
     key_prefix = 'dqm/pedestal-reference/'
