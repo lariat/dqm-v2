@@ -195,5 +195,14 @@ def process_raw_data_file(raw_data_file_path):
 
     logger.info("Added to database!")
 
+    #/////////////////////////////////////////////////////////
+    # this is for the live TPC event viewer
+    #/////////////////////////////////////////////////////////
+    event_viewer_file_path = '/lariat/data/users/lariatdqm/dqm-v2/eventviewer/latest_dqm_file_path.txt'
+    event_viewer_file = open(event_viewer_file_path, 'w')
+    event_viewer_file.write(dqm_file_path)
+    event_viewer_file.close()
+    #/////////////////////////////////////////////////////////
+
     return p1, p2
 
