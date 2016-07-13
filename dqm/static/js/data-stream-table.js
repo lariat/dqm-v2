@@ -15,6 +15,7 @@
         caenBoard7Alert = false,
         caenBoard8Alert = false,
         caenBoard9Alert = false,
+        caenBoard10Alert = false,
         caenBoard24Alert = false,
         mwcAlert = false,
         wutAlert = false;
@@ -30,6 +31,7 @@
         caen_board_24_data_blocks_penultimate,
         caen_board_8_data_blocks_penultimate,
         caen_board_9_data_blocks_penultimate,
+        caen_board_10_data_blocks_penultimate,
         mwc_data_blocks_penultimate,
         wut_data_blocks_penultimate;
 
@@ -57,6 +59,7 @@
                                                 + 'caen_board_7_data_blocks+'
                                                 + 'caen_board_8_data_blocks+'
                                                 + 'caen_board_9_data_blocks+'
+                                                + 'caen_board_10_data_blocks+'
                                                 + 'caen_board_24_data_blocks+'
                                                 + 'mwc_data_blocks+'
                                                 + 'wut_data_blocks'
@@ -72,8 +75,9 @@
             $("#caen-board-6-data-blocks").html(JSON.stringify(data.caen_board_6_data_blocks));
             $("#caen-board-7-data-blocks").html(JSON.stringify(data.caen_board_7_data_blocks));
             $("#caen-board-24-data-blocks").html(JSON.stringify(data.caen_board_24_data_blocks));
+            $("#caen-board-8-data-blocks").html(JSON.stringify(data.caen_board_8_data_blocks));
             $("#caen-board-9-data-blocks").html(JSON.stringify(data.caen_board_8_data_blocks));
-            $("#caen-board-8-data-blocks").html(JSON.stringify(data.caen_board_9_data_blocks));
+            $("#caen-board-10-data-blocks").html(JSON.stringify(data.caen_board_10_data_blocks));
             $("#mwc-data-blocks").html(JSON.stringify(data.mwc_data_blocks));
             $("#wut-data-blocks").html(JSON.stringify(data.wut_data_blocks));
 
@@ -143,6 +147,12 @@
                 $("#caen-board-9-data-blocks").removeClass('danger');
             }
 
+            if (data.caen_board_10_data_blocks < 1) {
+                $("#caen-board-10-data-blocks").addClass('danger');
+            } else {
+                $("#caen-board-10-data-blocks").removeClass('danger');
+            }
+
             if (data.mwc_data_blocks < 1) {
                 $("#mwc-data-blocks").addClass('danger');
             } else {
@@ -166,6 +176,7 @@
                                                 + 'caen_board_7_data_blocks+'
                                                 + 'caen_board_8_data_blocks+'
                                                 + 'caen_board_9_data_blocks+'
+                                                + 'caen_board_10_data_blocks+'
                                                 + 'caen_board_24_data_blocks+'
                                                 + 'mwc_data_blocks+'
                                                 + 'wut_data_blocks'
@@ -184,6 +195,7 @@
             caen_board_24_data_blocks_penultimate = data.caen_board_24_data_blocks,
             caen_board_8_data_blocks_penultimate = data.caen_board_8_data_blocks,
             caen_board_9_data_blocks_penultimate = data.caen_board_9_data_blocks,
+            caen_board_10_data_blocks_penultimate = data.caen_board_10_data_blocks,
             mwc_data_blocks_penultimate = data.mwc_data_blocks,
             wut_data_blocks_penultimate = data.wut_data_blocks;
 
@@ -199,6 +211,7 @@
                                                 + 'caen_board_7_data_blocks+'
                                                 + 'caen_board_8_data_blocks+'
                                                 + 'caen_board_9_data_blocks+'
+                                                + 'caen_board_10_data_blocks+'
                                                 + 'caen_board_24_data_blocks+'
                                                 + 'mwc_data_blocks+'
                                                 + 'wut_data_blocks'
@@ -216,8 +229,9 @@
             $("#caen-board-6-data-blocks-latest").html(JSON.stringify(data.caen_board_6_data_blocks));
             $("#caen-board-7-data-blocks-latest").html(JSON.stringify(data.caen_board_7_data_blocks));
             $("#caen-board-24-data-blocks-latest").html(JSON.stringify(data.caen_board_24_data_blocks));
-            $("#caen-board-9-data-blocks-latest").html(JSON.stringify(data.caen_board_8_data_blocks));
-            $("#caen-board-8-data-blocks-latest").html(JSON.stringify(data.caen_board_9_data_blocks));
+            $("#caen-board-8-data-blocks-latest").html(JSON.stringify(data.caen_board_8_data_blocks));
+            $("#caen-board-9-data-blocks-latest").html(JSON.stringify(data.caen_board_9_data_blocks));
+            $("#caen-board-10-data-blocks-latest").html(JSON.stringify(data.caen_board_10_data_blocks));
             $("#mwc-data-blocks-latest").html(JSON.stringify(data.mwc_data_blocks));
             $("#wut-data-blocks-latest").html(JSON.stringify(data.wut_data_blocks));
 
@@ -309,6 +323,14 @@
                 caenBoard9Alert = false;
             }
 
+            if (data.caen_board_10_data_blocks < 1 && caen_board_10_data_blocks_penultimate) {
+                $("#caen-board-10").addClass('danger');
+                caenBoard10Alert = true;
+            } else {
+                $("#caen-board-10").removeClass('danger');
+                caenBoard10Alert = false;
+            }
+
             if (data.mwc_data_blocks < 1 && mwc_data_blocks_penultimate < 1) {
                 $("#mwc").addClass('danger');
                 mwcAlert = true;
@@ -338,6 +360,7 @@
                         caenBoard7Alert  ||
                         caenBoard8Alert  ||
                         caenBoard9Alert  ||
+                        caenBoard10Alert ||
                         caenBoard24Alert ||
                         mwcAlert         ||
                         wutAlert) {

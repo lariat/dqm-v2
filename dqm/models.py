@@ -45,6 +45,7 @@ class DataQualityMixin(object):
     caen_board_7_data_blocks = Column(Integer, unique=False)
     caen_board_8_data_blocks = Column(Integer, unique=False)
     caen_board_9_data_blocks = Column(Integer, unique=False)
+    caen_board_10_data_blocks = Column(Integer, unique=False)
     caen_board_24_data_blocks = Column(Integer, unique=False)
     mwc_data_blocks = Column(Integer, unique=False)
     wut_data_blocks = Column(Integer, unique=False)
@@ -70,21 +71,25 @@ class DataQualityMixin(object):
     caen_board_7_pedestal_mean = Column(ARRAY(Float), unique=False)  # V1740, last 32 channels of 64
     caen_board_8_pedestal_mean = Column(ARRAY(Float), unique=False)  # V1751, 8 channels
     caen_board_9_pedestal_mean = Column(ARRAY(Float), unique=False)  # V1751, 8 channels
+    caen_board_10_pedestal_mean = Column(ARRAY(Float), unique=False)  # V1751, 8 channels
     caen_board_24_pedestal_mean = Column(ARRAY(Float), unique=False)  # V1740B, 64 channels
 
     caen_board_7_pedestal_rms = Column(ARRAY(Float), unique=False)  # V1740, last 32 channels of 64
     caen_board_8_pedestal_rms = Column(ARRAY(Float), unique=False)  # V1751, 8 channels
     caen_board_9_pedestal_rms = Column(ARRAY(Float), unique=False)  # V1751, 8 channels
+    caen_board_10_pedestal_rms = Column(ARRAY(Float), unique=False)  # V1751, 8 channels
     caen_board_24_pedestal_rms = Column(ARRAY(Float), unique=False)  # V1740B, 64 channels
 
     caen_board_7_adc_mean = Column(ARRAY(Float), unique=False)  # V1740, last 32 channels of 64
     caen_board_8_adc_mean = Column(ARRAY(Float), unique=False)  # V1751, 8 channels
     caen_board_9_adc_mean = Column(ARRAY(Float), unique=False)  # V1751, 8 channels
+    caen_board_10_adc_mean = Column(ARRAY(Float), unique=False)  # V1751, 8 channels
     caen_board_24_adc_mean = Column(ARRAY(Float), unique=False)  # V1740B, 64 channels
 
     caen_board_7_adc_rms = Column(ARRAY(Float), unique=False)  # V1740, last 32 channels of 64
     caen_board_8_adc_rms = Column(ARRAY(Float), unique=False)  # V1751, 8 channels
     caen_board_9_adc_rms = Column(ARRAY(Float), unique=False)  # V1751, 8 channels
+    caen_board_10_adc_rms = Column(ARRAY(Float), unique=False)  # V1751, 8 channels
     caen_board_24_adc_rms = Column(ARRAY(Float), unique=False)  # V1740B, 64 channels
 
     #/////////////////////////////////////////////////////////
@@ -200,6 +205,61 @@ class DataQualityMixin(object):
     caen_board_9_channel_6_adc_histogram_number_bins = Column(Integer, unique=False)
     caen_board_9_channel_7_adc_histogram_number_bins = Column(Integer, unique=False)
 
+    # CAEN board 10
+    caen_board_10_channel_0_adc_histogram_bin_indices = Column(ARRAY(Integer), unique=False)
+    caen_board_10_channel_1_adc_histogram_bin_indices = Column(ARRAY(Integer), unique=False)
+    caen_board_10_channel_2_adc_histogram_bin_indices = Column(ARRAY(Integer), unique=False)
+    caen_board_10_channel_3_adc_histogram_bin_indices = Column(ARRAY(Integer), unique=False)
+    caen_board_10_channel_4_adc_histogram_bin_indices = Column(ARRAY(Integer), unique=False)
+    caen_board_10_channel_5_adc_histogram_bin_indices = Column(ARRAY(Integer), unique=False)
+    caen_board_10_channel_6_adc_histogram_bin_indices = Column(ARRAY(Integer), unique=False)
+    caen_board_10_channel_7_adc_histogram_bin_indices = Column(ARRAY(Integer), unique=False)
+
+    caen_board_10_channel_0_adc_histogram_counts = Column(ARRAY(Integer), unique=False)
+    caen_board_10_channel_1_adc_histogram_counts = Column(ARRAY(Integer), unique=False)
+    caen_board_10_channel_2_adc_histogram_counts = Column(ARRAY(Integer), unique=False)
+    caen_board_10_channel_3_adc_histogram_counts = Column(ARRAY(Integer), unique=False)
+    caen_board_10_channel_4_adc_histogram_counts = Column(ARRAY(Integer), unique=False)
+    caen_board_10_channel_5_adc_histogram_counts = Column(ARRAY(Integer), unique=False)
+    caen_board_10_channel_6_adc_histogram_counts = Column(ARRAY(Integer), unique=False)
+    caen_board_10_channel_7_adc_histogram_counts = Column(ARRAY(Integer), unique=False)
+
+    caen_board_10_channel_0_adc_histogram_min_bin = Column(Integer, unique=False)
+    caen_board_10_channel_1_adc_histogram_min_bin = Column(Integer, unique=False)
+    caen_board_10_channel_2_adc_histogram_min_bin = Column(Integer, unique=False)
+    caen_board_10_channel_3_adc_histogram_min_bin = Column(Integer, unique=False)
+    caen_board_10_channel_4_adc_histogram_min_bin = Column(Integer, unique=False)
+    caen_board_10_channel_5_adc_histogram_min_bin = Column(Integer, unique=False)
+    caen_board_10_channel_6_adc_histogram_min_bin = Column(Integer, unique=False)
+    caen_board_10_channel_7_adc_histogram_min_bin = Column(Integer, unique=False)
+
+    caen_board_10_channel_0_adc_histogram_max_bin = Column(Integer, unique=False)
+    caen_board_10_channel_1_adc_histogram_max_bin = Column(Integer, unique=False)
+    caen_board_10_channel_2_adc_histogram_max_bin = Column(Integer, unique=False)
+    caen_board_10_channel_3_adc_histogram_max_bin = Column(Integer, unique=False)
+    caen_board_10_channel_4_adc_histogram_max_bin = Column(Integer, unique=False)
+    caen_board_10_channel_5_adc_histogram_max_bin = Column(Integer, unique=False)
+    caen_board_10_channel_6_adc_histogram_max_bin = Column(Integer, unique=False)
+    caen_board_10_channel_7_adc_histogram_max_bin = Column(Integer, unique=False)
+
+    caen_board_10_channel_0_adc_histogram_bin_width = Column(Integer, unique=False)
+    caen_board_10_channel_1_adc_histogram_bin_width = Column(Integer, unique=False)
+    caen_board_10_channel_2_adc_histogram_bin_width = Column(Integer, unique=False)
+    caen_board_10_channel_3_adc_histogram_bin_width = Column(Integer, unique=False)
+    caen_board_10_channel_4_adc_histogram_bin_width = Column(Integer, unique=False)
+    caen_board_10_channel_5_adc_histogram_bin_width = Column(Integer, unique=False)
+    caen_board_10_channel_6_adc_histogram_bin_width = Column(Integer, unique=False)
+    caen_board_10_channel_7_adc_histogram_bin_width = Column(Integer, unique=False)
+
+    caen_board_10_channel_0_adc_histogram_number_bins = Column(Integer, unique=False)
+    caen_board_10_channel_1_adc_histogram_number_bins = Column(Integer, unique=False)
+    caen_board_10_channel_2_adc_histogram_number_bins = Column(Integer, unique=False)
+    caen_board_10_channel_3_adc_histogram_number_bins = Column(Integer, unique=False)
+    caen_board_10_channel_4_adc_histogram_number_bins = Column(Integer, unique=False)
+    caen_board_10_channel_5_adc_histogram_number_bins = Column(Integer, unique=False)
+    caen_board_10_channel_6_adc_histogram_number_bins = Column(Integer, unique=False)
+    caen_board_10_channel_7_adc_histogram_number_bins = Column(Integer, unique=False)
+
     #/////////////////////////////////////////////////////////
     # histograms of data block timestamps
     #/////////////////////////////////////////////////////////
@@ -272,6 +332,13 @@ class DataQualityMixin(object):
     caen_board_9_timestamps_histogram_max_bin = Column(Float, unique=False)
     caen_board_9_timestamps_histogram_bin_width = Column(Float, unique=False)
     caen_board_9_timestamps_histogram_number_bins = Column(Integer, unique=False)
+
+    caen_board_10_timestamps_histogram_bin_indices = Column(ARRAY(Integer), unique=False)
+    caen_board_10_timestamps_histogram_counts = Column(ARRAY(Integer), unique=False)
+    caen_board_10_timestamps_histogram_min_bin = Column(Float, unique=False)
+    caen_board_10_timestamps_histogram_max_bin = Column(Float, unique=False)
+    caen_board_10_timestamps_histogram_bin_width = Column(Float, unique=False)
+    caen_board_10_timestamps_histogram_number_bins = Column(Integer, unique=False)
 
     caen_board_24_timestamps_histogram_bin_indices = Column(ARRAY(Integer), unique=False)
     caen_board_24_timestamps_histogram_counts = Column(ARRAY(Integer), unique=False)
