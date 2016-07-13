@@ -150,7 +150,7 @@ def update():
     #/////////////////////////////////////////////////////////
     # redis client instance
     #/////////////////////////////////////////////////////////
-    redis = Redis(host='lariat-daq03', port=6379)
+    redis = Redis(host='lariat-daq01', port=6379)
 
     # null array for empty horizon
     if not redis.exists(null_key):
