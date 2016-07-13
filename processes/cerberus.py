@@ -6,7 +6,7 @@ import subprocess
 from datetime import datetime
 
 import logging
-from logging.handlers import RotatingFileHandler
+#from logging.handlers import RotatingFileHandler
 
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
@@ -52,7 +52,7 @@ logger = logging.getLogger('cerberus')
 logger.setLevel(logging.DEBUG)
 logger.addHandler(handler)
 
-q = Queue(connection=conn)
+q = Queue(connection=conn, default_timeout=300)
 
 class FileHandler(PatternMatchingEventHandler):
     patterns = [ src_file_dir + '/lariat_r*_sr*.root' ]
