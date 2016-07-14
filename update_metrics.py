@@ -248,7 +248,10 @@ def update():
                           array_parameters_channel_offset[parameter_base]
 
                 parameter = parameter_base + '_channel_' + str(channel)
-                value = array[channel_index]
+                try:
+                    value = array[channel_index]
+                except:
+                    value = 0
                 array_parameters_dict[parameter][time_bin] = value
 
                 if (parameter_base == 'tpc_pedestal_mean' and
