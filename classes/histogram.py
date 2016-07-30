@@ -2,6 +2,9 @@ import numpy as np
 
 #import log
 
+# PostgreSQL's int type's range is -2147483648 to +2147483647
+max_int = 2147483647
+
 class Histogram:
     """ Histogram. """
 
@@ -30,6 +33,7 @@ class Histogram:
         self.number_bins = bins.size
         self.bin_indices = np.arange(bins.size, dtype=np.int64)
         self.bin_indices_sparse = self.bin_indices[counts != 0]
+        self.counts_sparse[self.counts_sparse > max_int] = max_int
 
     def db_to_histogram(
             self, bin_indices_sparse, counts_sparse, bin_width, number_bins,
