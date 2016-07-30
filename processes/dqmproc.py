@@ -133,7 +133,7 @@ def process_raw_data_file(raw_data_file_path):
                 % raw_data_file_path)
 
     # give rsync time to race...
-    time.sleep(10)
+    time.sleep(20)
 
     if not file_exists(raw_data_file_path):
 
