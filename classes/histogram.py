@@ -65,6 +65,7 @@ class Histogram:
             print "Can only add Histogram with another Histogram."
             return histogram
 
+        #if (np.array(self.bins != other.bins).all() or
         if ((self.bins != other.bins).all() or
             self.counts.shape != other.counts.shape):
             print "Mismatched binning!"
