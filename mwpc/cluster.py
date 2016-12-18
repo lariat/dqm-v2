@@ -2,32 +2,76 @@ from __future__ import division
 import sys
 
 import numpy as np
-import root_numpy as rnp
+#import root_numpy as rnp
 from sklearn.cluster import DBSCAN
+
+import ROOT
 
 def get_hits(file_path):
 
-    branch_list = [
-        #'spill',
-        #'tdc_time_stamp',
-        #'trigger_counter',
-        'number_hits',
-        'tdc_number',
-        'hit_channel',
-        'hit_time_bin',
-        ]
+    tree = ROOT.TChain('DataQuality/mwpc')
+    tree.Add(file_path)
 
-    arr = rnp.root2array(file_path, 'DataQuality/mwpc', branch_list)
+    number_entries = tree.GetEntries()
 
-    #spill = arr['spill'].astype(np.int64)
-    #tdc_time_stamp = arr['tdc_time_stamp'].astype(np.int64) #/ 106.208  # microseconds
-    #trigger_counter = arr['trigger_counter']
-    number_hits = arr['number_hits']
-    tdc_number = arr['tdc_number']
-    hit_channel = arr['hit_channel']
-    hit_time_bin = arr['hit_time_bin']
+    number_hits = []
+    tdc_number = []
+    hit_channel = []
+    hit_time_bin = []
 
-    number_entries = arr.size
+    for entry in xrange(number_entries):
+
+        tree.GetEntry(entry)
+
+        number_hits.append(tree.number_hits)
+        tdc_number.append(np.array(tree.tdc_number))
+        hit_channel.append(np.array(tree.hit_channel))
+        hit_time_bin.append(np.array(tree.hit_time_bin))
+
+        #print np.array(tree.tdc_number), np.array(tree.tdc_number).shape
+
+    number_hits = np.array(number_hits)
+    tdc_number = np.array(tdc_number)
+    hit_channel = np.array(hit_channel)
+    hit_time_bin = np.array(hit_time_bin)
+
+    #print number_hits.shape, tdc_number.shape, hit_channel.shape, hit_time_bin.shape
+    #print number_hits.size, tdc_number.size, hit_channel.size, hit_time_bin.size
+    #print number_hits
+    #for i in xrange(16):
+    #    print tdc_number[i].shape
+    #    print tdc_number[i]
+    ##print number_hits, tdc_number, hit_channel, hit_time_bin
+
+    #branch_list = [
+    #    #'spill',
+    #    #'tdc_time_stamp',
+    #    #'trigger_counter',
+    #    'number_hits',
+    #    'tdc_number',
+    #    'hit_channel',
+    #    'hit_time_bin',
+    #    ]
+
+    #arr = rnp.root2array(file_path, 'DataQuality/mwpc', branch_list)
+
+    ##spill = arr['spill'].astype(np.int64)
+    ##tdc_time_stamp = arr['tdc_time_stamp'].astype(np.int64) #/ 106.208  # microseconds
+    ##trigger_counter = arr['trigger_counter']
+    #number_hits = arr['number_hits']
+    #tdc_number = arr['tdc_number']
+    #hit_channel = arr['hit_channel']
+    #hit_time_bin = arr['hit_time_bin']
+
+    #print number_hits.shape, tdc_number.shape, hit_channel.shape, hit_time_bin.shape
+    #print number_hits.size, tdc_number.size, hit_channel.size, hit_time_bin.size
+    #print number_hits
+    #for i in xrange(16):
+    #    print tdc_number[i].shape
+    #    print tdc_number[i]
+    ##print number_hits, tdc_number, hit_channel, hit_time_bin
+
+    #number_entries = arr.size
     number_tdcs = 16
 
     time_bin_scaling = 1.0 / 1280.0
@@ -144,8 +188,23 @@ if __name__ == '__main__':
         )
 
     for i in xrange(len(axes)):
+
+        good_hit_list = []
+        bad_hit_list = []
+
+        try:
+            good_hit_list = good_hit_array[i][:, 1]
+        except:
+            good_hit_list = []
+
+        try:
+            bad_hit_list = bad_hit_array[i][:, 1]
+        except:
+            bad_hit_list = []
+
         n, bin_edges, patches = axes[i].hist(
-            [ good_hit_array[i][:, 1], bad_hit_array[i][:, 1] ],
+            #[ good_hit_array[i][:, 1], bad_hit_array[i][:, 1] ],
+            [ good_hit_list, bad_hit_list ],
             bins=1024, range=(0, 1024), ec='none', color=['g', 'y'],
             alpha=0.75, histtype='stepfilled', stacked=True
             )
@@ -207,8 +266,23 @@ if __name__ == '__main__':
         )
 
     for i in xrange(len(axes)):
+
+        good_hit_list = []
+        bad_hit_list = []
+
+        try:
+            good_hit_list = good_hit_array[i][:, 0]
+        except:
+            good_hit_list = []
+
+        try:
+            bad_hit_list = bad_hit_array[i][:, 0]
+        except:
+            bad_hit_list = []
+
         n, bin_edges, patches = axes[i].hist(
-            [ good_hit_array[i][:, 0], bad_hit_array[i][:, 0] ],
+            #[ good_hit_array[i][:, 0], bad_hit_array[i][:, 0] ],
+            [ good_hit_list, bad_hit_list ],
             bins=64, range=(0, 64), ec='none', color=['g', 'y'],
             alpha=0.75, histtype='stepfilled', stacked=True
             )
