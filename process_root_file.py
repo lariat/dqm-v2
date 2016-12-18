@@ -140,6 +140,7 @@ def th1_to_arrays(th1):
 #/////////////////////////////////////////////////////////////
 # get run, sub-run, and time stamp from EventRecord TTree
 #/////////////////////////////////////////////////////////////
+print "Getting event record TTree..."
 event_record_ttree = f.Get(event_record_ttree_name)
 
 run = 0
@@ -188,9 +189,11 @@ run_exists = db_session.query(exists()
                              ).scalar()
 
 # EventBuilder TTree
+print "Getting event builder TTree..."
 event_builder_ttree = f.Get(event_builder_ttree_name)
 
 # WUT TTree
+print "Getting WUT TTree..."
 wut_ttree = f.Get(wut_ttree_name)
 
 #/////////////////////////////////////////////////////////////
