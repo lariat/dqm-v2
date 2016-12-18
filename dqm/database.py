@@ -1,6 +1,7 @@
 from sqlalchemy import event
 from sqlalchemy.schema import CreateSchema
-from flask.ext.sqlalchemy import SQLAlchemy
+#from flask.ext.sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 
 from dqm import app
 
