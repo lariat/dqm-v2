@@ -753,6 +753,23 @@ elif run_exists:
     try:
         Run = DataQualityRun.query.filter_by(run=run).one()
 
+    except MultipleResultsFound as e:
+        log.logger.error(str(e))
+
+        Runs = DataQualityRun.query.filter_by(run=run).all()
+
+        number_runs_queried = len(Runs)
+
+        for run_idx in xrange(1, number_runs_queried):
+            db_session.delete(Runs[run_idx])
+
+        Run = Runs[0]
+
+    except NoResultFound as e:
+        log.logger.error(str(e))
+
+    try:
+
         #/////////////////////////////////////////////////////
         # add pedestal/ADC mean and RMS of TPC wires/channels
         # to Run from SubRun; we want the most recent values
@@ -1240,10 +1257,8 @@ elif run_exists:
         # OK to add run to database
         run_ok = True
 
-    except MultipleResultsFound as e:
-        log.logger.error(str(e))
-    except NoResultFound as e:
-        log.logger.error(str(e))
+    except:
+        log.logger.error("Could not add run to database!")
 
 #/////////////////////////////////////////////////////////////
 # add SubRun to session
