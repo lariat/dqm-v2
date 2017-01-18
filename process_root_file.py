@@ -755,6 +755,7 @@ elif run_exists:
 
     except MultipleResultsFound as e:
         log.logger.error(str(e))
+        log.logger.info("Attempting to fix...")
 
         Runs = DataQualityRun.query.filter_by(run=run).all()
 
