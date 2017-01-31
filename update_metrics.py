@@ -31,6 +31,7 @@ number_bins = 970 # 960
 v1751_pedestal_reference = 1024/2.
 v1740_pedestal_reference = 4096/2.
 v1740b_pedestal_reference = 4096/2.
+v1742_pedestal_reference = 4096/2.
 
 key_prefix = 'dqm/metric/1min/'
 tpc_pedestal_mean_reference_key = 'dqm/pedestal-reference/pedestal_mean'
@@ -52,6 +53,7 @@ parameters = [
     'caen_board_8_data_blocks',
     'caen_board_9_data_blocks',
     'caen_board_10_data_blocks',
+    'caen_board_11_data_blocks',
     'caen_board_24_data_blocks',
     'mwc_data_blocks',
     'wut_data_blocks',
@@ -66,20 +68,25 @@ array_parameters_base = {
     'caen_board_8_pedestal_mean'  : allowed.v1751_channels,
     'caen_board_9_pedestal_mean'  : allowed.v1751_channels,
     'caen_board_10_pedestal_mean' : allowed.v1751_channels,
+    'caen_board_11_pedestal_mean' : allowed.v1742_channels,
     'caen_board_24_pedestal_mean' : allowed.v1740b_channels,
     'caen_board_7_pedestal_rms'   : allowed.v1740_channels[:32],
     'caen_board_8_pedestal_rms'   : allowed.v1751_channels,
     'caen_board_9_pedestal_rms'   : allowed.v1751_channels,
     'caen_board_10_pedestal_rms'  : allowed.v1751_channels,
+    'caen_board_11_pedestal_rms'  : allowed.v1742_channels,
     'caen_board_24_pedestal_rms'  : allowed.v1740b_channels,
     #'caen_board_7_adc_mean'       : allowed.v1740_channels[:32],
     #'caen_board_8_adc_mean'       : allowed.v1751_channels,
     #'caen_board_9_adc_mean'       : allowed.v1751_channels,
+    #'caen_board_10_adc_mean'      : allowed.v1751_channels,
+    #'caen_board_11_adc_mean'      : allowed.v1742_channels,
     #'caen_board_24_adc_mean'      : allowed.v1740b_channels,
     #'caen_board_7_adc_rms'        : allowed.v1740_channels[:32],
     #'caen_board_8_adc_rms'        : allowed.v1751_channels,
     #'caen_board_9_adc_rms'        : allowed.v1751_channels,
     #'caen_board_10_adc_rms'       : allowed.v1751_channels,
+    #'caen_board_11_adc_rms'       : allowed.v1742_channels,
     #'caen_board_24_adc_rms'       : allowed.v1740b_channels,
     }
 
@@ -92,21 +99,25 @@ array_parameters_channel_offset = {
     'caen_board_8_pedestal_mean'  : 0,
     'caen_board_9_pedestal_mean'  : 0,
     'caen_board_10_pedestal_mean' : 0,
+    'caen_board_11_pedestal_mean' : 0,
     'caen_board_24_pedestal_mean' : 0,
     'caen_board_7_pedestal_rms'   : 32,
     'caen_board_8_pedestal_rms'   : 0,
     'caen_board_9_pedestal_rms'   : 0,
     'caen_board_10_pedestal_rms'  : 0,
+    'caen_board_11_pedestal_rms'  : 0,
     'caen_board_24_pedestal_rms'  : 0,
     #'caen_board_7_adc_mean'       : 32,
     #'caen_board_8_adc_mean'       : 0,
     #'caen_board_9_adc_mean'       : 0,
     #'caen_board_10_adc_mean'      : 0,
+    #'caen_board_11_adc_mean'      : 0,
     #'caen_board_24_adc_mean'      : 0,
     #'caen_board_7_adc_rms'        : 32,
     #'caen_board_8_adc_rms'        : 0,
     #'caen_board_9_adc_rms'        : 0,
     #'caen_board_10_adc_rms'       : 0,
+    #'caen_board_11_adc_rms'       : 0,
     #'caen_board_24_adc_rms'       : 0,
     }
 
@@ -149,6 +160,11 @@ caen_pedestal_deviation_parameters.extend([
 caen_pedestal_deviation_parameters.extend( [
     'caen_board_24_pedestal_deviation_channel_' + str(channel)
     for channel in allowed.v1740b_channels
+    ])
+
+caen_pedestal_deviation_parameters.extend([
+    'caen_board_11_pedestal_deviation_channel_' + str(channel)
+    for channel in allowed.v1742_channels
     ])
 
 null_key = key_prefix + 'null'
@@ -299,6 +315,13 @@ def update():
                                 str(channel)
                     caen_pedestal_deviation_dict[parameter][time_bin] = \
                         value - v1740b_pedestal_reference
+
+                if (parameter_base == 'caen_board_11_pedestal_mean' and
+                    value > 0):
+                    parameter = 'caen_board_11_pedestal_deviation_channel_' + \
+                                str(channel)
+                    caen_pedestal_deviation_dict[parameter][time_bin] = \
+                        value - v1742_pedestal_reference
 
     #/////////////////////////////////////////////////////////
     # sort according to datetime
