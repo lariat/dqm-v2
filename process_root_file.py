@@ -47,6 +47,7 @@ log = Logger(
 v1740_boards = allowed.v1740_boards
 v1751_boards = allowed.v1751_boards
 v1740b_boards = allowed.v1740b_boards
+v1742_boards = allowed.v1742_boards
 caen_boards = allowed.caen_boards
 non_tpc_caen_boards = allowed.non_tpc_caen_boards
 
