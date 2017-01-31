@@ -47,14 +47,12 @@ log = Logger(
 v1740_boards = allowed.v1740_boards
 v1751_boards = allowed.v1751_boards
 v1740b_boards = allowed.v1740b_boards
-v1742_boards = allowed.v1742_boards
 caen_boards = allowed.caen_boards
 non_tpc_caen_boards = allowed.non_tpc_caen_boards
 
 v1740_channels = allowed.v1740_channels
 v1751_channels = allowed.v1751_channels
 v1740b_channels = allowed.v1740b_channels
-v1742_channels = allowed.v1742_channels
 
 #/////////////////////////////////////////////////////////////
 # iterators for MWC TDCs
@@ -287,10 +285,6 @@ v1740b_pedestal_mean, v1740b_pedestal_rms, v1740b_adc_mean, v1740b_adc_rms, \
 v1740b_pedestal_integral, v1740b_adc_integral \
     = get_mean_and_rms(v1740b_boards, v1740b_channels)
 
-v1742_pedestal_mean, v1742_pedestal_rms, v1742_adc_mean, v1742_adc_rms, \
-v1742_pedestal_integral, v1742_adc_integral \
-    = get_mean_and_rms(v1742_boards, v1742_channels)
-
 #/////////////////////////////////////////////////////////////
 # TPC pedestal/ADC mean and RMS
 #/////////////////////////////////////////////////////////////
@@ -361,28 +355,6 @@ for channel in v1751_channels:
         "caen_board_10_channel_{}_adc".format(channel))
     caen_board_10_adc_histograms[channel].histogram_to_db(
         caen_board_10_adc_bins, caen_board_10_adc_counts)
-
-#/////////////////////////////////////////////////////////////
-# get CAEN V1742 ADC histograms
-#/////////////////////////////////////////////////////////////
-log.logger.info("Fetching RMS of pedestal and ADC histograms of CAEN V1742 boards...")
-caen_board_11_adc_histograms = {}
-
-for channel in v1742_channels:
-    # CAEN board 11
-    caen_board_11_pedestal_bins, caen_board_11_pedestal_counts = th1_to_arrays(
-        f.Get("DataQuality/pedestal/caen_board_11_channel_{}_pedestal"
-              .format(channel)))
-
-    caen_board_11_adc_bins, caen_board_11_adc_counts = th1_to_arrays(
-        f.Get("DataQuality/adc/caen_board_11_channel_{}_adc".format(channel)))
-
-    caen_board_11_adc_counts += caen_board_11_pedestal_counts  # add pedestal
-
-    caen_board_11_adc_histograms[channel] = Histogram(
-        "caen_board_11_channel_{}_adc".format(channel))
-    caen_board_11_adc_histograms[channel].histogram_to_db(
-        caen_board_11_adc_bins, caen_board_11_adc_counts)
 
 #/////////////////////////////////////////////////////////////
 # get histogram of MWC TDCs with mismatched time bits
@@ -551,17 +523,6 @@ for i in xrange(len(v1740b_boards)):
     setattr(SubRun, "caen_board_{}_adc_rms".format(board),
             v1740b_adc_rms[i])
 
-for i in xrange(len(v1742_boards)):
-    board = v1742_boards[i]
-    setattr(SubRun, "caen_board_{}_pedestal_mean".format(board),
-            v1742_pedestal_mean[i])
-    setattr(SubRun, "caen_board_{}_pedestal_rms".format(board),
-            v1742_pedestal_rms[i])
-    setattr(SubRun, "caen_board_{}_adc_mean".format(board),
-            v1742_adc_mean[i])
-    setattr(SubRun, "caen_board_{}_adc_rms".format(board),
-            v1742_adc_rms[i])
-
 #/////////////////////////////////////////////////////////////
 # add CAEN V1751 ADC histograms to SubRun
 #/////////////////////////////////////////////////////////////
@@ -625,30 +586,6 @@ for channel in v1751_channels:
     setattr(SubRun,
         "caen_board_10_channel_{}_adc_histogram_number_bins".format(channel),
         caen_board_10_adc_histograms[channel].number_bins)
-
-#/////////////////////////////////////////////////////////////
-# add CAEN V1742 ADC histograms to SubRun
-#/////////////////////////////////////////////////////////////
-for channel in v1742_channels:
-    # CAEN board 11
-    setattr(SubRun,
-        "caen_board_11_channel_{}_adc_histogram_counts".format(channel),
-        caen_board_11_adc_histograms[channel].counts_sparse)
-    setattr(SubRun,
-        "caen_board_11_channel_{}_adc_histogram_min_bin".format(channel),
-        caen_board_11_adc_histograms[channel].min_bin)
-    setattr(SubRun,
-        "caen_board_11_channel_{}_adc_histogram_max_bin".format(channel),
-        caen_board_11_adc_histograms[channel].max_bin)
-    setattr(SubRun,
-        "caen_board_11_channel_{}_adc_histogram_bin_width".format(channel),
-        caen_board_11_adc_histograms[channel].bin_width)
-    setattr(SubRun,
-        "caen_board_11_channel_{}_adc_histogram_bin_indices".format(channel),
-        caen_board_11_adc_histograms[channel].bin_indices_sparse)
-    setattr(SubRun,
-        "caen_board_11_channel_{}_adc_histogram_number_bins".format(channel),
-        caen_board_11_adc_histograms[channel].number_bins)
 
 #/////////////////////////////////////////////////////////////
 # add histogram of MWC TDCs with mismatched time bits to SubRun
@@ -1074,45 +1011,6 @@ elif run_exists:
                 run_caen_board_10_adc_histograms[channel].number_bins)
 
         #/////////////////////////////////////////////////////
-        # update CAEN V1742 ADC histograms to Run
-        #/////////////////////////////////////////////////////
-        run_caen_board_11_adc_histograms = {}
-
-        for channel in v1742_channels:
-            # CAEN board 11
-            run_caen_board_11_adc_histograms[channel] = Histogram(
-                "caen_board_11_channel_{}_adc".format(channel))
-
-            run_caen_board_11_adc_histograms[channel].db_to_histogram(
-                getattr(Run, "caen_board_11_channel_{}_adc_histogram_bin_indices".format(channel)),
-                getattr(Run, "caen_board_11_channel_{}_adc_histogram_counts".format(channel)),
-                getattr(Run, "caen_board_11_channel_{}_adc_histogram_bin_width".format(channel)),
-                getattr(Run, "caen_board_11_channel_{}_adc_histogram_number_bins".format(channel)),
-                getattr(Run, "caen_board_11_channel_{}_adc_histogram_min_bin".format(channel)),
-                getattr(Run, "caen_board_11_channel_{}_adc_histogram_max_bin".format(channel)))
-
-            run_caen_board_11_adc_histograms[channel] += caen_board_11_adc_histograms[channel]
-
-            setattr(Run,
-                "caen_board_11_channel_{}_adc_histogram_counts".format(channel),
-                run_caen_board_11_adc_histograms[channel].counts_sparse)
-            setattr(Run,
-                "caen_board_11_channel_{}_adc_histogram_min_bin".format(channel),
-                run_caen_board_11_adc_histograms[channel].min_bin)
-            setattr(Run,
-                "caen_board_11_channel_{}_adc_histogram_max_bin".format(channel),
-                run_caen_board_11_adc_histograms[channel].max_bin)
-            setattr(Run,
-                "caen_board_11_channel_{}_adc_histogram_bin_width".format(channel),
-                run_caen_board_11_adc_histograms[channel].bin_width)
-            setattr(Run,
-                "caen_board_11_channel_{}_adc_histogram_bin_indices".format(channel),
-                run_caen_board_11_adc_histograms[channel].bin_indices_sparse)
-            setattr(Run,
-                "caen_board_11_channel_{}_adc_histogram_number_bins".format(channel),
-                run_caen_board_11_adc_histograms[channel].number_bins)
-
-        #/////////////////////////////////////////////////////
         # update histogram of MWC TDCs with mismatched time bits in Run
         #/////////////////////////////////////////////////////
         run_mwc_tdc_time_bit_mismatch_histogram = Histogram("run_mwc_tdc_time_bit_mismatch")
@@ -1360,8 +1258,9 @@ elif run_exists:
         # OK to add run to database
         run_ok = True
 
-    except:
+    except Exception as e:
         log.logger.error("Could not add run to database!")
+        log.logger.error(e)
 
 #/////////////////////////////////////////////////////////////
 # add SubRun to session
