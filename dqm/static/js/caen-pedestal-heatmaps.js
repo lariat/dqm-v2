@@ -132,6 +132,39 @@ $( document ).ready(function() {
         autoscale: true,
     });
 
+    // CAEN board 11
+    var caen_board_11_pedestal_mean = heatmap({
+        selection: "#caen-board-11-pedestal-mean",
+        json_url: $SCRIPT_ROOT + "/json?query=caen_board_11_pedestal_mean&run=" + $RUN + "&subrun=" + $SUBRUN,
+        parameter: "caen_board_11_pedestal_mean",
+        title: "Pedestal mean on CAEN board 11 (V1742)",
+        width: 540,
+        height: 270,
+        rows: 4,
+        cols: 8,
+        start: 0,
+        stop: 32,
+        channel_offset: 0,
+        domain: [ 0., 819.2, 1638.4, 2457.6, 3276.8, 4096. ],
+        autoscale: true,
+    });
+
+    var caen_board_11_pedestal_rms = heatmap({
+        selection: "#caen-board-11-pedestal-rms",
+        json_url: $SCRIPT_ROOT + "/json?query=caen_board_11_pedestal_rms&run=" + $RUN + "&subrun=" + $SUBRUN,
+        parameter: "caen_board_11_pedestal_rms",
+        title: "Pedestal RMS on CAEN board 11 (V1742)",
+        width: 540,
+        height: 270,
+        rows: 4,
+        cols: 8,
+        start: 0,
+        stop: 32,
+        channel_offset: 0,
+        domain: [],
+        autoscale: true,
+    });
+
     // CAEN board 24
     var caen_board_24_pedestal_mean = heatmap({
         selection: "#caen-board-24-pedestal-mean",

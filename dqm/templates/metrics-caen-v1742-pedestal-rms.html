@@ -125,25 +125,14 @@
 
     <script>
     var parameters = {
-        "DATA STREAM"               : "null",
-        "Number of events"          : "number_events",
-        "Number of TPC events"      : "number_tpc_events",
-        "CAEN board 0 data blocks"  : "caen_board_0_data_blocks",
-        "CAEN board 1 data blocks"  : "caen_board_1_data_blocks",
-        "CAEN board 2 data blocks"  : "caen_board_2_data_blocks",
-        "CAEN board 3 data blocks"  : "caen_board_3_data_blocks",
-        "CAEN board 4 data blocks"  : "caen_board_4_data_blocks",
-        "CAEN board 5 data blocks"  : "caen_board_5_data_blocks",
-        "CAEN board 6 data blocks"  : "caen_board_6_data_blocks",
-        "CAEN board 7 data blocks"  : "caen_board_7_data_blocks",
-        "CAEN board 24 data blocks" : "caen_board_24_data_blocks",
-        "CAEN board 8 data blocks"  : "caen_board_8_data_blocks",
-        "CAEN board 9 data blocks"  : "caen_board_9_data_blocks",
-        "CAEN board 10 data blocks" : "caen_board_10_data_blocks",
-        "CAEN board 11 data blocks" : "caen_board_11_data_blocks",
-        "MWC data blocks"           : "mwc_data_blocks",
-        "WUT data blocks"           : "wut_data_blocks",
-        };
+        "CAEN V1742 PEDESTAL RMS" : "null",
+    };
+
+    for (i = 11; i < 11+1; ++i) {
+        for (j = 0; j < 32; ++j) {
+            parameters["CAEN board " + i + " channel " + j] = "caen_board_" + i + "_pedestal_rms_channel_" + j;
+        }
+    }
 
     function metric(name) {
       return context.metric(function(start, stop, step, callback) {
@@ -179,8 +168,8 @@
           .attr("class", "horizon")
         .call(context.horizon()
           .height(30)
-          .extent([0, 200])
-          .format(d3.format("d")));  // integer
+          .extent([-1, 40])
+          .format(d3.format(".1f")));  // float
 
     });
 

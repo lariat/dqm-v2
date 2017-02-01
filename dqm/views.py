@@ -358,6 +358,11 @@ def metrics_caen_v1740_v1740b_pedestal_mean_deviations():
         'metrics-caen-v1740-v1740b-pedestal-mean-deviations.html',
         title="CAEN V1740/V1740B pedestal mean deviations")
 
+@app.route('/metrics/caen-v1742/pedestal-mean-deviations')
+def metrics_caen_v1742_pedestal_mean_deviations():
+    return render_template('metrics-caen-v1742-pedestal-mean-deviations.html',
+                           title="CAEN V1742 pedestal mean deviations")
+
 @app.route('/metrics/caen-v1751/pedestal-rms')
 def metrics_caen_v1751_pedestal_rms():
     return render_template('metrics-caen-v1751-pedestal-rms.html',
@@ -367,6 +372,11 @@ def metrics_caen_v1751_pedestal_rms():
 def metrics_caen_v1740_v1740b_pedestal_rms():
     return render_template('metrics-caen-v1740-v1740b-pedestal-rms.html',
                            title="CAEN V1740/V1740B pedestal RMS")
+
+@app.route('/metrics/caen-v1742/pedestal-rms')
+def metrics_caen_v1742_pedestal_rms():
+    return render_template('metrics-caen-v1742-pedestal-rms.html',
+                           title="CAEN V1742 pedestal RMS")
 
 @app.route('/data-stream')
 def data_stream():
