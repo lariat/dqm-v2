@@ -16,6 +16,7 @@ from redis import Redis
 from dqm import app
 from dqm.database import db_session
 from dqm.models import DataQualityRun, DataQualitySubRun
+from dqm.models import DataQualityRunA, DataQualitySubRunA
 import dqm.allowed as allowed
 
 from classes import Histogram
@@ -38,6 +39,24 @@ def fetch_run(run):
     try:
         Run = DataQualityRun.query.filter_by(run=run).one()
         return Run
+    except:
+        return None
+    return None
+
+def fetch_subrun_a(run, subrun):
+    """ Fetch SubRunA from database. """
+    try:
+        SubRunA = DataQualitySubRunA.query.filter_by(run=run, subrun=subrun).one()
+        return SubRunA
+    except:
+        return None
+    return None
+
+def fetch_run_a(run):
+    """ Fetch RunA from database. """
+    try:
+        RunA = DataQualityRunA.query.filter_by(run=run).one()
+        return RunA
     except:
         return None
     return None
@@ -102,11 +121,14 @@ def json():
 
     run, subrun = check_run_subrun(run, subrun)
     db_row_object = None
+    db_row_object_a = None
 
     if run and subrun:
         db_row_object = fetch_subrun(run, subrun)
+        db_row_object_a = fetch_subrun_a(run, subrun)
     elif run and not subrun:
         db_row_object = fetch_run(run)
+        db_row_object_a = fetch_run_a(run)
 
     if not db_row_object or not query:
         return "NULL"
@@ -114,18 +136,32 @@ def json():
     db_row_object_dict = dict(db_row_object.__dict__) 
     db_row_object_dict.pop('_sa_instance_state', None)
 
+    db_row_object_dict_a = dict(db_row_object_a.__dict__) 
+    db_row_object_dict_a.pop('_sa_instance_state', None)
+
     query = str(query)
     parameter_list = query.split(' ')
+    parameters = []
+    parameters_a = []
 
     # check to see if the parameters exists
     for parameter in parameter_list:
-        if parameter not in db_row_object_dict:
+        #if parameter not in db_row_object_dict:
+        #    return "NULL"
+        if parameter in db_row_object_dict:
+            parameters.append(parameter)
+        elif parameter in db_row_object_dict_a:
+            parameters_a.append(parameter)
+        else:
             return "NULL"
 
     json_data = {}
 
-    for parameter in parameter_list:
+    for parameter in parameters:
         json_data[parameter] = db_row_object_dict[parameter]
+
+    for parameter in parameters_a:
+        json_data[parameter] = db_row_object_dict_a[parameter]
 
     return jsonify(json_data)
 
@@ -216,30 +252,51 @@ def histograms():
 
     if run and subrun:
         db_row_object = fetch_subrun(run, subrun)
+        db_row_object_a = fetch_subrun_a(run, subrun)
     elif run and not subrun:
         db_row_object = fetch_run(run)
+        db_row_object_a = fetch_run_a(run)
 
-    if not db_row_object:
+    if not db_row_object or not db_row_object_a:
         return "NULL"
 
     # get list of parameters from Run or SubRun
     db_row_object_dict = dict(db_row_object.__dict__) 
     db_row_object_dict.pop('_sa_instance_state', None)
-    parameters = [
+    histogram_parameters = [
         s for s in db_row_object_dict if '_histogram' in s ]
+
+    # get list of parameters from RunA or SubRunA
+    db_row_object_dict_a = dict(db_row_object_a.__dict__) 
+    db_row_object_dict_a.pop('_sa_instance_state', None)
+    histogram_parameters_a = [
+        s for s in db_row_object_dict_a if '_histogram' in s ]
 
     query = str(request.args.get('query', None))
     parameter_list = query.split(' ')
+    parameters = []
+    parameters_a = []
+
+    # check to see if the histogram exists
+    #for parameter in parameter_list:
+    #    if not any(parameter in s for s in histogram_parameters):
+    #        return "NULL"
 
     # check to see if the histogram exists
     for parameter in parameter_list:
-        if not any(parameter in s for s in parameters):
+        #if not any(parameter in s for s in parameters):
+        #    return "NULL"
+        if any(parameter in s for s in histogram_parameters):
+            parameters.append(parameter)
+        elif any(parameter in s for s in histogram_parameters_a):
+            parameters_a.append(parameter)
+        else:
             return "NULL"
 
     json_data = {}
 
     # fill json_data with histogram data
-    for parameter in parameter_list:
+    for parameter in parameters:
         histogram = Histogram(parameter)
         histogram.db_to_histogram(
              getattr(db_row_object, parameter + "_histogram_bin_indices"),
@@ -248,6 +305,24 @@ def histograms():
              getattr(db_row_object, parameter + "_histogram_number_bins"),
              getattr(db_row_object, parameter + "_histogram_min_bin"),
              getattr(db_row_object, parameter + "_histogram_max_bin"))
+        json_data[parameter] = {
+            'bins'        : histogram.bins.tolist(),
+            'counts'      : histogram.counts.tolist(),
+            'bin_width'   : histogram.bin_width,
+            'number_bins' : histogram.number_bins,
+            'min_bin'     : histogram.min_bin,
+            'max_bin'     : histogram.max_bin,
+            }
+
+    for parameter in parameters_a:
+        histogram = Histogram(parameter)
+        histogram.db_to_histogram(
+             getattr(db_row_object_a, parameter + "_histogram_bin_indices"),
+             getattr(db_row_object_a, parameter + "_histogram_counts"),
+             getattr(db_row_object_a, parameter + "_histogram_bin_width"),
+             getattr(db_row_object_a, parameter + "_histogram_number_bins"),
+             getattr(db_row_object_a, parameter + "_histogram_min_bin"),
+             getattr(db_row_object_a, parameter + "_histogram_max_bin"))
         json_data[parameter] = {
             'bins'        : histogram.bins.tolist(),
             'counts'      : histogram.counts.tolist(),
