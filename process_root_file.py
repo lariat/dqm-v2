@@ -811,6 +811,7 @@ for tdc in mwc_tdc_numbers:
 
 # add run to database only if this is true
 run_ok = False
+run_a_ok = False
 
 #/////////////////////////////////////////////////////////////
 # if run does not exist in database, create it
