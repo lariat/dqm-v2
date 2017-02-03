@@ -16,6 +16,7 @@ from redis import Redis
 
 from dqm.database import db_session
 from dqm.models import DataQualitySubRun
+from dqm.models import DataQualitySubRunA
 import dqm.allowed as allowed
 
 from metrics.binning import round_time, date_time_bins
@@ -53,7 +54,6 @@ parameters = [
     'caen_board_8_data_blocks',
     'caen_board_9_data_blocks',
     'caen_board_10_data_blocks',
-    'caen_board_11_data_blocks',
     'caen_board_24_data_blocks',
     'mwc_data_blocks',
     'wut_data_blocks',
@@ -68,25 +68,21 @@ array_parameters_base = {
     'caen_board_8_pedestal_mean'  : allowed.v1751_channels,
     'caen_board_9_pedestal_mean'  : allowed.v1751_channels,
     'caen_board_10_pedestal_mean' : allowed.v1751_channels,
-    'caen_board_11_pedestal_mean' : allowed.v1742_channels,
     'caen_board_24_pedestal_mean' : allowed.v1740b_channels,
     'caen_board_7_pedestal_rms'   : allowed.v1740_channels[:32],
     'caen_board_8_pedestal_rms'   : allowed.v1751_channels,
     'caen_board_9_pedestal_rms'   : allowed.v1751_channels,
     'caen_board_10_pedestal_rms'  : allowed.v1751_channels,
-    'caen_board_11_pedestal_rms'  : allowed.v1742_channels,
     'caen_board_24_pedestal_rms'  : allowed.v1740b_channels,
     #'caen_board_7_adc_mean'       : allowed.v1740_channels[:32],
     #'caen_board_8_adc_mean'       : allowed.v1751_channels,
     #'caen_board_9_adc_mean'       : allowed.v1751_channels,
     #'caen_board_10_adc_mean'      : allowed.v1751_channels,
-    #'caen_board_11_adc_mean'      : allowed.v1742_channels,
     #'caen_board_24_adc_mean'      : allowed.v1740b_channels,
     #'caen_board_7_adc_rms'        : allowed.v1740_channels[:32],
     #'caen_board_8_adc_rms'        : allowed.v1751_channels,
     #'caen_board_9_adc_rms'        : allowed.v1751_channels,
     #'caen_board_10_adc_rms'       : allowed.v1751_channels,
-    #'caen_board_11_adc_rms'       : allowed.v1742_channels,
     #'caen_board_24_adc_rms'       : allowed.v1740b_channels,
     }
 
@@ -99,29 +95,45 @@ array_parameters_channel_offset = {
     'caen_board_8_pedestal_mean'  : 0,
     'caen_board_9_pedestal_mean'  : 0,
     'caen_board_10_pedestal_mean' : 0,
-    'caen_board_11_pedestal_mean' : 0,
     'caen_board_24_pedestal_mean' : 0,
     'caen_board_7_pedestal_rms'   : 32,
     'caen_board_8_pedestal_rms'   : 0,
     'caen_board_9_pedestal_rms'   : 0,
     'caen_board_10_pedestal_rms'  : 0,
-    'caen_board_11_pedestal_rms'  : 0,
     'caen_board_24_pedestal_rms'  : 0,
     #'caen_board_7_adc_mean'       : 32,
     #'caen_board_8_adc_mean'       : 0,
     #'caen_board_9_adc_mean'       : 0,
     #'caen_board_10_adc_mean'      : 0,
-    #'caen_board_11_adc_mean'      : 0,
     #'caen_board_24_adc_mean'      : 0,
     #'caen_board_7_adc_rms'        : 32,
     #'caen_board_8_adc_rms'        : 0,
     #'caen_board_9_adc_rms'        : 0,
     #'caen_board_10_adc_rms'       : 0,
-    #'caen_board_11_adc_rms'       : 0,
     #'caen_board_24_adc_rms'       : 0,
     }
 
 array_parameters = []
+
+parameters_a = [
+    'caen_board_11_data_blocks',
+    ]
+
+array_parameters_base_a = {
+    'caen_board_11_pedestal_mean' : allowed.v1742_channels,
+    'caen_board_11_pedestal_rms'  : allowed.v1742_channels,
+    #'caen_board_11_adc_mean'      : allowed.v1742_channels,
+    #'caen_board_11_adc_rms'       : allowed.v1742_channels,
+    }
+
+array_parameters_channel_offset_a = {
+    'caen_board_11_pedestal_mean' : 0,
+    'caen_board_11_pedestal_rms'  : 0,
+    #'caen_board_11_adc_mean'      : 0,
+    #'caen_board_11_adc_rms'       : 0,
+    }
+
+array_parameters_a = []
 
 for parameter_base, channel_indices in array_parameters_base.iteritems():
     for channel_index in channel_indices:
@@ -162,10 +174,19 @@ caen_pedestal_deviation_parameters.extend( [
     for channel in allowed.v1740b_channels
     ])
 
-caen_pedestal_deviation_parameters.extend([
+caen_pedestal_deviation_parameters_a = []
+
+caen_pedestal_deviation_parameters_a.extend([
     'caen_board_11_pedestal_deviation_channel_' + str(channel)
     for channel in allowed.v1742_channels
     ])
+
+for parameter_base, channel_indices in array_parameters_base_a.iteritems():
+    for channel_index in channel_indices:
+        channel = channel_index + \
+            array_parameters_channel_offset_a[parameter_base]
+        parameter = parameter_base + '_channel_' + str(channel)
+        array_parameters_a.append(parameter)
 
 null_key = key_prefix + 'null'
 null_list = [ None ] * number_bins
@@ -220,7 +241,12 @@ def update():
         .order_by(DataQualitySubRun.date_time.desc()) \
         .filter(DataQualitySubRun.date_time.between(date_time_start,
                                                     date_time_stop))
+    query_a = db_session.query(DataQualitySubRunA) \
+        .order_by(DataQualitySubRunA.date_time.desc()) \
+        .filter(DataQualitySubRunA.date_time.between(date_time_start,
+                                                    date_time_stop))
     results = query.all()
+    results_a = query_a.all()
 
     #/////////////////////////////////////////////////////////
     # initialize bins for time series
@@ -243,6 +269,16 @@ def update():
     caen_pedestal_deviation_dict = {}
     for parameter in caen_pedestal_deviation_parameters:
         caen_pedestal_deviation_dict[parameter] = {
+            time_bin : None for time_bin in time_bins }
+
+    parameters_dict_a = {}
+    for parameter in parameters_a:
+        parameters_dict_a[parameter] = {
+            time_bin : None for time_bin in time_bins }
+
+    array_parameters_dict_a = {}
+    for parameter in array_parameters_a:
+        array_parameters_dict_a[parameter] = {
             time_bin : None for time_bin in time_bins }
 
     #/////////////////////////////////////////////////////////
@@ -316,11 +352,43 @@ def update():
                     caen_pedestal_deviation_dict[parameter][time_bin] = \
                         value - v1740b_pedestal_reference
 
+                #if (parameter_base == 'caen_board_11_pedestal_mean' and
+                #    value > 0):
+                #    parameter = 'caen_board_11_pedestal_deviation_channel_' + \
+                #                str(channel)
+                #    caen_pedestal_deviation_dict[parameter][time_bin] = \
+                #        value - v1742_pedestal_reference
+
+    for result in results_a:
+        time_bin = round_time(result.date_time, bin_width)
+        if time_bin not in time_bins:
+            continue
+        for parameter in parameters_a:
+            attr = getattr(result, parameter)
+            if not isinstance(attr, list):
+                parameters_dict_a[parameter][time_bin] = attr
+
+        for parameter_base, channel_indices in \
+            array_parameters_base_a.iteritems():
+            array = getattr(result, parameter_base)
+
+            for channel_index in channel_indices:
+
+                channel = channel_index + \
+                          array_parameters_channel_offset_a[parameter_base]
+
+                parameter = parameter_base + '_channel_' + str(channel)
+                try:
+                    value = array[channel_index]
+                except:
+                    value = 0
+                array_parameters_dict_a[parameter][time_bin] = value
+
                 if (parameter_base == 'caen_board_11_pedestal_mean' and
                     value > 0):
                     parameter = 'caen_board_11_pedestal_deviation_channel_' + \
                                 str(channel)
-                    caen_pedestal_deviation_dict[parameter][time_bin] = \
+                    caen_pedestal_deviation_dict_a[parameter][time_bin] = \
                         value - v1742_pedestal_reference
 
     #/////////////////////////////////////////////////////////
@@ -355,6 +423,21 @@ def update():
             x for (y, x) in
             sorted(zip(caen_pedestal_deviation_dict[parameter].keys(),
                        caen_pedestal_deviation_dict[parameter].values()))
+            ]
+
+    parameter_values_a = {}
+    for parameter in parameters_a:
+        parameter_values_a[parameter] = [
+            x for (y, x) in sorted(zip(parameters_dict_a[parameter].keys(),
+                                       parameters_dict_a[parameter].values()))
+            ]
+
+    array_parameter_values_a = {}
+    for parameter in array_parameters_a:
+        array_parameter_values_a[parameter] = [
+            x for (y, x) in
+            sorted(zip(array_parameters_dict_a[parameter].keys(),
+                       array_parameters_dict_a[parameter].values()))
             ]
 
     # send commands in a pipeline to save on round-trip time
