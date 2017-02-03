@@ -264,6 +264,21 @@ for board in caen_boards:
     caen_timestamps_histograms[board].histogram_to_db(
         caen_timestamps_bins[board], caen_timestamps_counts[board])
 
+caen_timestamps_counts_a = { board : [] for board in caen_boards_a }
+caen_timestamps_bins_a = { board : [] for board in caen_boards_a }
+caen_timestamps_histograms_a = {
+    board : Histogram("caen_board_{}_timestamps".format(board))
+    for board in caen_boards_a }
+
+for board in caen_boards_a:
+    # get histogram for CAEN timestamps
+    caen_timestamps_bins_a[board], caen_timestamps_counts_a[board] = th1_to_arrays(
+        f.Get(caen_timestamps_th1_name.format(board)))
+
+    # use Histogram class for CAEN timestamps
+    caen_timestamps_histograms_a[board].histogram_to_db(
+        caen_timestamps_bins_a[board], caen_timestamps_counts_a[board])
+
 #/////////////////////////////////////////////////////////////
 # get MWC TDC timestamps
 #/////////////////////////////////////////////////////////////
@@ -543,6 +558,29 @@ SubRun.wut_timestamps_histogram_max_bin = wut_timestamps_histogram.max_bin
 SubRun.wut_timestamps_histogram_bin_width = wut_timestamps_histogram.bin_width
 SubRun.wut_timestamps_histogram_bin_indices = wut_timestamps_histogram.bin_indices_sparse
 SubRun.wut_timestamps_histogram_number_bins = wut_timestamps_histogram.number_bins
+
+#/////////////////////////////////////////////////////////////
+# add histograms of data block timestamps to SubRunA
+#/////////////////////////////////////////////////////////////
+for board in caen_boards_a:
+    setattr(SubRunA,
+        "caen_board_{}_timestamps_histogram_counts".format(board),
+        caen_timestamps_histograms_a[board].counts_sparse)
+    setattr(SubRunA,
+        "caen_board_{}_timestamps_histogram_min_bin".format(board),
+        caen_timestamps_histograms_a[board].min_bin)
+    setattr(SubRunA,
+        "caen_board_{}_timestamps_histogram_max_bin".format(board),
+        caen_timestamps_histograms_a[board].max_bin)
+    setattr(SubRunA,
+        "caen_board_{}_timestamps_histogram_bin_width".format(board),
+        caen_timestamps_histograms_a[board].bin_width)
+    setattr(SubRunA,
+        "caen_board_{}_timestamps_histogram_bin_indices".format(board),
+        caen_timestamps_histograms_a[board].bin_indices_sparse)
+    setattr(SubRunA,
+        "caen_board_{}_timestamps_histogram_number_bins".format(board),
+        caen_timestamps_histograms_a[board].number_bins)
 
 #/////////////////////////////////////////////////////////////
 # add TPC pedestal/ADC mean and RMS to SubRun
@@ -1443,8 +1481,55 @@ elif run_a_exists:
 
     try:
 
+        #/////////////////////////////////////////////////////////////
+        # update number of data blocks in RunA
+        #/////////////////////////////////////////////////////////////
+        for board in caen_boards_a:
+            attribute = "caen_board_{}_data_blocks".format(board)
+            setattr(RunA, attribute, getattr(Run, attribute) + \
+                    number_caen_data_blocks_a[board])
+
+        #/////////////////////////////////////////////////////////////
+        # update histograms of data block timestamps in Run
+        #/////////////////////////////////////////////////////////////
+        # CAEN timestamps
+        run_caen_timestamps_histograms_a = {}
+
+        for board in caen_boards_a:
+            run_caen_timestamps_histograms_a[board] = Histogram(
+                "caen_board_{}_timestamps".format(board))
+
+            run_caen_timestamps_histograms_a[board].db_to_histogram(
+                getattr(RunA, "caen_board_{}_timestamps_histogram_bin_indices".format(board)),
+                getattr(RunA, "caen_board_{}_timestamps_histogram_counts".format(board)),
+                getattr(RunA, "caen_board_{}_timestamps_histogram_bin_width".format(board)),
+                getattr(RunA, "caen_board_{}_timestamps_histogram_number_bins".format(board)),
+                getattr(RunA, "caen_board_{}_timestamps_histogram_min_bin".format(board)),
+                getattr(RunA, "caen_board_{}_timestamps_histogram_max_bin".format(board)))
+
+            run_caen_timestamps_histograms_a[board] += caen_timestamps_histograms_a[board]
+
+            setattr(RunA,
+                "caen_board_{}_timestamps_histogram_counts".format(board),
+                run_caen_timestamps_histograms_a[board].counts_sparse)
+            setattr(RunA,
+                "caen_board_{}_timestamps_histogram_min_bin".format(board),
+                run_caen_timestamps_histograms_a[board].min_bin)
+            setattr(RunA,
+                "caen_board_{}_timestamps_histogram_max_bin".format(board),
+                run_caen_timestamps_histograms_a[board].max_bin)
+            setattr(RunA,
+                "caen_board_{}_timestamps_histogram_bin_width".format(board),
+                run_caen_timestamps_histograms_a[board].bin_width)
+            setattr(RunA,
+                "caen_board_{}_timestamps_histogram_bin_indices".format(board),
+                run_caen_timestamps_histograms_a[board].bin_indices_sparse)
+            setattr(RunA,
+                "caen_board_{}_timestamps_histogram_number_bins".format(board),
+                run_caen_timestamps_histograms_a[board].number_bins)
+
         #/////////////////////////////////////////////////////
-        # update CAEN V1742 ADC histograms to Run
+        # update CAEN V1742 ADC histograms to RunA
         #/////////////////////////////////////////////////////
         run_caen_board_11_adc_histograms = {}
 
