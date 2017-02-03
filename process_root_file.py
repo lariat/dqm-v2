@@ -23,6 +23,7 @@ from classes import Histogram
 
 from dqm.database import db_session
 from dqm.models import DataQualityRun, DataQualitySubRun
+from dqm.models import DataQualityRunA, DataQualitySubRunA
 import dqm.allowed as allowed
 
 import mwpc
@@ -50,6 +51,7 @@ v1740b_boards = allowed.v1740b_boards
 v1742_boards = allowed.v1742_boards
 caen_boards = allowed.caen_boards
 non_tpc_caen_boards = allowed.non_tpc_caen_boards
+caen_boards_a = allowed.caen_boards_a
 
 v1740_channels = allowed.v1740_channels
 v1751_channels = allowed.v1751_channels
@@ -171,6 +173,11 @@ subrun_exists = db_session.query(exists()
                                  .where(DataQualitySubRun.subrun == subrun)
                                 ).scalar()
 
+subrun_a_exists = db_session.query(exists()
+                                   .where(DataQualitySubRunA.run == run)
+                                   .where(DataQualitySubRunA.subrun == subrun)
+                                  ).scalar()
+
 # TODO: Check DataQualityRun to see if subrun had been added.
 
 #/////////////////////////////////////////////////////////////
@@ -189,6 +196,10 @@ if subrun_exists:
 run_exists = db_session.query(exists()
                               .where(DataQualityRun.run == run)
                              ).scalar()
+
+run_a_exists = db_session.query(exists()
+                                .where(DataQualityRunA.run == run)
+                               ).scalar()
 
 # EventBuilder TTree
 print "Getting event builder TTree..."
@@ -212,6 +223,8 @@ number_caen_data_blocks = { board : 0 for board in caen_boards }
 number_tdc_data_blocks = 0
 number_wut_data_blocks = 0
 
+number_caen_data_blocks_a = { board : 0 for board in caen_boards_a }
+
 # loop over EventBuilder TTree
 for branch in event_builder_ttree:
     number_events += 1
@@ -219,6 +232,10 @@ for branch in event_builder_ttree:
 
     for board in caen_boards:
         number_caen_data_blocks[board] += getattr(
+            branch, "NumberCAENBoard{}Blocks".format(board))
+
+    for board in caen_boards_a:
+        number_caen_data_blocks_a[board] += getattr(
             branch, "NumberCAENBoard{}Blocks".format(board))
 
     number_tdc_data_blocks += branch.NumberTDCBlocks
@@ -452,6 +469,7 @@ date_time = datetime.fromtimestamp(timestamp)
 
 #------------------------------------------------------------------------------
 # ADD TO dqm.subruns TABLE
+# ADD TO dqm.subruns_a TABLE
 #------------------------------------------------------------------------------
 
 #/////////////////////////////////////////////////////////////
@@ -461,11 +479,17 @@ SubRun = DataQualitySubRun(
     run=run, subrun=subrun, date_time=date_time,
     date_time_added=datetime.now())
 
+SubRunA = DataQualitySubRunA(
+    run=run, subrun=subrun, date_time=date_time,
+    date_time_added=datetime.now())
+
 #/////////////////////////////////////////////////////////////
 # add number of events to SubRun
 #/////////////////////////////////////////////////////////////
 SubRun.number_events = number_events
 SubRun.number_tpc_events = number_tpc_events
+SubRunA.number_events = number_events
+SubRunA.number_tpc_events = number_tpc_events
 
 #/////////////////////////////////////////////////////////////
 # add number of data blocks to SubRun
@@ -475,6 +499,13 @@ for board in caen_boards:
             number_caen_data_blocks[board])
 SubRun.mwc_data_blocks = number_tdc_data_blocks
 SubRun.wut_data_blocks = number_wut_data_blocks
+
+#/////////////////////////////////////////////////////////////
+# add number of data blocks to SubRunA
+#/////////////////////////////////////////////////////////////
+for board in caen_boards_a:
+    setattr(SubRunA, "caen_board_{}_data_blocks".format(board),
+            number_caen_data_blocks_a[board])
 
 #/////////////////////////////////////////////////////////////
 # add histograms of data block timestamps to SubRun
@@ -553,13 +584,13 @@ for i in xrange(len(v1740b_boards)):
 
 for i in xrange(len(v1742_boards)):
     board = v1742_boards[i]
-    setattr(SubRun, "caen_board_{}_pedestal_mean".format(board),
+    setattr(SubRunA, "caen_board_{}_pedestal_mean".format(board),
             v1742_pedestal_mean[i])
-    setattr(SubRun, "caen_board_{}_pedestal_rms".format(board),
+    setattr(SubRunA, "caen_board_{}_pedestal_rms".format(board),
             v1742_pedestal_rms[i])
-    setattr(SubRun, "caen_board_{}_adc_mean".format(board),
+    setattr(SubRunA, "caen_board_{}_adc_mean".format(board),
             v1742_adc_mean[i])
-    setattr(SubRun, "caen_board_{}_adc_rms".format(board),
+    setattr(SubRunA, "caen_board_{}_adc_rms".format(board),
             v1742_adc_rms[i])
 
 #/////////////////////////////////////////////////////////////
@@ -631,22 +662,22 @@ for channel in v1751_channels:
 #/////////////////////////////////////////////////////////////
 for channel in v1742_channels:
     # CAEN board 11
-    setattr(SubRun,
+    setattr(SubRunA,
         "caen_board_11_channel_{}_adc_histogram_counts".format(channel),
         caen_board_11_adc_histograms[channel].counts_sparse)
-    setattr(SubRun,
+    setattr(SubRunA,
         "caen_board_11_channel_{}_adc_histogram_min_bin".format(channel),
         caen_board_11_adc_histograms[channel].min_bin)
-    setattr(SubRun,
+    setattr(SubRunA,
         "caen_board_11_channel_{}_adc_histogram_max_bin".format(channel),
         caen_board_11_adc_histograms[channel].max_bin)
-    setattr(SubRun,
+    setattr(SubRunA,
         "caen_board_11_channel_{}_adc_histogram_bin_width".format(channel),
         caen_board_11_adc_histograms[channel].bin_width)
-    setattr(SubRun,
+    setattr(SubRunA,
         "caen_board_11_channel_{}_adc_histogram_bin_indices".format(channel),
         caen_board_11_adc_histograms[channel].bin_indices_sparse)
-    setattr(SubRun,
+    setattr(SubRunA,
         "caen_board_11_channel_{}_adc_histogram_number_bins".format(channel),
         caen_board_11_adc_histograms[channel].number_bins)
 
@@ -807,6 +838,30 @@ if not run_exists:
 
     # OK to add run to database
     run_ok = True
+
+if not run_a_exists:
+
+    # instantiate DataQualityRun
+    RunA = DataQualityRunA(
+        run=run, date_time=date_time, date_time_added=datetime.now())
+
+    # use existing data in the current SubRun
+    subrun_a_dict = dict(SubRunA.__dict__)  # copy SubRun dictionary to new dictionary
+    subrun_a_dict.pop('_sa_instance_state', None)  # remove SubRun state object
+    subrun_a_dict.pop('run', None)  # this is already in Run
+    subrun_a_dict.pop('subrun', None)  # there is a subruns list in Run
+    subrun_a_dict.pop('date_time', None)  # don't mess with datetime
+    subrun_a_dict.pop('date_time_added', None)  # don't mess with datetime
+    subrun_a_dict.pop('date_time_updated', None)  # don't mess with datetime
+
+    # add existing data from current SubRun to Run
+    RunA.__dict__.update(subrun_a_dict)
+
+    # add current subrun number to list
+    RunA.subruns = [ subrun ]
+
+    # OK to add run to database
+    run_a_ok = True
 
 #/////////////////////////////////////////////////////////////
 # if run exists in database, update it
@@ -1076,41 +1131,41 @@ elif run_exists:
         #/////////////////////////////////////////////////////
         # update CAEN V1742 ADC histograms to Run
         #/////////////////////////////////////////////////////
-        run_caen_board_11_adc_histograms = {}
+        #run_caen_board_11_adc_histograms = {}
 
-        for channel in v1742_channels:
-            # CAEN board 11
-            run_caen_board_11_adc_histograms[channel] = Histogram(
-                "caen_board_11_channel_{}_adc".format(channel))
+        #for channel in v1742_channels:
+        #    # CAEN board 11
+        #    run_caen_board_11_adc_histograms[channel] = Histogram(
+        #        "caen_board_11_channel_{}_adc".format(channel))
 
-            run_caen_board_11_adc_histograms[channel].db_to_histogram(
-                getattr(Run, "caen_board_11_channel_{}_adc_histogram_bin_indices".format(channel)),
-                getattr(Run, "caen_board_11_channel_{}_adc_histogram_counts".format(channel)),
-                getattr(Run, "caen_board_11_channel_{}_adc_histogram_bin_width".format(channel)),
-                getattr(Run, "caen_board_11_channel_{}_adc_histogram_number_bins".format(channel)),
-                getattr(Run, "caen_board_11_channel_{}_adc_histogram_min_bin".format(channel)),
-                getattr(Run, "caen_board_11_channel_{}_adc_histogram_max_bin".format(channel)))
+        #    run_caen_board_11_adc_histograms[channel].db_to_histogram(
+        #        getattr(Run, "caen_board_11_channel_{}_adc_histogram_bin_indices".format(channel)),
+        #        getattr(Run, "caen_board_11_channel_{}_adc_histogram_counts".format(channel)),
+        #        getattr(Run, "caen_board_11_channel_{}_adc_histogram_bin_width".format(channel)),
+        #        getattr(Run, "caen_board_11_channel_{}_adc_histogram_number_bins".format(channel)),
+        #        getattr(Run, "caen_board_11_channel_{}_adc_histogram_min_bin".format(channel)),
+        #        getattr(Run, "caen_board_11_channel_{}_adc_histogram_max_bin".format(channel)))
 
-            run_caen_board_11_adc_histograms[channel] += caen_board_11_adc_histograms[channel]
+        #    run_caen_board_11_adc_histograms[channel] += caen_board_11_adc_histograms[channel]
 
-            setattr(Run,
-                "caen_board_11_channel_{}_adc_histogram_counts".format(channel),
-                run_caen_board_11_adc_histograms[channel].counts_sparse)
-            setattr(Run,
-                "caen_board_11_channel_{}_adc_histogram_min_bin".format(channel),
-                run_caen_board_11_adc_histograms[channel].min_bin)
-            setattr(Run,
-                "caen_board_11_channel_{}_adc_histogram_max_bin".format(channel),
-                run_caen_board_11_adc_histograms[channel].max_bin)
-            setattr(Run,
-                "caen_board_11_channel_{}_adc_histogram_bin_width".format(channel),
-                run_caen_board_11_adc_histograms[channel].bin_width)
-            setattr(Run,
-                "caen_board_11_channel_{}_adc_histogram_bin_indices".format(channel),
-                run_caen_board_11_adc_histograms[channel].bin_indices_sparse)
-            setattr(Run,
-                "caen_board_11_channel_{}_adc_histogram_number_bins".format(channel),
-                run_caen_board_11_adc_histograms[channel].number_bins)
+        #    setattr(Run,
+        #        "caen_board_11_channel_{}_adc_histogram_counts".format(channel),
+        #        run_caen_board_11_adc_histograms[channel].counts_sparse)
+        #    setattr(Run,
+        #        "caen_board_11_channel_{}_adc_histogram_min_bin".format(channel),
+        #        run_caen_board_11_adc_histograms[channel].min_bin)
+        #    setattr(Run,
+        #        "caen_board_11_channel_{}_adc_histogram_max_bin".format(channel),
+        #        run_caen_board_11_adc_histograms[channel].max_bin)
+        #    setattr(Run,
+        #        "caen_board_11_channel_{}_adc_histogram_bin_width".format(channel),
+        #        run_caen_board_11_adc_histograms[channel].bin_width)
+        #    setattr(Run,
+        #        "caen_board_11_channel_{}_adc_histogram_bin_indices".format(channel),
+        #        run_caen_board_11_adc_histograms[channel].bin_indices_sparse)
+        #    setattr(Run,
+        #        "caen_board_11_channel_{}_adc_histogram_number_bins".format(channel),
+        #        run_caen_board_11_adc_histograms[channel].number_bins)
 
         #/////////////////////////////////////////////////////
         # update histogram of MWC TDCs with mismatched time bits in Run
@@ -1362,18 +1417,102 @@ elif run_exists:
 
     except Exception as e:
         log.logger.error("Could not add run to database!")
-        log.logger.error(e)
+        log.logger.error(str(e))
+
+elif run_a_exists:
+
+    try:
+        RunA = DataQualityRunA.query.filter_by(run=run).one()
+
+    except MultipleResultsFound as e:
+        log.logger.error(str(e))
+        log.logger.info("Attempting to fix...")
+
+        RunsA = DataQualityRunA.query.filter_by(run=run).all()
+
+        number_runs_queried = len(RunsA)
+
+        for run_idx in xrange(1, number_runs_queried):
+            db_session.delete(RunsA[run_idx])
+
+        RunA = RunsA[0]
+
+    except NoResultFound as e:
+        log.logger.error(str(e))
+
+    try:
+
+        #/////////////////////////////////////////////////////
+        # update CAEN V1742 ADC histograms to Run
+        #/////////////////////////////////////////////////////
+        run_caen_board_11_adc_histograms = {}
+
+        for channel in v1742_channels:
+            # CAEN board 11
+            run_caen_board_11_adc_histograms[channel] = Histogram(
+                "caen_board_11_channel_{}_adc".format(channel))
+
+            run_caen_board_11_adc_histograms[channel].db_to_histogram(
+                getattr(RunA, "caen_board_11_channel_{}_adc_histogram_bin_indices".format(channel)),
+                getattr(RunA, "caen_board_11_channel_{}_adc_histogram_counts".format(channel)),
+                getattr(RunA, "caen_board_11_channel_{}_adc_histogram_bin_width".format(channel)),
+                getattr(RunA, "caen_board_11_channel_{}_adc_histogram_number_bins".format(channel)),
+                getattr(RunA, "caen_board_11_channel_{}_adc_histogram_min_bin".format(channel)),
+                getattr(RunA, "caen_board_11_channel_{}_adc_histogram_max_bin".format(channel)))
+
+            run_caen_board_11_adc_histograms[channel] += caen_board_11_adc_histograms[channel]
+
+            setattr(RunA,
+                "caen_board_11_channel_{}_adc_histogram_counts".format(channel),
+                run_caen_board_11_adc_histograms[channel].counts_sparse)
+            setattr(RunA,
+                "caen_board_11_channel_{}_adc_histogram_min_bin".format(channel),
+                run_caen_board_11_adc_histograms[channel].min_bin)
+            setattr(RunA,
+                "caen_board_11_channel_{}_adc_histogram_max_bin".format(channel),
+                run_caen_board_11_adc_histograms[channel].max_bin)
+            setattr(RunA,
+                "caen_board_11_channel_{}_adc_histogram_bin_width".format(channel),
+                run_caen_board_11_adc_histograms[channel].bin_width)
+            setattr(RunA,
+                "caen_board_11_channel_{}_adc_histogram_bin_indices".format(channel),
+                run_caen_board_11_adc_histograms[channel].bin_indices_sparse)
+            setattr(RunA,
+                "caen_board_11_channel_{}_adc_histogram_number_bins".format(channel),
+                run_caen_board_11_adc_histograms[channel].number_bins)
+
+        #/////////////////////////////////////////////////////
+        # update subruns list in Run
+        #/////////////////////////////////////////////////////
+        run_a_subruns = list(RunA.subruns)
+        run_a_subruns.append(subrun)
+        RunA.subruns = run_a_subruns
+
+        #/////////////////////////////////////////////////////
+        # update datetime
+        #/////////////////////////////////////////////////////
+        RunA.date_time_updated = datetime.now()
+
+        # OK to add run to database
+        run_a_ok = True
+
+    except Exception as e:
+        log.logger.error("Could not add run to database!")
+        log.logger.error(str(e))
 
 #/////////////////////////////////////////////////////////////
 # add SubRun to session
 #/////////////////////////////////////////////////////////////
 db_session.add(SubRun)
+db_session.add(SubRunA)
 
 #/////////////////////////////////////////////////////////////
 # add Run to session
 #/////////////////////////////////////////////////////////////
 if run_ok:
     db_session.add(Run)
+if run_a_ok:
+    db_session.add(RunA)
 
 #/////////////////////////////////////////////////////////////
 # attempt to commit changes and additions to database
@@ -1386,6 +1525,4 @@ except IntegrityError as e:
 except SQLAlchemyError as e:
     db_session.rollback()
     log.logger.error(str(e))
-
-db_session.remove()
 
