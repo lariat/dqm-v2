@@ -281,6 +281,11 @@ def update():
         array_parameters_dict_a[parameter] = {
             time_bin : None for time_bin in time_bins }
 
+    caen_pedestal_deviation_dict_a = {}
+    for parameter in caen_pedestal_deviation_parameters_a:
+        caen_pedestal_deviation_dict_a[parameter] = {
+            time_bin : None for time_bin in time_bins }
+
     #/////////////////////////////////////////////////////////
     # place the results into the appropriate time bin
     #/////////////////////////////////////////////////////////
@@ -440,6 +445,14 @@ def update():
                        array_parameters_dict_a[parameter].values()))
             ]
 
+    caen_pedestal_deviation_parameter_values_a = {}
+    for parameter in caen_pedestal_deviation_parameters_a:
+        caen_pedestal_deviation_parameter_values_a[parameter] = [
+            x for (y, x) in
+            sorted(zip(caen_pedestal_deviation_dict_a[parameter].keys(),
+                       caen_pedestal_deviation_dict_a[parameter].values()))
+            ]
+
     # send commands in a pipeline to save on round-trip time
     p = redis.pipeline()
     p.set(key_prefix + 'timestamp', timestamp)
@@ -473,6 +486,23 @@ def update():
         p.delete(parameter_key)
         p.rpush(parameter_key,
                 *caen_pedestal_deviation_parameter_values[parameter])
+    p.execute()
+
+    # send commands in a pipeline to save on round-trip time
+    p = redis.pipeline()
+    for parameter in array_parameters_a:
+        parameter_key = key_prefix + parameter
+        p.delete(parameter_key)
+        p.rpush(parameter_key, *array_parameter_values_a[parameter])
+    p.execute()
+
+    # send commands in a pipeline to save on round-trip time
+    p = redis.pipeline()
+    for parameter in caen_pedestal_deviation_parameters_a:
+        parameter_key = key_prefix + parameter
+        p.delete(parameter_key)
+        p.rpush(parameter_key,
+                *caen_pedestal_deviation_parameter_values_a[parameter])
     p.execute()
 
     # get DAQ uptime for the last bin_width * number_bins seconds
