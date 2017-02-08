@@ -878,30 +878,6 @@ if not run_exists:
     # OK to add run to database
     run_ok = True
 
-if not run_a_exists:
-
-    # instantiate DataQualityRun
-    RunA = DataQualityRunA(
-        run=run, date_time=date_time, date_time_added=datetime.now())
-
-    # use existing data in the current SubRun
-    subrun_a_dict = dict(SubRunA.__dict__)  # copy SubRun dictionary to new dictionary
-    subrun_a_dict.pop('_sa_instance_state', None)  # remove SubRun state object
-    subrun_a_dict.pop('run', None)  # this is already in Run
-    subrun_a_dict.pop('subrun', None)  # there is a subruns list in Run
-    subrun_a_dict.pop('date_time', None)  # don't mess with datetime
-    subrun_a_dict.pop('date_time_added', None)  # don't mess with datetime
-    subrun_a_dict.pop('date_time_updated', None)  # don't mess with datetime
-
-    # add existing data from current SubRun to Run
-    RunA.__dict__.update(subrun_a_dict)
-
-    # add current subrun number to list
-    RunA.subruns = [ subrun ]
-
-    # OK to add run to database
-    run_a_ok = True
-
 #/////////////////////////////////////////////////////////////
 # if run exists in database, update it
 #/////////////////////////////////////////////////////////////
@@ -1458,6 +1434,36 @@ elif run_exists:
         log.logger.error("Could not add run to database!")
         log.logger.error(str(e))
 
+#/////////////////////////////////////////////////////////////
+# if run does not exist in database, create it
+#/////////////////////////////////////////////////////////////
+if not run_a_exists:
+
+    # instantiate DataQualityRun
+    RunA = DataQualityRunA(
+        run=run, date_time=date_time, date_time_added=datetime.now())
+
+    # use existing data in the current SubRun
+    subrun_a_dict = dict(SubRunA.__dict__)  # copy SubRun dictionary to new dictionary
+    subrun_a_dict.pop('_sa_instance_state', None)  # remove SubRun state object
+    subrun_a_dict.pop('run', None)  # this is already in Run
+    subrun_a_dict.pop('subrun', None)  # there is a subruns list in Run
+    subrun_a_dict.pop('date_time', None)  # don't mess with datetime
+    subrun_a_dict.pop('date_time_added', None)  # don't mess with datetime
+    subrun_a_dict.pop('date_time_updated', None)  # don't mess with datetime
+
+    # add existing data from current SubRun to Run
+    RunA.__dict__.update(subrun_a_dict)
+
+    # add current subrun number to list
+    RunA.subruns = [ subrun ]
+
+    # OK to add run to database
+    run_a_ok = True
+
+#/////////////////////////////////////////////////////////////
+# if run exists in database, update it
+#/////////////////////////////////////////////////////////////
 elif run_a_exists:
 
     try:
@@ -1481,12 +1487,21 @@ elif run_a_exists:
 
     try:
 
+        #/////////////////////////////////////////////////////
+        # add pedestal/ADC mean and RMS of CAEN boards to Run
+        # from SubRun; we want the most recent values
+        #/////////////////////////////////////////////////////
+        RunA.caen_board_11_pedestal_mean = SubRunA.caen_board_11_pedestal_mean
+        RunA.caen_board_11_pedestal_rms = SubRunA.caen_board_11_pedestal_rms
+        RunA.caen_board_11_adc_mean = SubRunA.caen_board_11_adc_mean
+        RunA.caen_board_11_adc_rms = SubRunA.caen_board_11_adc_rms
+
         #/////////////////////////////////////////////////////////////
         # update number of data blocks in RunA
         #/////////////////////////////////////////////////////////////
         for board in caen_boards_a:
             attribute = "caen_board_{}_data_blocks".format(board)
-            setattr(RunA, attribute, getattr(Run, attribute) + \
+            setattr(RunA, attribute, getattr(RunA, attribute) + \
                     number_caen_data_blocks_a[board])
 
         #/////////////////////////////////////////////////////////////
