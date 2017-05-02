@@ -63,11 +63,12 @@ def fetch_run_a(run):
 
 def latest_run_subrun():
     """ Get the latest run and sub-run numbers. """
-    latest_subrun = DataQualitySubRun.query.order_by(
-        DataQualitySubRun.date_time.desc()).first()
-    run = latest_subrun.run
-    subrun = latest_subrun.subrun
-    date_time = latest_subrun.date_time
+    latest_run = db_session.query(DataQualityRun) \
+        .order_by(DataQualityRun.date_time.desc()).first()
+    run = latest_run.run
+    subrun = latest_run.subruns[-1]
+    date_time = latest_run.date_time
+
     return run, subrun
 
 def check_run_subrun(r, sr):
@@ -224,9 +225,11 @@ def json_latest_runs():
         limit = 100
 
     # query PostgreSQL database for the lastest runs
-    db_query = db_session.query(DataQualityRun) \
-        .order_by(DataQualityRun.date_time.desc())
-    results = db_query.limit(limit)
+    #db_query = db_session.query(DataQualityRun) \
+    #    .order_by(DataQualityRun.date_time.desc())
+    #results = db_query.limit(limit)
+    results = db_session.query(DataQualityRun) \
+        .order_by(DataQualityRun.date_time.desc()).limit(limit)
 
     json_results = []
 
