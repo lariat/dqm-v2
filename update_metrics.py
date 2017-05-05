@@ -490,6 +490,14 @@ def update():
 
     # send commands in a pipeline to save on round-trip time
     p = redis.pipeline()
+    for parameter in parameters_a:
+        parameter_key = key_prefix + parameter
+        p.delete(parameter_key)
+        p.rpush(parameter_key, *parameter_values_a[parameter])
+    p.execute()
+
+    # send commands in a pipeline to save on round-trip time
+    p = redis.pipeline()
     for parameter in array_parameters_a:
         parameter_key = key_prefix + parameter
         p.delete(parameter_key)
